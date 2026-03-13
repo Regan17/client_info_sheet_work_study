@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Client Information Form</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;min-height:100vh;padding:16px}
+.container{max-width:680px;margin:0 auto}
+.header{background:linear-gradient(135deg,#1a56db,#0e3fa3);color:#fff;padding:24px 20px;border-radius:12px 12px 0 0;text-align:center}
+.header h1{font-size:1.3rem;font-weight:700}
+.header p{font-size:.85rem;opacity:.85;margin-top:6px}
+/* ADMIN */
+#adminPanel{background:#fff;padding:28px 24px;border-radius:0 0 12px 12px}
+#adminPanel h2{font-size:1rem;font-weight:700;color:#1e3a5f;margin-bottom:6px}
+#adminPanel p{font-size:.82rem;color:#64748b;margin-bottom:18px}
+.admin-input{width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:8px;font-size:.9rem;margin-bottom:12px;outline:none}
+.admin-input:focus{border-color:#1a56db}
+.admin-btn{background:#1a56db;color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:.9rem;cursor:pointer;font-weight:700;width:100%}
+.admin-btn:hover{background:#1547c0}
+.generated-link{display:none;margin-top:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px}
+.generated-link p{font-size:.8rem;font-weight:700;color:#15803d;margin-bottom:8px}
+.link-text{font-size:.78rem;color:#1a56db;word-break:break-all;margin-bottom:10px}
+.copy-btn{background:#16a34a;color:#fff;border:none;padding:8px 18px;border-radius:7px;font-size:.82rem;cursor:pointer;font-weight:600}
+.copy-btn:hover{background:#15803d}
+.admin-note{font-size:.75rem;color:#94a3b8;margin-top:14px;text-align:center}
+/* FORM */
+#formWrapper{display:none}
+/* TABS */
+.tabs-wrap{background:#fff;border-bottom:2px solid #e2e8f0}
+.tabs-scroll{display:flex;overflow-x:auto;gap:4px;padding:10px 12px;scrollbar-width:none}
+.tabs-scroll::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:7px 12px;border:none;background:#f1f5f9;border-radius:7px;font-size:.76rem;font-weight:600;color:#64748b;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab:hover{background:#e2e8f0;color:#374151}
+.tab.active{background:#1a56db;color:#fff}
+.tab.done{background:#dcfce7;color:#16a34a}
+/* AUTOSAVE BAR */
+.autosave-bar{background:#fff;padding:7px 20px;border-bottom:1px solid #e2e8f0;font-size:.75rem;color:#64748b;display:flex;align-items:center;gap:6px;min-height:30px}
+.dot{width:8px;height:8px;border-radius:50%;background:#94a3b8;flex-shrink:0}
+.dot.saving{background:#f59e0b;animation:pulse 1s infinite}
+.dot.saved{background:#16a34a}
+.dot.error{background:#e53e3e}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* SECTIONS */
+.section{background:#fff;padding:22px 20px;display:none;border-bottom:1px solid #f1f5f9}
+.section.active{display:block}
+.section-title{font-size:1rem;font-weight:700;color:#1e3a5f;margin-bottom:4px}
+.section-desc{font-size:.8rem;color:#64748b;margin-bottom:18px;margin-top:4px}
+.field{margin-bottom:16px}
+label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:5px}
+label span.req{color:#e53e3e}
+input[type=text],input[type=email],input[type=tel],textarea{width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:.9rem;color:#111;background:#fafafa;transition:border .2s;outline:none}
+input:focus,textarea:focus{border-color:#1a56db;background:#fff}
+input:disabled{background:#f1f5f9;color:#64748b}
+textarea{resize:vertical;min-height:80px}
+.radio-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.radio-group label{display:flex;align-items:center;gap:6px;font-weight:400;background:#f8fafc;border:1.5px solid #d1d5db;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;color:#374151}
+.radio-group input{accent-color:#1a56db;width:16px;height:16px}
+.conditional{display:none;background:#f8fafc;border-left:3px solid #1a56db;padding:14px;border-radius:0 8px 8px 0;margin-top:10px}
+.conditional.show{display:block}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.row2{grid-template-columns:1fr}}
+.job-block{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px}
+.job-block-title{font-size:.82rem;font-weight:700;color:#1a56db;margin-bottom:12px}
+.add-btn{background:none;border:1.5px dashed #1a56db;color:#1a56db;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:.84rem;width:100%;margin-bottom:16px;font-weight:600}
+.add-btn:hover{background:#eff6ff}
+.nav{background:#fff;padding:16px 20px;border-radius:0 0 12px 12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e2e8f0}
+.btn-back{background:#f1f5f9;color:#374151;border:none;padding:11px 22px;border-radius:8px;font-size:.9rem;cursor:pointer;font-weight:600}
+.btn-next{background:#1a56db;color:#fff;border:none;padding:11px 28px;border-radius:8px;font-size:.9rem;cursor:pointer;font-weight:600}
+.submit-btn{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;padding:13px 32px;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:700;width:100%}
+.success{display:none;text-align:center;padding:40px 20px;background:#fff;border-radius:0 0 12px 12px}
+.success .icon{font-size:3rem;margin-bottom:12px}
+.success h2{color:#16a34a;font-size:1.3rem;margin-bottom:8px}
+.success p{color:#64748b;font-size:.9rem}
+.divider{height:1px;background:#e2e8f0;margin:16px 0}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📋 Client Information Form</h1>
+    <p>Study Permit / Work Permit Application</p>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="adminPanel">
+    <h2>🔐 Staff: Generate Client Link</h2>
+    <p>Enter the client's email address below to create their personal form link. Send that link to the client — they open it to fill their information.</p>
+    <input type="email" class="admin-input" id="adminEmail" placeholder="Client's email address e.g. john@gmail.com"/>
+    <button class="admin-btn" onclick="generateClientLink()">Generate Client Link →</button>
+    <div class="generated-link" id="generatedLinkBox">
+      <p>✅ Link ready! Copy and send to client:</p>
+      <div class="link-text" id="generatedLinkText"></div>
+      <button class="copy-btn" onclick="copyLink()">📋 Copy Link</button>
+    </div>
+    <p class="admin-note">Clients cannot see or access this staff panel.</p>
+  </div>
+
+  <!-- FORM WRAPPER -->
+  <div id="formWrapper">
+
+    <!-- TABS -->
+    <div class="tabs-wrap">
+      <div class="tabs-scroll">
+        <button class="tab active" id="tab0" onclick="goToSection(0)">👤 Personal</button>
+        <button class="tab" id="tab1" onclick="goToSection(1)">💑 Spouse</button>
+        <button class="tab" id="tab2" onclick="goToSection(2)">👶 Children</button>
+        <button class="tab" id="tab3" onclick="goToSection(3)">🌍 Residency</button>
+        <button class="tab" id="tab4" onclick="goToSection(4)">✈️ Travel</button>
+        <button class="tab" id="tab5" onclick="goToSection(5)">🎓 Education</button>
+        <button class="tab" id="tab6" onclick="goToSection(6)">💼 Work</button>
+        <button class="tab" id="tab7" onclick="goToSection(7)">💰 Financial</button>
+        <button class="tab" id="tab8" onclick="goToSection(8)">🗂️ History</button>
+      </div>
+    </div>
+
+    <!-- AUTOSAVE BAR -->
+    <div class="autosave-bar">
+      <div class="dot" id="saveDot"></div>
+      <span id="saveStatus">Your progress will be auto-saved as you fill</span>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section active" id="s1">
+      <div class="section-title">🔹 Personal Information</div>
+      <div class="section-desc">Principal Applicant Details</div>
+      <div class="row2">
+        <div class="field"><label>Given Name <span class="req">*</span></label><input type="text" id="givenName" placeholder="First name"></div>
+        <div class="field"><label>Last Name <span class="req">*</span></label><input type="text" id="lastName" placeholder="Last name"></div>
+      </div>
+      <div class="field"><label>Date of Birth (DD/MM/YYYY) <span class="req">*</span></label><input type="text" id="dob" placeholder="e.g. 15/08/1990"></div>
+      <div class="field"><label>Email ID <span class="req">*</span></label><input type="email" id="email" placeholder="your@email.com" disabled></div>
+      <div class="field"><label>Phone Number <span class="req">*</span></label><input type="tel" id="phone" placeholder="+1 000 000 0000"></div>
+      <div class="field"><label>Current Residential Address (with Postal Code) <span class="req">*</span></label><textarea id="address" placeholder="Full address including postal code"></textarea></div>
+      <div class="field">
+        <label>Marital Status <span class="req">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="marital" value="Married"> Married</label>
+          <label><input type="radio" name="marital" value="Single"> Single</label>
+          <label><input type="radio" name="marital" value="Divorced"> Divorced</label>
+          <label><input type="radio" name="marital" value="Widowed"> Widowed</label>
+        </div>
+      </div>
+      <div class="field" id="domField" style="display:none"><label>Date of Marriage (DD/MM/YYYY)</label><input type="text" id="dom" placeholder="e.g. 10/05/2015"></div>
+      <div class="field"><label>Native Language (Mother Tongue) <span class="req">*</span></label><input type="text" id="nativeLang" placeholder="e.g. Punjabi"></div>
+      <div class="field"><label>Current Status in Canada <span class="req">*</span></label><input type="text" id="canadaStatus" placeholder="e.g. Student, Visitor, Worker"></div>
+      <div class="row2">
+        <div class="field"><label>Passport Number <span class="req">*</span></label><input type="text" id="passport" placeholder="Passport No."></div>
+        <div class="field"><label>UCI Number</label><input type="text" id="uci" placeholder="UCI No. (if known)"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="s2">
+      <div class="section-title">🔹 Spouse / Common-Law Partner Info</div>
+      <div class="section-desc">Leave blank if not applicable.</div>
+      <div class="row2">
+        <div class="field"><label>Given Name</label><input type="text" id="spouseGiven"></div>
+        <div class="field"><label>Last Name</label><input type="text" id="spouseLast"></div>
+      </div>
+      <div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" id="spouseDob"></div>
+      <div class="row2">
+        <div class="field"><label>Email ID</label><input type="email" id="spouseEmail"></div>
+        <div class="field"><label>Phone Number</label><input type="tel" id="spousePhone"></div>
+      </div>
+      <div class="field"><label>Current Address</label><textarea id="spouseAddr"></textarea></div>
+      <div class="divider"></div>
+      <div class="field">
+        <label>Have you been married or in a common-law relationship before your current marriage?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="prevRel" value="Yes" onclick="toggleConditional('prevRelDetails','show')"> Yes</label>
+          <label><input type="radio" name="prevRel" value="No" onclick="toggleConditional('prevRelDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="prevRelDetails">
+        <div class="job-block-title">Previous Relationship Details</div>
+        <div class="row2">
+          <div class="field"><label>Given Name</label><input type="text" id="prevGiven"></div>
+          <div class="field"><label>Last Name</label><input type="text" id="prevLast"></div>
+        </div>
+        <div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" id="prevDob"></div>
+        <div class="field"><label>Type of Relationship</label>
+          <div class="radio-group">
+            <label><input type="radio" name="prevType" value="Married"> Married</label>
+            <label><input type="radio" name="prevType" value="Common-Law"> Common-Law</label>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>From (MM/YYYY)</label><input type="text" id="prevFrom"></div>
+          <div class="field"><label>To (MM/YYYY)</label><input type="text" id="prevTo"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="s3">
+      <div class="section-title">👶 Children Info</div>
+      <div class="section-desc">Leave blank if not applicable.</div>
+      <div class="field"><label>Child 1 – Full Name & Date of Birth</label><input type="text" id="child1" placeholder="e.g. Arjun Singh – 12/04/2010"></div>
+      <div class="field"><label>Child 2 – Full Name & Date of Birth</label><input type="text" id="child2"></div>
+      <div class="field"><label>Child 3 – Full Name & Date of Birth</label><input type="text" id="child3"></div>
+      <div class="field"><label>Additional Children</label><textarea id="childExtra"></textarea></div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section" id="s4">
+      <div class="section-title">🌍 Other Country Residency</div>
+      <div class="section-desc">Countries other than Canada or your home country where you lived for 6+ months.</div>
+      <div class="field">
+        <label>Have you lived in any other country for 6+ months?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="otherCountry" value="Yes" onclick="toggleConditional('otherCountryDetails','show')"> Yes</label>
+          <label><input type="radio" name="otherCountry" value="No" onclick="toggleConditional('otherCountryDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="otherCountryDetails">
+        <div class="row2">
+          <div class="field"><label>From (MM/YYYY)</label><input type="text" id="ocFrom"></div>
+          <div class="field"><label>To (MM/YYYY)</label><input type="text" id="ocTo"></div>
+        </div>
+        <div class="field"><label>Country Name</label><input type="text" id="ocCountry"></div>
+        <div class="field"><label>Status (e.g., Work Visa, Study Visa, PR)</label><input type="text" id="ocStatus"></div>
+        <div class="field"><label>Purpose of Stay</label><input type="text" id="ocPurpose"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section" id="s5">
+      <div class="section-title">✈️ Travel History</div>
+      <div class="field"><label>First Entry to Canada – Date (DD/MM/YYYY)</label><input type="text" id="firstEntryDate"></div>
+      <div class="field"><label>First Entry to Canada – Airport / Port of Entry</label><input type="text" id="firstEntryPort"></div>
+      <div class="divider"></div>
+      <div class="field"><label>Most Recent Entry to Canada – Date (DD/MM/YYYY)</label><input type="text" id="recentEntryDate"></div>
+      <div class="field"><label>Most Recent Entry to Canada – Place / Airport</label><input type="text" id="recentEntryPort"></div>
+    </div>
+
+    <!-- SECTION 6 -->
+    <div class="section" id="s6">
+      <div class="section-title">🎓 Post-Secondary Education</div>
+      <div class="section-desc">All programs after Grade 12 — completed or not, inside or outside Canada.</div>
+      <div id="eduBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Education Entry 1</div>
+          <div class="row2">
+            <div class="field"><label>From (MM/YYYY)</label><input type="text" class="edu-from"></div>
+            <div class="field"><label>To (MM/YYYY)</label><input type="text" class="edu-to"></div>
+          </div>
+          <div class="field"><label>Program Name</label><input type="text" class="edu-prog"></div>
+          <div class="field"><label>Institute / University Name</label><input type="text" class="edu-inst"></div>
+          <div class="field"><label>Campus City</label><input type="text" class="edu-city"></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addEdu()">+ Add Another Education Entry</button>
+    </div>
+
+    <!-- SECTION 7 -->
+    <div class="section" id="s7">
+      <div class="section-title">💼 Work History</div>
+      <div class="section-desc">All work on SIN in Canada AND all work outside Canada.</div>
+      <div id="workBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Job Entry 1</div>
+          <div class="row2">
+            <div class="field"><label>From (DD/MM/YYYY)</label><input type="text" class="w-from"></div>
+            <div class="field"><label>To (DD/MM/YYYY)</label><input type="text" class="w-to"></div>
+          </div>
+          <div class="field"><label>Job Title</label><input type="text" class="w-title"></div>
+          <div class="field"><label>Employer / Company Name</label><input type="text" class="w-employer"></div>
+          <div class="field"><label>Full Work Location Address</label><textarea class="w-addr"></textarea></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addJob()">+ Add Another Job Entry</button>
+    </div>
+
+    <!-- SECTION 8 -->
+    <div class="section" id="s8">
+      <div class="section-title">💰 Financial Information</div>
+      <div class="field"><label>How much do you currently have in savings or checking accounts?</label><input type="text" id="savings"></div>
+      <div class="field"><label>If you do not have a job, who is paying for your expenses and how?</label><textarea id="expenses"></textarea></div>
+    </div>
+
+    <!-- SECTION 9 -->
+    <div class="section" id="s9">
+      <div class="section-title">🗂️ Application History</div>
+      <div class="field"><label>How many applications have you previously submitted to IRCC?</label><input type="text" id="irccCount"></div>
+      <div class="field">
+        <label>Have you ever been refused by IRCC or any other country?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="refused" value="Yes" onclick="toggleConditional('refusalDetails','show')"> Yes</label>
+          <label><input type="radio" name="refused" value="No" onclick="toggleConditional('refusalDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="refusalDetails">
+        <div class="field"><label>Country of Refusal</label><input type="text" id="refCountry"></div>
+        <div class="field"><label>Result Date (MM/YYYY)</label><input type="text" id="refDate"></div>
+        <div class="field"><label>Type of Application</label><input type="text" id="refType"></div>
+      </div>
+      <div class="divider"></div>
+      <button class="submit-btn" onclick="submitForm()">✅ Submit Application</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success" id="successMsg">
+      <div class="icon">✅</div>
+      <h2>Submitted Successfully!</h2>
+      <p>Your information has been received.<br>We will be in touch with you shortly.</p>
+    </div>
+
+    <div class="nav" id="navBar">
+      <button class="btn-back" id="backBtn" onclick="changeSection(-1)" style="visibility:hidden">← Back</button>
+      <button class="btn-next" id="nextBtn" onclick="changeSection(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJLQOXovJO_oQLi7PiaS9ejOtqpiyrz5GmbqeJJlhIGSuz77583DVjgASYFSg6HZcK/exec";
+const sections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+let cur = 0, docId = '', autoSaveTimer = null, isSaving = false;
+
+window.addEventListener('DOMContentLoaded', () => {
+  const p = new URLSearchParams(window.location.search);
+  const clientEmail = p.get('email');
+  if (clientEmail) {
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('formWrapper').style.display = 'block';
+    document.getElementById('email').value = decodeURIComponent(clientEmail);
+    loadSavedData(decodeURIComponent(clientEmail));
+  }
+  document.body.addEventListener('input', scheduleAutoSave);
+  document.body.addEventListener('change', scheduleAutoSave);
+  document.querySelectorAll('input[name="marital"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('domField').style.display = r.value==='Married'?'block':'none';
+    });
+  });
+});
+
+function generateClientLink() {
+  const email = document.getElementById('adminEmail').value.trim();
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+  const link = window.location.origin + window.location.pathname + '?email=' + encodeURIComponent(email);
+  document.getElementById('generatedLinkText').textContent = link;
+  document.getElementById('generatedLinkBox').style.display = 'block';
+}
+
+function copyLink() {
+  const txt = document.getElementById('generatedLinkText').textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy Link', 2000);
+  });
+}
+
+function loadSavedData(email) {
+  setSaveStatus('loading');
+  fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'load', email }) })
+  .then(r=>r.json())
+  .then(res => {
+    if (res.data) { fillFormFields(res.data); if(res.docId) docId=res.docId; setSaveStatus('saved'); }
+    else setSaveStatus('none');
+  })
+  .catch(() => setSaveStatus('none'));
+}
+
+function fillFormFields(d) {
+  ['givenName','lastName','dob','phone','address','dom','nativeLang','canadaStatus',
+   'passport','uci','spouseGiven','spouseLast','spouseDob','spouseEmail','spousePhone',
+   'spouseAddr','prevGiven','prevLast','prevDob','prevFrom','prevTo','child1','child2',
+   'child3','childExtra','ocFrom','ocTo','ocCountry','ocStatus','ocPurpose',
+   'firstEntryDate','firstEntryPort','recentEntryDate','recentEntryPort','savings',
+   'expenses','irccCount','refCountry','refDate','refType'
+  ].forEach(id => { const el=document.getElementById(id); if(el&&d[id]) el.value=d[id]; });
+  ['marital','prevRel','prevType','otherCountry','refused'].forEach(name => {
+    if(d[name]){ const r=document.querySelector(`input[name="${name}"][value="${d[name]}"]`); if(r) r.checked=true; }
+  });
+  if(d.marital==='Married') document.getElementById('domField').style.display='block';
+  if(d.prevRel==='Yes') toggleConditional('prevRelDetails','show');
+  if(d.otherCountry==='Yes') toggleConditional('otherCountryDetails','show');
+  if(d.refused==='Yes') toggleConditional('refusalDetails','show');
+}
+
+function scheduleAutoSave() {
+  clearTimeout(autoSaveTimer);
+  setSaveStatus('typing');
+  autoSaveTimer = setTimeout(autoSave, 30000);
+}
+
+function setSaveStatus(state) {
+  const dot=document.getElementById('saveDot'), txt=document.getElementById('saveStatus');
+  if(!dot) return;
+  dot.className='dot';
+  if(state==='typing') txt.textContent='Unsaved changes...';
+  else if(state==='saving'){dot.classList.add('saving');txt.textContent='Saving...';}
+  else if(state==='saved'){dot.classList.add('saved');txt.textContent='Progress saved ✓';}
+  else if(state==='loading'){dot.classList.add('saving');txt.textContent='Loading your saved progress...';}
+  else if(state==='error'){dot.classList.add('error');txt.textContent='Could not save — check connection';}
+  else txt.textContent='Your progress will be auto-saved as you fill';
+}
+
+function collectData() {
+  return {
+    action:'save', email:document.getElementById('email').value, docId,
+    givenName:document.getElementById('givenName').value,
+    lastName:document.getElementById('lastName').value,
+    dob:document.getElementById('dob').value,
+    phone:document.getElementById('phone').value,
+    address:document.getElementById('address').value,
+    maritalStatus:document.querySelector('input[name="marital"]:checked')?.value||'',
+    dom:document.getElementById('dom').value,
+    nativeLang:document.getElementById('nativeLang').value,
+    canadaStatus:document.getElementById('canadaStatus').value,
+    passport:document.getElementById('passport').value,
+    uci:document.getElementById('uci').value,
+    spouseGiven:document.getElementById('spouseGiven').value,
+    spouseLast:document.getElementById('spouseLast').value,
+    spouseDob:document.getElementById('spouseDob').value,
+    spouseEmail:document.getElementById('spouseEmail').value,
+    spousePhone:document.getElementById('spousePhone').value,
+    spouseAddr:document.getElementById('spouseAddr').value,
+    prevRel:document.querySelector('input[name="prevRel"]:checked')?.value||'',
+    prevGiven:document.getElementById('prevGiven').value,
+    prevLast:document.getElementById('prevLast').value,
+    prevDob:document.getElementById('prevDob').value,
+    prevType:document.querySelector('input[name="prevType"]:checked')?.value||'',
+    prevFrom:document.getElementById('prevFrom').value,
+    prevTo:document.getElementById('prevTo').value,
+    child1:document.getElementById('child1').value,
+    child2:document.getElementById('child2').value,
+    child3:document.getElementById('child3').value,
+    childExtra:document.getElementById('childExtra').value,
+    otherCountry:document.querySelector('input[name="otherCountry"]:checked')?.value||'',
+    ocFrom:document.getElementById('ocFrom').value,
+    ocTo:document.getElementById('ocTo').value,
+    ocCountry:document.getElementById('ocCountry').value,
+    ocStatus:document.getElementById('ocStatus').value,
+    ocPurpose:document.getElementById('ocPurpose').value,
+    firstEntryDate:document.getElementById('firstEntryDate').value,
+    firstEntryPort:document.getElementById('firstEntryPort').value,
+    recentEntryDate:document.getElementById('recentEntryDate').value,
+    recentEntryPort:document.getElementById('recentEntryPort').value,
+    education:collectEdu(), work:collectWork(),
+    savings:document.getElementById('savings').value,
+    expenses:document.getElementById('expenses').value,
+    irccCount:document.getElementById('irccCount').value,
+    refused:document.querySelector('input[name="refused"]:checked')?.value||'',
+    refCountry:document.getElementById('refCountry').value,
+    refDate:document.getElementById('refDate').value,
+    refType:document.getElementById('refType').value,
+  };
+}
+
+function autoSave() {
+  if(isSaving) return;
+  isSaving=true; setSaveStatus('saving');
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(collectData())})
+  .then(r=>r.json())
+  .then(res=>{ if(res.docId) docId=res.docId; isSaving=false; setSaveStatus('saved'); })
+  .catch(()=>{ isSaving=false; setSaveStatus('error'); });
+}
+
+function submitForm() {
+  clearTimeout(autoSaveTimer);
+  const btn=document.querySelector('.submit-btn');
+  btn.textContent='⏳ Submitting...'; btn.disabled=true;
+  const data=collectData(); data.action='submit';
+  fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(data)})
+  .then(r=>r.json())
+  .then(()=>{
+    sections.forEach(s=>document.getElementById(s).classList.remove('active'));
+    document.getElementById('navBar').style.display='none';
+    document.getElementById('successMsg').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  })
+  .catch(()=>{ btn.textContent='❌ Failed. Try again.'; btn.disabled=false; });
+}
+
+// ── TABS ──
+function updateTabs(active) {
+  for(let i=0;i<9;i++){
+    const t=document.getElementById('tab'+i);
+    t.classList.remove('active','done');
+    if(i===active) t.classList.add('active');
+  }
+}
+
+function markTabDone(i) {
+  const t=document.getElementById('tab'+i);
+  if(t){ t.classList.remove('active'); t.classList.add('done'); }
+}
+
+function goToSection(i) {
+  markTabDone(cur);
+  autoSave();
+  cur=i;
+  showSection(i);
+}
+
+function showSection(i) {
+  sections.forEach((s,idx)=>document.getElementById(s).classList.toggle('active',idx===i));
+  document.getElementById('backBtn').style.visibility=i===0?'hidden':'visible';
+  document.getElementById('nextBtn').style.display=i===sections.length-1?'none':'block';
+  updateTabs(i);
+  // Scroll tabs into view
+  document.getElementById('tab'+i)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function changeSection(dir) {
+  markTabDone(cur);
+  autoSave();
+  cur=Math.max(0,Math.min(sections.length-1,cur+dir));
+  showSection(cur);
+}
+
+function toggleConditional(id,action){
+  document.getElementById(id).classList.toggle('show',action==='show');
+}
+
+function collectEdu(){
+  return [...document.querySelectorAll('#eduBlocks .job-block')].map((b,i)=>
+    `Entry ${i+1}: ${b.querySelector('.edu-from').value} to ${b.querySelector('.edu-to').value} | ${b.querySelector('.edu-prog').value} | ${b.querySelector('.edu-inst').value} | ${b.querySelector('.edu-city').value}`
+  ).join('\n');
+}
+function collectWork(){
+  return [...document.querySelectorAll('#workBlocks .job-block')].map((b,i)=>
+    `Job ${i+1}: ${b.querySelector('.w-from').value} to ${b.querySelector('.w-to').value} | ${b.querySelector('.w-title').value} | ${b.querySelector('.w-employer').value} | ${b.querySelector('.w-addr').value}`
+  ).join('\n');
+}
+
+let eduCount=1,jobCount=1;
+function addEdu(){
+  eduCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Education Entry ${eduCount}</div>
+    <div class="row2"><div class="field"><label>From (MM/YYYY)</label><input type="text" class="edu-from"></div>
+    <div class="field"><label>To (MM/YYYY)</label><input type="text" class="edu-to"></div></div>
+    <div class="field"><label>Program Name</label><input type="text" class="edu-prog"></div>
+    <div class="field"><label>Institute / University Name</label><input type="text" class="edu-inst"></div>
+    <div class="field"><label>Campus City</label><input type="text" class="edu-city"></div>`;
+  document.getElementById('eduBlocks').appendChild(d);
+}
+function addJob(){
+  jobCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Job Entry ${jobCount}</div>
+    <div class="row2"><div class="field"><label>From (DD/MM/YYYY)</label><input type="text" class="w-from"></div>
+    <div class="field"><label>To (DD/MM/YYYY)</label><input type="text" class="w-to"></div></div>
+    <div class="field"><label>Job Title</label><input type="text" class="w-title"></div>
+    <div class="field"><label>Employer / Company Name</label><input type="text" class="w-employer"></div>
+    <div class="field"><label>Full Work Location Address</label><textarea class="w-addr"></textarea></div>`;
+  document.getElementById('workBlocks').appendChild(d);
+}
+
+showSection(0);
+</script>
+</body>
+</html>
