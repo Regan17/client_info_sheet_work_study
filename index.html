@@ -86,7 +86,14 @@ textarea{resize:vertical;min-height:80px}
   <!-- ADMIN PANEL -->
   <div id="adminPanel">
     <h2>🔐 Staff: Generate Client Link</h2>
-    <p>Enter the client's email address below to create their personal form link. Send that link to the client — they open it to fill their information.</p>
+    <p>Enter the client's email address and select the application type. Send the generated link to the client — they open it to fill their information.</p>
+    <label for="adminAppType" style="display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:5px">Application type</label>
+    <select id="adminAppType" class="admin-input" style="margin-bottom:12px">
+      <option value="study_permit_extension">Study Permit Extension</option>
+      <option value="pgwp">PGWP</option>
+      <option value="dummy_work_permit">Dummy Work Permit</option>
+      <option value="visitor_record">Visitor Record</option>
+    </select>
     <input type="email" class="admin-input" id="adminEmail" placeholder="Client's email address e.g. john@gmail.com"/>
     <button class="admin-btn" onclick="generateClientLink()">Generate Client Link →</button>
     <div class="generated-link" id="generatedLinkBox">
@@ -315,14 +322,15 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJLQOXovJO_oQLi7PiaS9ejOtqpiyrz5GmbqeJJlhIGSuz77583DVjgASYFSg6HZcK/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqK8lmKMGn2BU6RLoO7yWsTDrtn73H6GuJSkBRNOzNajO4tIKB7SjdbRX2vc6wuJjC/exec";
 const sections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
-let cur = 0, docId = '', autoSaveTimer = null, isSaving = false;
+let cur = 0, docId = '', applicationType = '', autoSaveTimer = null, isSaving = false;
 
 window.addEventListener('DOMContentLoaded', () => {
   const p = new URLSearchParams(window.location.search);
   const clientEmail = p.get('email');
   if (clientEmail) {
+    applicationType = p.get('type') || '';
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('formWrapper').style.display = 'block';
     document.getElementById('email').value = decodeURIComponent(clientEmail);
@@ -339,8 +347,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function generateClientLink() {
   const email = document.getElementById('adminEmail').value.trim();
+  const type = document.getElementById('adminAppType').value;
   if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
-  const link = window.location.origin + window.location.pathname + '?email=' + encodeURIComponent(email);
+  let link = window.location.origin + window.location.pathname + '?email=' + encodeURIComponent(email);
+  if (type) link += '&type=' + encodeURIComponent(type);
   document.getElementById('generatedLinkText').textContent = link;
   document.getElementById('generatedLinkBox').style.display = 'block';
 }
@@ -359,8 +369,12 @@ function loadSavedData(email) {
   fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'load', email }) })
   .then(r=>r.json())
   .then(res => {
-    if (res.data) { fillFormFields(res.data); if(res.docId) docId=res.docId; setSaveStatus('saved'); }
-    else setSaveStatus('none');
+    if (res.data) {
+      fillFormFields(res.data);
+      if (res.docId) docId = res.docId;
+      if (res.data.applicationType) applicationType = res.data.applicationType;
+      setSaveStatus('saved');
+    } else setSaveStatus('none');
   })
   .catch(() => setSaveStatus('none'));
 }
@@ -403,6 +417,7 @@ function setSaveStatus(state) {
 function collectData() {
   return {
     action:'save', email:document.getElementById('email').value, docId,
+    applicationType: applicationType || undefined,
     givenName:document.getElementById('givenName').value,
     lastName:document.getElementById('lastName').value,
     dob:document.getElementById('dob').value,
