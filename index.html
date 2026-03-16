@@ -399,7 +399,7 @@ function fillFormFields(d) {
 function scheduleAutoSave() {
   clearTimeout(autoSaveTimer);
   setSaveStatus('typing');
-  autoSaveTimer = setTimeout(autoSave, 30000);
+  autoSaveTimer = setTimeout(autoSave, 3000);
 }
 
 function setSaveStatus(state) {
