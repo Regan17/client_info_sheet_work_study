@@ -50,8 +50,8 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;min-height:100vh;paddi
 .field{margin-bottom:16px}
 label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:5px}
 label span.req{color:#e53e3e}
-input[type=text],input[type=email],input[type=tel],textarea{width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:.9rem;color:#111;background:#fafafa;transition:border .2s;outline:none}
-input:focus,textarea:focus{border-color:#1a56db;background:#fff}
+input[type=text],input[type=email],input[type=tel],textarea,select.form-select{width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:.9rem;color:#111;background:#fafafa;transition:border .2s;outline:none}
+input:focus,textarea:focus,select.form-select:focus{border-color:#1a56db;background:#fff}
 input:disabled{background:#f1f5f9;color:#64748b}
 textarea{resize:vertical;min-height:80px}
 .radio-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
@@ -68,7 +68,7 @@ textarea{resize:vertical;min-height:80px}
 .nav{background:#fff;padding:16px 20px;border-radius:0 0 12px 12px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e2e8f0}
 .btn-back{background:#f1f5f9;color:#374151;border:none;padding:11px 22px;border-radius:8px;font-size:.9rem;cursor:pointer;font-weight:600}
 .btn-next{background:#1a56db;color:#fff;border:none;padding:11px 28px;border-radius:8px;font-size:.9rem;cursor:pointer;font-weight:600}
-.submit-btn{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;padding:13px 32px;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:700;width:100%}
+.submit-btn{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;padding:13px 32px;border-radius:8px;font-size:1rem;cursor:pointer;font-weight:700}
 .success{display:none;text-align:center;padding:40px 20px;background:#fff;border-radius:0 0 12px 12px}
 .success .icon{font-size:3rem;margin-bottom:12px}
 .success h2{color:#16a34a;font-size:1.3rem;margin-bottom:8px}
@@ -93,6 +93,8 @@ textarea{resize:vertical;min-height:80px}
       <option value="pgwp">PGWP</option>
       <option value="dummy_work_permit">Dummy Work Permit</option>
       <option value="visitor_record">Visitor Record</option>
+      <option value="eoi">EOI (Expression of Interest)</option>
+      <option value="express_entry">Express Entry</option>
     </select>
     <input type="email" class="admin-input" id="adminEmail" placeholder="Client's email address e.g. john@gmail.com"/>
     <button class="admin-btn" onclick="generateClientLink()">Generate Client Link →</button>
@@ -110,15 +112,18 @@ textarea{resize:vertical;min-height:80px}
     <!-- TABS -->
     <div class="tabs-wrap">
       <div class="tabs-scroll">
-        <button class="tab active" id="tab0" onclick="goToSection(0)">👤 Personal</button>
-        <button class="tab" id="tab1" onclick="goToSection(1)">💑 Spouse</button>
-        <button class="tab" id="tab2" onclick="goToSection(2)">👶 Children</button>
-        <button class="tab" id="tab3" onclick="goToSection(3)">🌍 Residency</button>
-        <button class="tab" id="tab4" onclick="goToSection(4)">✈️ Travel</button>
-        <button class="tab" id="tab5" onclick="goToSection(5)">🎓 Education</button>
-        <button class="tab" id="tab6" onclick="goToSection(6)">💼 Work</button>
-        <button class="tab" id="tab7" onclick="goToSection(7)">💰 Financial</button>
-        <button class="tab" id="tab8" onclick="goToSection(8)">🗂️ History</button>
+        <button class="tab active" id="tab0" onclick="goToSectionById('s1')">👤 Personal</button>
+        <button class="tab" id="tab1" onclick="goToSectionById('s2')">💑 Spouse</button>
+        <button class="tab" id="tab2" onclick="goToSectionById('s3')">👶 Children</button>
+        <button class="tab" id="tab3" onclick="goToSectionById('s4')">🌍 Residency</button>
+        <button class="tab" id="tab4" onclick="goToSectionById('s5')">✈️ Travel</button>
+        <button class="tab" id="tab5" onclick="goToSectionById('s6')">🎓 Education</button>
+        <button class="tab" id="tab6" onclick="goToSectionById('s7')">💼 Work</button>
+        <button class="tab" id="tab7" onclick="goToSectionById('s8')">💰 Financial</button>
+        <button class="tab" id="tab8" onclick="goToSectionById('s9')">🗂️ History</button>
+        <button class="tab" id="tab9" onclick="goToSectionById('s10')" style="display:none">👪 Family</button>
+        <button class="tab" id="tab10" onclick="goToSectionById('s11')" style="display:none">🏠 Relatives</button>
+        <button class="tab" id="tab11" onclick="goToSectionById('s12')" style="display:none">📋 Misc</button>
       </div>
     </div>
 
@@ -128,7 +133,7 @@ textarea{resize:vertical;min-height:80px}
       <span id="saveStatus">Your progress will be auto-saved as you fill</span>
     </div>
 
-    <!-- SECTION 1 -->
+    <!-- SECTION 1 — Personal -->
     <div class="section active" id="s1">
       <div class="section-title">🔹 Personal Information</div>
       <div class="section-desc">Principal Applicant Details</div>
@@ -156,9 +161,17 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Passport Number <span class="req">*</span></label><input type="text" id="passport" placeholder="Passport No."></div>
         <div class="field"><label>UCI Number</label><input type="text" id="uci" placeholder="UCI No. (if known)"></div>
       </div>
+      <div class="divider"></div>
+      <div class="field">
+        <label>Are you applying for Study Permit from outside Canada, LMIA-based WP, or Support Letter-based WP?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="showFamilyInfo" value="Yes" onclick="computeVisibleSections()"> Yes</label>
+          <label><input type="radio" name="showFamilyInfo" value="No" onclick="computeVisibleSections()"> No</label>
+        </div>
+      </div>
     </div>
 
-    <!-- SECTION 2 -->
+    <!-- SECTION 2 — Spouse -->
     <div class="section" id="s2">
       <div class="section-title">🔹 Spouse / Common-Law Partner Info</div>
       <div class="section-desc">Leave blank if not applicable.</div>
@@ -200,7 +213,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
-    <!-- SECTION 3 -->
+    <!-- SECTION 3 — Children -->
     <div class="section" id="s3">
       <div class="section-title">👶 Children Info</div>
       <div class="section-desc">Leave blank if not applicable.</div>
@@ -210,7 +223,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="field"><label>Additional Children</label><textarea id="childExtra"></textarea></div>
     </div>
 
-    <!-- SECTION 4 -->
+    <!-- SECTION 4 — Residency -->
     <div class="section" id="s4">
       <div class="section-title">🌍 Other Country Residency</div>
       <div class="section-desc">Countries other than Canada or your home country where you lived for 6+ months.</div>
@@ -232,7 +245,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
-    <!-- SECTION 5 -->
+    <!-- SECTION 5 — Travel -->
     <div class="section" id="s5">
       <div class="section-title">✈️ Travel History</div>
       <div class="field"><label>First Entry to Canada – Date (DD/MM/YYYY)</label><input type="text" id="firstEntryDate"></div>
@@ -242,10 +255,22 @@ textarea{resize:vertical;min-height:80px}
       <div class="field"><label>Most Recent Entry to Canada – Place / Airport</label><input type="text" id="recentEntryPort"></div>
     </div>
 
-    <!-- SECTION 6 -->
+    <!-- SECTION 6 — Education -->
     <div class="section" id="s6">
-      <div class="section-title">🎓 Post-Secondary Education</div>
-      <div class="section-desc">All programs after Grade 12 — completed or not, inside or outside Canada.</div>
+      <div class="section-title">🎓 Education</div>
+      <div class="section-desc">Please list Grade 12 and all post-secondary programs — completed or not, inside or outside Canada.</div>
+      <div class="job-block" id="grade12Block">
+        <div class="job-block-title">Grade 12 (High School)</div>
+        <div class="row2">
+          <div class="field"><label>From (MM/YYYY)</label><input type="text" id="g12from"></div>
+          <div class="field"><label>To (MM/YYYY)</label><input type="text" id="g12to"></div>
+        </div>
+        <div class="field"><label>Program / Stream</label><input type="text" id="g12prog" placeholder="e.g. Science, Commerce, Arts"></div>
+        <div class="field"><label>School Name</label><input type="text" id="g12inst"></div>
+        <div class="field"><label>City</label><input type="text" id="g12city"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="section-desc">Post-Secondary Education (after Grade 12)</div>
       <div id="eduBlocks">
         <div class="job-block">
           <div class="job-block-title">Education Entry 1</div>
@@ -261,7 +286,7 @@ textarea{resize:vertical;min-height:80px}
       <button class="add-btn" onclick="addEdu()">+ Add Another Education Entry</button>
     </div>
 
-    <!-- SECTION 7 -->
+    <!-- SECTION 7 — Work -->
     <div class="section" id="s7">
       <div class="section-title">💼 Work History</div>
       <div class="section-desc">All work on SIN in Canada AND all work outside Canada.</div>
@@ -273,6 +298,17 @@ textarea{resize:vertical;min-height:80px}
             <div class="field"><label>To (DD/MM/YYYY)</label><input type="text" class="w-to"></div>
           </div>
           <div class="field"><label>Job Title</label><input type="text" class="w-title"></div>
+          <div class="row2">
+            <div class="field">
+              <label>Full-time or Part-time</label>
+              <select class="w-ftpt form-select">
+                <option value="">Select...</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+              </select>
+            </div>
+            <div class="field"><label>Hours per week</label><input type="text" class="w-hours" placeholder="e.g. 40"></div>
+          </div>
           <div class="field"><label>Employer / Company Name</label><input type="text" class="w-employer"></div>
           <div class="field"><label>Full Work Location Address</label><textarea class="w-addr"></textarea></div>
         </div>
@@ -280,19 +316,39 @@ textarea{resize:vertical;min-height:80px}
       <button class="add-btn" onclick="addJob()">+ Add Another Job Entry</button>
     </div>
 
-    <!-- SECTION 8 -->
+    <!-- SECTION 8 — Financial -->
     <div class="section" id="s8">
       <div class="section-title">💰 Financial Information</div>
       <div class="field"><label>How much do you currently have in savings or checking accounts?</label><input type="text" id="savings"></div>
       <div class="field"><label>If you do not have a job, who is paying for your expenses and how?</label><textarea id="expenses"></textarea></div>
     </div>
 
-    <!-- SECTION 9 -->
+    <!-- SECTION 9 — Application History -->
     <div class="section" id="s9">
       <div class="section-title">🗂️ Application History</div>
-      <div class="field"><label>How many applications have you previously submitted to IRCC?</label><input type="text" id="irccCount"></div>
+      <div class="section-desc">List all applications you have previously submitted to IRCC (Study permit, work permit, extensions, TRV, visitor).</div>
+      <div id="appHistoryBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Application 1</div>
+          <div class="field"><label>Type of Application</label><input type="text" class="ah-type" placeholder="e.g. Study Permit, Work Permit, TRV"></div>
+          <div class="field">
+            <label>Result</label>
+            <select class="ah-result form-select">
+              <option value="">Select...</option>
+              <option value="Approved">Approved</option>
+              <option value="Denied">Denied</option>
+            </select>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Year of Result</label><input type="text" class="ah-year" placeholder="e.g. 2023"></div>
+            <div class="field"><label>Destination in Canada</label><input type="text" class="ah-dest" placeholder="e.g. Manitoba"></div>
+          </div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addAppHistory()">+ Add Another Application</button>
+      <div class="divider"></div>
       <div class="field">
-        <label>Have you ever been refused by IRCC or any other country?</label>
+        <label>Have you ever been refused by IRCC or (US, AUS, NZ or any other country)?</label>
         <div class="radio-group">
           <label><input type="radio" name="refused" value="Yes" onclick="toggleConditional('refusalDetails','show')"> Yes</label>
           <label><input type="radio" name="refused" value="No" onclick="toggleConditional('refusalDetails','hide')"> No</label>
@@ -301,10 +357,159 @@ textarea{resize:vertical;min-height:80px}
       <div class="conditional" id="refusalDetails">
         <div class="field"><label>Country of Refusal</label><input type="text" id="refCountry"></div>
         <div class="field"><label>Result Date (MM/YYYY)</label><input type="text" id="refDate"></div>
-        <div class="field"><label>Type of Application</label><input type="text" id="refType"></div>
+        <div class="field"><label>Type of Application (Visit / Work / PR)</label><input type="text" id="refType"></div>
+      </div>
+    </div>
+
+    <!-- SECTION 10 — Family Information (conditional toggle) -->
+    <div class="section" id="s10">
+      <div class="section-title">👪 Family Information</div>
+      <div class="section-desc">Provide details for all family members (parents, siblings, spouse, children). If deceased, provide date of death in the address field.</div>
+      <div id="familyBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Family Member 1</div>
+          <div class="field"><label>Full Name</label><input type="text" class="fm-name"></div>
+          <div class="row2">
+            <div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" class="fm-dob"></div>
+            <div class="field"><label>Place of Birth (with country)</label><input type="text" class="fm-pob"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Marital Status</label><input type="text" class="fm-marital"></div>
+            <div class="field"><label>Relationship to Applicant</label><input type="text" class="fm-rel"></div>
+          </div>
+          <div class="field"><label>Occupation</label><input type="text" class="fm-occ"></div>
+          <div class="field"><label>Current Address (full with postal code)</label><textarea class="fm-addr"></textarea></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addFamilyMember()">+ Add Another Family Member</button>
+    </div>
+
+    <!-- SECTION 11 — Relatives in Canada (EOI / Express Entry only) -->
+    <div class="section" id="s11">
+      <div class="section-title">🏠 Relatives in Canada</div>
+      <div class="field">
+        <label>Do you or your spouse have a close relative (PR or citizen) currently residing in Manitoba for the past 1 year?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="relMB" value="Yes" onclick="toggleConditional('relMBDetails','show')"> Yes</label>
+          <label><input type="radio" name="relMB" value="No" onclick="toggleConditional('relMBDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="relMBDetails">
+        <div id="relMBBlocks">
+          <div class="job-block">
+            <div class="job-block-title">Manitoba Relative 1</div>
+            <div class="field"><label>Name</label><input type="text" class="rmb-name"></div>
+            <div class="field"><label>Current Address</label><textarea class="rmb-addr"></textarea></div>
+            <div class="row2">
+              <div class="field"><label>Relationship to Applicant</label><input type="text" class="rmb-rel"></div>
+              <div class="field"><label>Status in Canada</label><input type="text" class="rmb-status"></div>
+            </div>
+            <div class="field"><label>Date Started Living in Manitoba (MM/YYYY)</label><input type="text" class="rmb-date"></div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addRelMB()">+ Add Another Manitoba Relative</button>
       </div>
       <div class="divider"></div>
-      <button class="submit-btn" onclick="submitForm()">✅ Submit Application</button>
+      <div class="field">
+        <label>Do you or your spouse have a close relative (PR or citizen) in any other Canadian province except Manitoba?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="relOtherProv" value="Yes" onclick="toggleConditional('relOtherProvDetails','show')"> Yes</label>
+          <label><input type="radio" name="relOtherProv" value="No" onclick="toggleConditional('relOtherProvDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="relOtherProvDetails">
+        <div id="relOtherProvBlocks">
+          <div class="job-block">
+            <div class="job-block-title">Other Province Relative 1</div>
+            <div class="field"><label>Name</label><input type="text" class="rop-name"></div>
+            <div class="field"><label>Current Address</label><textarea class="rop-addr"></textarea></div>
+            <div class="row2">
+              <div class="field"><label>Relationship to Applicant</label><input type="text" class="rop-rel"></div>
+              <div class="field"><label>Status in Canada</label><input type="text" class="rop-status"></div>
+            </div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addRelOtherProv()">+ Add Another Relative (Other Province)</button>
+      </div>
+    </div>
+
+    <!-- SECTION 12 — Miscellaneous Questions (EOI / Express Entry only) -->
+    <div class="section" id="s12">
+      <div class="section-title">📋 Miscellaneous Questions</div>
+      <div class="section-desc">Please answer all questions below.</div>
+      <div class="field">
+        <label>1. Are you applying for the EOI for the first time?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ1" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ1" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>2. Have you previously been refused by the MPNP within the last six months and cannot address the reason(s) for refusal?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ2" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ2" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>3. Have you or your spouse ever visited or lived, studied or worked in another Canadian Province or Territory?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ3" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ3" value="No"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="miscQ3Details">
+        <div class="field"><label>If yes, where?</label><input type="text" id="miscQ3Where"></div>
+      </div>
+      <div class="field">
+        <label>4. Do you have an active Express Entry profile which was submitted to Citizenship and Immigration Canada in the past 12 months?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ4" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ4" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>5. Have you been working in Manitoba full-time for the same employer/company for the last six months?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ5" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ5" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>6. Have you received a long-term, full-time job offer from your employer/company in Manitoba?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ6" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ6" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>7. Have you ever applied for Express Entry before?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ7" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ7" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>8. Did you complete at least 50% of the Canadian study program or training program's courses through in-person learning?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ8" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ8" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>9. Did you study in Canada for at least 8 months in order to earn this degree, diploma or certificate?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ9" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ9" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>10. Did you study full-time for at least 8 months to earn this degree, diploma or certificate in Canada?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="miscQ10" value="Yes"> Yes</label>
+          <label><input type="radio" name="miscQ10" value="No"> No</label>
+        </div>
+      </div>
     </div>
 
     <!-- SUCCESS -->
@@ -317,15 +522,61 @@ textarea{resize:vertical;min-height:80px}
     <div class="nav" id="navBar">
       <button class="btn-back" id="backBtn" onclick="changeSection(-1)" style="visibility:hidden">← Back</button>
       <button class="btn-next" id="nextBtn" onclick="changeSection(1)">Next →</button>
+      <button class="submit-btn" id="submitBtnNav" onclick="submitForm()" style="display:none">✅ Submit Application</button>
     </div>
   </div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSG2CFcmEtIvvfKH3SB3vuKWypsWHL0YY-VSmERLOh7wFOayeNwipZBKADPf9nP9aH/exec";
-const sections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvszhvpc-tUyaF12gIly8uKEsPb5KFe3JOTFGeWlsJmRNCKdLgDClKd17f8z_-EEAS/exec";
+
+// ── DYNAMIC SECTIONS ──
+const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12'];
+const SECTION_TAB_MAP = {
+  s1:'tab0', s2:'tab1', s3:'tab2', s4:'tab3', s5:'tab4',
+  s6:'tab5', s7:'tab6', s8:'tab7', s9:'tab8',
+  s10:'tab9', s11:'tab10', s12:'tab11'
+};
+let visibleSections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
 let cur = 0, docId = '', applicationType = '', autoSaveTimer = null, isSaving = false;
 
+function computeVisibleSections() {
+  let visible = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+
+  // Family Info: show if toggle is "Yes"
+  const familyToggle = document.querySelector('input[name="showFamilyInfo"]:checked');
+  if (familyToggle && familyToggle.value === 'Yes') {
+    visible.push('s10');
+  }
+
+  // Relatives + Miscellaneous: only for EOI or Express Entry
+  if (applicationType === 'eoi' || applicationType === 'express_entry') {
+    visible.push('s11', 's12');
+  }
+
+  visibleSections = visible;
+
+  // Show/hide tabs and sections
+  ALL_SECTIONS.forEach(sId => {
+    const tabId = SECTION_TAB_MAP[sId];
+    const isVisible = visible.includes(sId);
+    const sEl = document.getElementById(sId);
+    const tEl = document.getElementById(tabId);
+    if (sEl) {
+      if (!isVisible) sEl.classList.remove('active');
+      // Don't force display on visible sections — showSection handles .active class
+    }
+    if (tEl) tEl.style.display = isVisible ? '' : 'none';
+  });
+
+  // Adjust current index if out of bounds
+  if (cur >= visibleSections.length) {
+    cur = visibleSections.length - 1;
+  }
+  showSection(cur);
+}
+
+// ── INIT ──
 window.addEventListener('DOMContentLoaded', () => {
   const p = new URLSearchParams(window.location.search);
   const clientEmail = p.get('email');
@@ -334,6 +585,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('formWrapper').style.display = 'block';
     document.getElementById('email').value = decodeURIComponent(clientEmail);
+    computeVisibleSections();
     loadSavedData(decodeURIComponent(clientEmail));
   }
   document.body.addEventListener('input', scheduleAutoSave);
@@ -343,8 +595,15 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('domField').style.display = r.value==='Married'?'block':'none';
     });
   });
+  // Q3 conditional for miscellaneous
+  document.querySelectorAll('input[name="miscQ3"]').forEach(r => {
+    r.addEventListener('change', () => {
+      toggleConditional('miscQ3Details', r.value==='Yes'?'show':'hide');
+    });
+  });
 });
 
+// ── LINK GENERATION ──
 function generateClientLink() {
   const email = document.getElementById('adminEmail').value.trim();
   const type = document.getElementById('adminAppType').value;
@@ -364,6 +623,7 @@ function copyLink() {
   });
 }
 
+// ── LOAD / SAVE ──
 function loadSavedData(email) {
   setSaveStatus('loading');
   fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'load', email }) })
@@ -373,6 +633,7 @@ function loadSavedData(email) {
       fillFormFields(res.data);
       if (res.docId) docId = res.docId;
       if (res.data.applicationType) applicationType = res.data.applicationType;
+      computeVisibleSections();
       setSaveStatus('saved');
     } else setSaveStatus('none');
   })
@@ -380,22 +641,151 @@ function loadSavedData(email) {
 }
 
 function fillFormFields(d) {
+  // Simple ID-based fields
   ['givenName','lastName','dob','phone','address','dom','nativeLang','canadaStatus',
    'passport','uci','spouseGiven','spouseLast','spouseDob','spouseEmail','spousePhone',
    'spouseAddr','prevGiven','prevLast','prevDob','prevFrom','prevTo','child1','child2',
    'child3','childExtra','ocFrom','ocTo','ocCountry','ocStatus','ocPurpose',
    'firstEntryDate','firstEntryPort','recentEntryDate','recentEntryPort','savings',
-   'expenses','irccCount','refCountry','refDate','refType'
+   'expenses','refCountry','refDate','refType',
+   'g12from','g12to','g12prog','g12inst','g12city','miscQ3Where'
   ].forEach(id => { const el=document.getElementById(id); if(el&&d[id]) el.value=d[id]; });
-  ['marital','prevRel','prevType','otherCountry','refused'].forEach(name => {
+
+  // Radio groups
+  ['marital','prevRel','prevType','otherCountry','refused','showFamilyInfo',
+   'relMB','relOtherProv',
+   'miscQ1','miscQ2','miscQ3','miscQ4','miscQ5','miscQ6','miscQ7','miscQ8','miscQ9','miscQ10'
+  ].forEach(name => {
     if(d[name]){ const r=document.querySelector(`input[name="${name}"][value="${d[name]}"]`); if(r) r.checked=true; }
   });
+
+  // Conditional visibility triggers
   if(d.marital==='Married') document.getElementById('domField').style.display='block';
   if(d.prevRel==='Yes') toggleConditional('prevRelDetails','show');
   if(d.otherCountry==='Yes') toggleConditional('otherCountryDetails','show');
   if(d.refused==='Yes') toggleConditional('refusalDetails','show');
+  if(d.relMB==='Yes') toggleConditional('relMBDetails','show');
+  if(d.relOtherProv==='Yes') toggleConditional('relOtherProvDetails','show');
+  if(d.miscQ3==='Yes') toggleConditional('miscQ3Details','show');
+
+  // Restore work blocks (handle both old 4-pipe and new 6-pipe format)
+  if(d.work) {
+    const lines = d.work.split('\n').filter(l=>l.trim());
+    if(lines.length > 0) {
+      // Check first entry format: count pipes to detect old vs new
+      const firstPipes = (lines[0].match(/\|/g)||[]).length;
+      const isNewFormat = firstPipes >= 5; // new format: date to date | title | ftpt | hours | employer | addr
+
+      // Add extra blocks if needed
+      while(document.querySelectorAll('#workBlocks .job-block').length < lines.length) addJob();
+      const blocks = document.querySelectorAll('#workBlocks .job-block');
+      lines.forEach((line, idx) => {
+        if(!blocks[idx]) return;
+        const b = blocks[idx];
+        const content = line.replace(/^Job \d+:\s*/, '');
+        const parts = content.split(' | ');
+        const dates = (parts[0]||'').split(' to ');
+        b.querySelector('.w-from').value = dates[0]?dates[0].trim():'';
+        b.querySelector('.w-to').value = dates[1]?dates[1].trim():'';
+        if(isNewFormat) {
+          b.querySelector('.w-title').value = parts[1]||'';
+          b.querySelector('.w-ftpt').value = parts[2]||'';
+          b.querySelector('.w-hours').value = parts[3]||'';
+          b.querySelector('.w-employer').value = parts[4]||'';
+          b.querySelector('.w-addr').value = parts[5]||'';
+        } else {
+          // Old format: date | title | employer | addr
+          b.querySelector('.w-title').value = parts[1]||'';
+          b.querySelector('.w-employer').value = parts[2]||'';
+          b.querySelector('.w-addr').value = parts[3]||'';
+        }
+      });
+    }
+  }
+
+  // Restore education blocks
+  if(d.education) {
+    const lines = d.education.split('\n').filter(l=>l.trim());
+    if(lines.length > 0) {
+      while(document.querySelectorAll('#eduBlocks .job-block').length < lines.length) addEdu();
+      const blocks = document.querySelectorAll('#eduBlocks .job-block');
+      lines.forEach((line, idx) => {
+        if(!blocks[idx]) return;
+        const b = blocks[idx];
+        const content = line.replace(/^Entry \d+:\s*/, '');
+        const parts = content.split(' | ');
+        const dates = (parts[0]||'').split(' to ');
+        b.querySelector('.edu-from').value = dates[0]?dates[0].trim():'';
+        b.querySelector('.edu-to').value = dates[1]?dates[1].trim():'';
+        b.querySelector('.edu-prog').value = parts[1]||'';
+        b.querySelector('.edu-inst').value = parts[2]||'';
+        b.querySelector('.edu-city').value = parts[3]||'';
+      });
+    }
+  }
+
+  // Restore application history rows
+  if(d.appHistoryRows && d.appHistoryRows.length > 0) {
+    while(document.querySelectorAll('#appHistoryBlocks .job-block').length < d.appHistoryRows.length) addAppHistory();
+    const blocks = document.querySelectorAll('#appHistoryBlocks .job-block');
+    d.appHistoryRows.forEach((row, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.ah-type').value = row.type||'';
+      b.querySelector('.ah-result').value = row.result||'';
+      b.querySelector('.ah-year').value = row.year||'';
+      b.querySelector('.ah-dest').value = row.destination||'';
+    });
+  }
+
+  // Restore family members
+  if(d.familyMembers && d.familyMembers.length > 0) {
+    while(document.querySelectorAll('#familyBlocks .job-block').length < d.familyMembers.length) addFamilyMember();
+    const blocks = document.querySelectorAll('#familyBlocks .job-block');
+    d.familyMembers.forEach((m, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.fm-name').value = m.fullName||'';
+      b.querySelector('.fm-dob').value = m.dob||'';
+      b.querySelector('.fm-pob').value = m.placeOfBirth||'';
+      b.querySelector('.fm-marital').value = m.maritalStatus||'';
+      b.querySelector('.fm-rel').value = m.relationship||'';
+      b.querySelector('.fm-occ').value = m.occupation||'';
+      b.querySelector('.fm-addr').value = m.currentAddress||'';
+    });
+  }
+
+  // Restore Manitoba relatives
+  if(d.relativesMB && d.relativesMB.length > 0) {
+    while(document.querySelectorAll('#relMBBlocks .job-block').length < d.relativesMB.length) addRelMB();
+    const blocks = document.querySelectorAll('#relMBBlocks .job-block');
+    d.relativesMB.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.rmb-name').value = r.name||'';
+      b.querySelector('.rmb-addr').value = r.address||'';
+      b.querySelector('.rmb-rel').value = r.relationship||'';
+      b.querySelector('.rmb-status').value = r.status||'';
+      b.querySelector('.rmb-date').value = r.date||'';
+    });
+  }
+
+  // Restore other province relatives
+  if(d.relativesOtherProv && d.relativesOtherProv.length > 0) {
+    while(document.querySelectorAll('#relOtherProvBlocks .job-block').length < d.relativesOtherProv.length) addRelOtherProv();
+    const blocks = document.querySelectorAll('#relOtherProvBlocks .job-block');
+    d.relativesOtherProv.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.rop-name').value = r.name||'';
+      b.querySelector('.rop-addr').value = r.address||'';
+      b.querySelector('.rop-rel').value = r.relationship||'';
+      b.querySelector('.rop-status').value = r.status||'';
+    });
+  }
 }
 
+// ── AUTOSAVE ──
 function scheduleAutoSave() {
   clearTimeout(autoSaveTimer);
   setSaveStatus('typing');
@@ -414,10 +804,12 @@ function setSaveStatus(state) {
   else txt.textContent='Your progress will be auto-saved as you fill';
 }
 
+// ── COLLECT DATA ──
 function collectData() {
   return {
     action:'save', email:document.getElementById('email').value, docId,
     applicationType: applicationType || undefined,
+    // Personal
     givenName:document.getElementById('givenName').value,
     lastName:document.getElementById('lastName').value,
     dob:document.getElementById('dob').value,
@@ -429,6 +821,8 @@ function collectData() {
     canadaStatus:document.getElementById('canadaStatus').value,
     passport:document.getElementById('passport').value,
     uci:document.getElementById('uci').value,
+    showFamilyInfo:document.querySelector('input[name="showFamilyInfo"]:checked')?.value||'',
+    // Spouse
     spouseGiven:document.getElementById('spouseGiven').value,
     spouseLast:document.getElementById('spouseLast').value,
     spouseDob:document.getElementById('spouseDob').value,
@@ -442,28 +836,60 @@ function collectData() {
     prevType:document.querySelector('input[name="prevType"]:checked')?.value||'',
     prevFrom:document.getElementById('prevFrom').value,
     prevTo:document.getElementById('prevTo').value,
+    // Children
     child1:document.getElementById('child1').value,
     child2:document.getElementById('child2').value,
     child3:document.getElementById('child3').value,
     childExtra:document.getElementById('childExtra').value,
+    // Residency
     otherCountry:document.querySelector('input[name="otherCountry"]:checked')?.value||'',
     ocFrom:document.getElementById('ocFrom').value,
     ocTo:document.getElementById('ocTo').value,
     ocCountry:document.getElementById('ocCountry').value,
     ocStatus:document.getElementById('ocStatus').value,
     ocPurpose:document.getElementById('ocPurpose').value,
+    // Travel
     firstEntryDate:document.getElementById('firstEntryDate').value,
     firstEntryPort:document.getElementById('firstEntryPort').value,
     recentEntryDate:document.getElementById('recentEntryDate').value,
     recentEntryPort:document.getElementById('recentEntryPort').value,
-    education:collectEdu(), work:collectWork(),
+    // Education (Grade 12 + post-secondary)
+    g12from:document.getElementById('g12from').value,
+    g12to:document.getElementById('g12to').value,
+    g12prog:document.getElementById('g12prog').value,
+    g12inst:document.getElementById('g12inst').value,
+    g12city:document.getElementById('g12city').value,
+    education:collectEdu(),
+    // Work
+    work:collectWork(),
+    // Financial
     savings:document.getElementById('savings').value,
     expenses:document.getElementById('expenses').value,
-    irccCount:document.getElementById('irccCount').value,
+    // Application History
+    appHistoryRows:collectAppHistory(),
     refused:document.querySelector('input[name="refused"]:checked')?.value||'',
     refCountry:document.getElementById('refCountry').value,
     refDate:document.getElementById('refDate').value,
     refType:document.getElementById('refType').value,
+    // Family Info
+    familyMembers:collectFamilyMembers(),
+    // Relatives in Canada
+    relMB:document.querySelector('input[name="relMB"]:checked')?.value||'',
+    relativesMB:collectRelMB(),
+    relOtherProv:document.querySelector('input[name="relOtherProv"]:checked')?.value||'',
+    relativesOtherProv:collectRelOtherProv(),
+    // Miscellaneous
+    miscQ1:document.querySelector('input[name="miscQ1"]:checked')?.value||'',
+    miscQ2:document.querySelector('input[name="miscQ2"]:checked')?.value||'',
+    miscQ3:document.querySelector('input[name="miscQ3"]:checked')?.value||'',
+    miscQ3Where:document.getElementById('miscQ3Where').value,
+    miscQ4:document.querySelector('input[name="miscQ4"]:checked')?.value||'',
+    miscQ5:document.querySelector('input[name="miscQ5"]:checked')?.value||'',
+    miscQ6:document.querySelector('input[name="miscQ6"]:checked')?.value||'',
+    miscQ7:document.querySelector('input[name="miscQ7"]:checked')?.value||'',
+    miscQ8:document.querySelector('input[name="miscQ8"]:checked')?.value||'',
+    miscQ9:document.querySelector('input[name="miscQ9"]:checked')?.value||'',
+    miscQ10:document.querySelector('input[name="miscQ10"]:checked')?.value||'',
   };
 }
 
@@ -478,13 +904,13 @@ function autoSave() {
 
 function submitForm() {
   clearTimeout(autoSaveTimer);
-  const btn=document.querySelector('.submit-btn');
+  const btn=document.getElementById('submitBtnNav');
   btn.textContent='⏳ Submitting...'; btn.disabled=true;
   const data=collectData(); data.action='submit';
   fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(data)})
   .then(r=>r.json())
   .then(()=>{
-    sections.forEach(s=>document.getElementById(s).classList.remove('active'));
+    visibleSections.forEach(s=>document.getElementById(s).classList.remove('active'));
     document.getElementById('navBar').style.display='none';
     document.getElementById('successMsg').style.display='block';
     window.scrollTo({top:0,behavior:'smooth'});
@@ -492,60 +918,112 @@ function submitForm() {
   .catch(()=>{ btn.textContent='❌ Failed. Try again.'; btn.disabled=false; });
 }
 
-// ── TABS ──
-function updateTabs(active) {
-  for(let i=0;i<9;i++){
-    const t=document.getElementById('tab'+i);
+// ── TABS & NAVIGATION ──
+function updateTabs(activeIdx) {
+  visibleSections.forEach((sId, idx) => {
+    const tabId = SECTION_TAB_MAP[sId];
+    const t = document.getElementById(tabId);
+    if(!t) return;
     t.classList.remove('active','done');
-    if(i===active) t.classList.add('active');
-  }
+    if(idx === activeIdx) t.classList.add('active');
+  });
 }
 
-function markTabDone(i) {
-  const t=document.getElementById('tab'+i);
+function markTabDone(idx) {
+  if(idx < 0 || idx >= visibleSections.length) return;
+  const tabId = SECTION_TAB_MAP[visibleSections[idx]];
+  const t = document.getElementById(tabId);
   if(t){ t.classList.remove('active'); t.classList.add('done'); }
 }
 
-function goToSection(i) {
+function goToSectionById(sId) {
+  const i = visibleSections.indexOf(sId);
+  if(i === -1) return;
   markTabDone(cur);
   autoSave();
-  cur=i;
+  cur = i;
   showSection(i);
 }
 
 function showSection(i) {
-  sections.forEach((s,idx)=>document.getElementById(s).classList.toggle('active',idx===i));
-  document.getElementById('backBtn').style.visibility=i===0?'hidden':'visible';
-  document.getElementById('nextBtn').style.display=i===sections.length-1?'none':'block';
+  visibleSections.forEach((s, idx) => document.getElementById(s).classList.toggle('active', idx === i));
+  document.getElementById('backBtn').style.visibility = i===0 ? 'hidden' : 'visible';
+  const isLast = (i === visibleSections.length - 1);
+  document.getElementById('nextBtn').style.display = isLast ? 'none' : 'block';
+  document.getElementById('submitBtnNav').style.display = isLast ? 'block' : 'none';
   updateTabs(i);
-  // Scroll tabs into view
-  document.getElementById('tab'+i)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  const tabId = SECTION_TAB_MAP[visibleSections[i]];
+  document.getElementById(tabId)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function changeSection(dir) {
   markTabDone(cur);
   autoSave();
-  cur=Math.max(0,Math.min(sections.length-1,cur+dir));
+  cur = Math.max(0, Math.min(visibleSections.length - 1, cur + dir));
   showSection(cur);
 }
 
-function toggleConditional(id,action){
-  document.getElementById(id).classList.toggle('show',action==='show');
+function toggleConditional(id, action) {
+  document.getElementById(id).classList.toggle('show', action==='show');
 }
 
+// ── COLLECT HELPERS ──
 function collectEdu(){
   return [...document.querySelectorAll('#eduBlocks .job-block')].map((b,i)=>
     `Entry ${i+1}: ${b.querySelector('.edu-from').value} to ${b.querySelector('.edu-to').value} | ${b.querySelector('.edu-prog').value} | ${b.querySelector('.edu-inst').value} | ${b.querySelector('.edu-city').value}`
   ).join('\n');
 }
+
 function collectWork(){
   return [...document.querySelectorAll('#workBlocks .job-block')].map((b,i)=>
-    `Job ${i+1}: ${b.querySelector('.w-from').value} to ${b.querySelector('.w-to').value} | ${b.querySelector('.w-title').value} | ${b.querySelector('.w-employer').value} | ${b.querySelector('.w-addr').value}`
+    `Job ${i+1}: ${b.querySelector('.w-from').value} to ${b.querySelector('.w-to').value} | ${b.querySelector('.w-title').value} | ${b.querySelector('.w-ftpt').value} | ${b.querySelector('.w-hours').value} | ${b.querySelector('.w-employer').value} | ${b.querySelector('.w-addr').value}`
   ).join('\n');
 }
 
-let eduCount=1,jobCount=1;
+function collectAppHistory(){
+  return [...document.querySelectorAll('#appHistoryBlocks .job-block')].map(b => ({
+    type: b.querySelector('.ah-type').value,
+    result: b.querySelector('.ah-result').value,
+    year: b.querySelector('.ah-year').value,
+    destination: b.querySelector('.ah-dest').value
+  }));
+}
+
+function collectFamilyMembers(){
+  return [...document.querySelectorAll('#familyBlocks .job-block')].map(b => ({
+    fullName: b.querySelector('.fm-name').value,
+    dob: b.querySelector('.fm-dob').value,
+    placeOfBirth: b.querySelector('.fm-pob').value,
+    maritalStatus: b.querySelector('.fm-marital').value,
+    relationship: b.querySelector('.fm-rel').value,
+    occupation: b.querySelector('.fm-occ').value,
+    currentAddress: b.querySelector('.fm-addr').value
+  }));
+}
+
+function collectRelMB(){
+  return [...document.querySelectorAll('#relMBBlocks .job-block')].map(b => ({
+    name: b.querySelector('.rmb-name').value,
+    address: b.querySelector('.rmb-addr').value,
+    relationship: b.querySelector('.rmb-rel').value,
+    status: b.querySelector('.rmb-status').value,
+    date: b.querySelector('.rmb-date').value
+  }));
+}
+
+function collectRelOtherProv(){
+  return [...document.querySelectorAll('#relOtherProvBlocks .job-block')].map(b => ({
+    name: b.querySelector('.rop-name').value,
+    address: b.querySelector('.rop-addr').value,
+    relationship: b.querySelector('.rop-rel').value,
+    status: b.querySelector('.rop-status').value
+  }));
+}
+
+// ── DYNAMIC BLOCK ADDERS ──
+let eduCount=1, jobCount=1, appHistCount=1, familyCount=1, relMBCount=1, relOPCount=1;
+
 function addEdu(){
   eduCount++;
   const d=document.createElement('div');d.className='job-block';
@@ -557,6 +1035,7 @@ function addEdu(){
     <div class="field"><label>Campus City</label><input type="text" class="edu-city"></div>`;
   document.getElementById('eduBlocks').appendChild(d);
 }
+
 function addJob(){
   jobCount++;
   const d=document.createElement('div');d.className='job-block';
@@ -564,9 +1043,61 @@ function addJob(){
     <div class="row2"><div class="field"><label>From (DD/MM/YYYY)</label><input type="text" class="w-from"></div>
     <div class="field"><label>To (DD/MM/YYYY)</label><input type="text" class="w-to"></div></div>
     <div class="field"><label>Job Title</label><input type="text" class="w-title"></div>
+    <div class="row2"><div class="field"><label>Full-time or Part-time</label>
+      <select class="w-ftpt form-select"><option value="">Select...</option><option value="Full-time">Full-time</option><option value="Part-time">Part-time</option></select></div>
+    <div class="field"><label>Hours per week</label><input type="text" class="w-hours" placeholder="e.g. 40"></div></div>
     <div class="field"><label>Employer / Company Name</label><input type="text" class="w-employer"></div>
     <div class="field"><label>Full Work Location Address</label><textarea class="w-addr"></textarea></div>`;
   document.getElementById('workBlocks').appendChild(d);
+}
+
+function addAppHistory(){
+  appHistCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Application ${appHistCount}</div>
+    <div class="field"><label>Type of Application</label><input type="text" class="ah-type" placeholder="e.g. Study Permit, Work Permit, TRV"></div>
+    <div class="field"><label>Result</label>
+      <select class="ah-result form-select"><option value="">Select...</option><option value="Approved">Approved</option><option value="Denied">Denied</option></select></div>
+    <div class="row2"><div class="field"><label>Year of Result</label><input type="text" class="ah-year" placeholder="e.g. 2023"></div>
+    <div class="field"><label>Destination in Canada</label><input type="text" class="ah-dest" placeholder="e.g. Manitoba"></div></div>`;
+  document.getElementById('appHistoryBlocks').appendChild(d);
+}
+
+function addFamilyMember(){
+  familyCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Family Member ${familyCount}</div>
+    <div class="field"><label>Full Name</label><input type="text" class="fm-name"></div>
+    <div class="row2"><div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" class="fm-dob"></div>
+    <div class="field"><label>Place of Birth (with country)</label><input type="text" class="fm-pob"></div></div>
+    <div class="row2"><div class="field"><label>Marital Status</label><input type="text" class="fm-marital"></div>
+    <div class="field"><label>Relationship to Applicant</label><input type="text" class="fm-rel"></div></div>
+    <div class="field"><label>Occupation</label><input type="text" class="fm-occ"></div>
+    <div class="field"><label>Current Address (full with postal code)</label><textarea class="fm-addr"></textarea></div>`;
+  document.getElementById('familyBlocks').appendChild(d);
+}
+
+function addRelMB(){
+  relMBCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Manitoba Relative ${relMBCount}</div>
+    <div class="field"><label>Name</label><input type="text" class="rmb-name"></div>
+    <div class="field"><label>Current Address</label><textarea class="rmb-addr"></textarea></div>
+    <div class="row2"><div class="field"><label>Relationship to Applicant</label><input type="text" class="rmb-rel"></div>
+    <div class="field"><label>Status in Canada</label><input type="text" class="rmb-status"></div></div>
+    <div class="field"><label>Date Started Living in Manitoba (MM/YYYY)</label><input type="text" class="rmb-date"></div>`;
+  document.getElementById('relMBBlocks').appendChild(d);
+}
+
+function addRelOtherProv(){
+  relOPCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Other Province Relative ${relOPCount}</div>
+    <div class="field"><label>Name</label><input type="text" class="rop-name"></div>
+    <div class="field"><label>Current Address</label><textarea class="rop-addr"></textarea></div>
+    <div class="row2"><div class="field"><label>Relationship to Applicant</label><input type="text" class="rop-rel"></div>
+    <div class="field"><label>Status in Canada</label><input type="text" class="rop-status"></div></div>`;
+  document.getElementById('relOtherProvBlocks').appendChild(d);
 }
 
 showSection(0);
