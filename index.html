@@ -161,8 +161,8 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Passport Number <span class="req">*</span></label><input type="text" id="passport" placeholder="Passport No."></div>
         <div class="field"><label>UCI Number</label><input type="text" id="uci" placeholder="UCI No. (if known)"></div>
       </div>
-      <div class="divider"></div>
-      <div class="field">
+      <div class="divider" id="outsideCanadaFamilyDivider"></div>
+      <div class="field" id="outsideCanadaFamilyToggleWrap">
         <label>Are you applying for Study Permit from outside Canada, LMIA-based WP, or Support Letter-based WP?</label>
         <div class="radio-group">
           <label><input type="radio" name="showFamilyInfo" value="Yes" onclick="computeVisibleSections()"> Yes</label>
@@ -528,7 +528,7 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzvszhvpc-tUyaF12gIly8uKEsPb5KFe3JOTFGeWlsJmRNCKdLgDClKd17f8z_-EEAS/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJD1IgjjdcM-0DZ_Y5e02drA4XRKf6qn2hFqAMzAUhxc3TMbTwfqT-gngFiAW5AbZn/exec";
 
 // ── DYNAMIC SECTIONS ──
 const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12'];
@@ -543,14 +543,27 @@ let cur = 0, docId = '', applicationType = '', autoSaveTimer = null, isSaving = 
 function computeVisibleSections() {
   let visible = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
 
-  // Family Info: show if toggle is "Yes"
+  const isPgwp = applicationType === 'pgwp';
+  const isEoiFlow = applicationType === 'eoi' || applicationType === 'express_entry';
+
+  var wrap = document.getElementById('outsideCanadaFamilyToggleWrap');
+  var divHr = document.getElementById('outsideCanadaFamilyDivider');
+  // PGWP / EOI / Express Entry: hide outside-Canada question (study-only path). PGWP never gets Family tab.
+  if (wrap) wrap.style.display = (isPgwp || isEoiFlow) ? 'none' : '';
+  if (divHr) divHr.style.display = (isPgwp || isEoiFlow) ? 'none' : '';
+
+  if (isPgwp || isEoiFlow) {
+    document.querySelectorAll('input[name="showFamilyInfo"]').forEach(function (r) { r.checked = false; });
+  }
+
+  // Family Information tab: only when outside-Canada/LMIA/support-letter is Yes (never for PGWP)
   const familyToggle = document.querySelector('input[name="showFamilyInfo"]:checked');
-  if (familyToggle && familyToggle.value === 'Yes') {
+  if (!isPgwp && familyToggle && familyToggle.value === 'Yes') {
     visible.push('s10');
   }
 
-  // Relatives + Miscellaneous: only for EOI or Express Entry
-  if (applicationType === 'eoi' || applicationType === 'express_entry') {
+  // Relatives + Miscellaneous: EOI / Express Entry only (never part of study-permit outside-Canada flow)
+  if (isEoiFlow) {
     visible.push('s11', 's12');
   }
 
