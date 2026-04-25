@@ -80,7 +80,7 @@ textarea{resize:vertical;min-height:80px}
 <div class="container">
   <div class="header">
     <h1>📋 Client Information Form</h1>
-    <p>Study Permit / Work Permit Application</p>
+    <p>Study Permit / Work Permit / PR Application</p>
   </div>
 
   <!-- ADMIN PANEL -->
@@ -95,6 +95,7 @@ textarea{resize:vertical;min-height:80px}
       <option value="visitor_record">Visitor Record</option>
       <option value="eoi">EOI (Expression of Interest)</option>
       <option value="express_entry">Express Entry</option>
+      <option value="pr">PR (Permanent Residence)</option>
     </select>
     <input type="email" class="admin-input" id="adminEmail" placeholder="Client's email address e.g. john@gmail.com"/>
     <button class="admin-btn" onclick="generateClientLink()">Generate Client Link →</button>
@@ -124,6 +125,21 @@ textarea{resize:vertical;min-height:80px}
         <button class="tab" id="tab9" onclick="goToSectionById('s10')" style="display:none">👪 Family</button>
         <button class="tab" id="tab10" onclick="goToSectionById('s11')" style="display:none">🏠 Relatives</button>
         <button class="tab" id="tab11" onclick="goToSectionById('s12')" style="display:none">📋 Misc</button>
+        <!-- PR-only tabs -->
+        <button class="tab" id="tab12" onclick="goToSectionById('s13')" style="display:none">📝 Personal Hx</button>
+        <button class="tab" id="tab13" onclick="goToSectionById('s14')" style="display:none">🏠 Addresses</button>
+        <button class="tab" id="tab14" onclick="goToSectionById('s15')" style="display:none">✈️ All Travel</button>
+        <button class="tab" id="tab15" onclick="goToSectionById('s16')" style="display:none">⚖️ Background</button>
+        <button class="tab" id="tab16" onclick="goToSectionById('s17')" style="display:none">👫 Sp. Family</button>
+        <button class="tab" id="tab17" onclick="goToSectionById('s18')" style="display:none">🗂️ Sp. History</button>
+        <button class="tab" id="tab18" onclick="goToSectionById('s19')" style="display:none">🎓 Sp. Edu</button>
+        <button class="tab" id="tab19" onclick="goToSectionById('s20')" style="display:none">💼 Sp. Work</button>
+        <button class="tab" id="tab20" onclick="goToSectionById('s21')" style="display:none">📝 Sp. Personal Hx</button>
+        <button class="tab" id="tab21" onclick="goToSectionById('s22')" style="display:none">🏠 Sp. Addresses</button>
+        <button class="tab" id="tab22" onclick="goToSectionById('s23')" style="display:none">✈️ Sp. Travel</button>
+        <button class="tab" id="tab23" onclick="goToSectionById('s24')" style="display:none">⚖️ Sp. Background</button>
+        <button class="tab" id="tab24" onclick="goToSectionById('s25')" style="display:none">👪 PR Relatives</button>
+        <button class="tab" id="tab25" onclick="goToSectionById('s26')" style="display:none">🗒️ Staff Notes</button>
       </div>
     </div>
 
@@ -161,6 +177,55 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Passport Number <span class="req">*</span></label><input type="text" id="passport" placeholder="Passport No."></div>
         <div class="field"><label>UCI Number</label><input type="text" id="uci" placeholder="UCI No. (if known)"></div>
       </div>
+      <!-- PR-only fields -->
+      <div id="prPersonalFields" style="display:none">
+        <div class="row2">
+          <div class="field"><label>Eye Color</label><input type="text" id="eyeColor" placeholder="e.g. Brown, Black, Blue"></div>
+          <div class="field"><label>Height (in cm)</label><input type="text" id="heightCm" placeholder="e.g. 170"></div>
+        </div>
+        <div class="field">
+          <label>Have you ever used any other name (e.g. nickname, maiden name, alias)?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="otherNameUsed" value="Yes" onclick="toggleConditional('otherNameDetails','show')"> Yes</label>
+            <label><input type="radio" name="otherNameUsed" value="No" onclick="toggleConditional('otherNameDetails','hide')"> No</label>
+          </div>
+        </div>
+        <div class="conditional" id="otherNameDetails">
+          <div class="field"><label>Other Name(s) Used</label><input type="text" id="otherNames" placeholder="e.g. maiden name, nickname"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="field"><label>Date and place of your last entry to Canada (if you never went outside of Canada, then date and place of 1st Entry to Canada)</label></div>
+        <div class="row2">
+          <div class="field"><label>Date (YYYY/MM/DD)</label><input type="text" id="prLastEntryDate" placeholder="e.g. 2023/05/15"></div>
+          <div class="field"><label>Place</label><input type="text" id="prLastEntryPlace" placeholder="e.g. Toronto Pearson Airport"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="field">
+          <label>Have you previously been married or in a common-law relationship?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="prPrevMarried" value="Yes" onclick="toggleConditional('prPrevMarriedDetails','show')"> Yes</label>
+            <label><input type="radio" name="prPrevMarried" value="No" onclick="toggleConditional('prPrevMarriedDetails','hide')"> No</label>
+          </div>
+        </div>
+        <div class="conditional" id="prPrevMarriedDetails">
+          <div class="job-block-title">Previous Relationship Details (Principal)</div>
+          <div class="row2">
+            <div class="field"><label>Given Name</label><input type="text" id="prPrevGiven"></div>
+            <div class="field"><label>Last Name</label><input type="text" id="prPrevLast"></div>
+          </div>
+          <div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" id="prPrevDob"></div>
+          <div class="field"><label>Type of Relationship</label>
+            <div class="radio-group">
+              <label><input type="radio" name="prPrevRelType" value="Married"> Married</label>
+              <label><input type="radio" name="prPrevRelType" value="Common-Law"> Common-Law</label>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>From (MM/YYYY)</label><input type="text" id="prPrevFrom"></div>
+            <div class="field"><label>To (MM/YYYY)</label><input type="text" id="prPrevTo"></div>
+          </div>
+        </div>
+      </div>
       <div class="divider" id="outsideCanadaFamilyDivider"></div>
       <div class="field" id="outsideCanadaFamilyToggleWrap">
         <label>Are you applying for Study Permit from outside Canada, LMIA-based WP, or Support Letter-based WP?</label>
@@ -185,6 +250,14 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Phone Number</label><input type="tel" id="spousePhone"></div>
       </div>
       <div class="field"><label>Current Address</label><textarea id="spouseAddr"></textarea></div>
+      <!-- PR-only spouse fields -->
+      <div id="prSpouseFields" style="display:none">
+        <div class="field"><label>Status in Canada (if in Canada)</label><input type="text" id="spouseCanadaStatus" placeholder="e.g. Worker, Student, PR"></div>
+        <div class="row2">
+          <div class="field"><label>Eye Color</label><input type="text" id="spouseEyeColor" placeholder="e.g. Brown, Black, Blue"></div>
+          <div class="field"><label>Height (in cms)</label><input type="text" id="spouseHeightCm" placeholder="e.g. 165"></div>
+        </div>
+      </div>
       <div class="divider"></div>
       <div class="field">
         <label>Have you been married or in a common-law relationship before your current marriage?</label>
@@ -267,7 +340,13 @@ textarea{resize:vertical;min-height:80px}
         </div>
         <div class="field"><label>Program / Stream</label><input type="text" id="g12prog" placeholder="e.g. Science, Commerce, Arts"></div>
         <div class="field"><label>School Name</label><input type="text" id="g12inst"></div>
-        <div class="field"><label>City</label><input type="text" id="g12city"></div>
+        <div class="field"><label>City and Country</label><input type="text" id="g12city"></div>
+        <div class="pr-edu-extra" style="display:none">
+          <div class="row2">
+            <div class="field"><label>Level of Education</label><input type="text" id="g12level" placeholder="e.g. Secondary"></div>
+            <div class="field"><label>Field of Study</label><input type="text" id="g12field" placeholder="e.g. Science, Commerce"></div>
+          </div>
+        </div>
       </div>
       <div class="divider"></div>
       <div class="section-desc">Post-Secondary Education (after Grade 12)</div>
@@ -280,7 +359,13 @@ textarea{resize:vertical;min-height:80px}
           </div>
           <div class="field"><label>Program Name</label><input type="text" class="edu-prog"></div>
           <div class="field"><label>Institute / University Name</label><input type="text" class="edu-inst"></div>
-          <div class="field"><label>Campus City</label><input type="text" class="edu-city"></div>
+          <div class="field"><label>City and Country</label><input type="text" class="edu-city"></div>
+          <div class="pr-edu-extra" style="display:none">
+            <div class="row2">
+              <div class="field"><label>Level of Education</label><input type="text" class="edu-level" placeholder="e.g. Bachelor's, Diploma"></div>
+              <div class="field"><label>Field of Study</label><input type="text" class="edu-field" placeholder="e.g. Computer Science"></div>
+            </div>
+          </div>
         </div>
       </div>
       <button class="add-btn" onclick="addEdu()">+ Add Another Education Entry</button>
@@ -311,6 +396,13 @@ textarea{resize:vertical;min-height:80px}
           </div>
           <div class="field"><label>Employer / Company Name</label><input type="text" class="w-employer"></div>
           <div class="field"><label>Full Work Location Address</label><textarea class="w-addr"></textarea></div>
+          <div class="pr-work-extra" style="display:none">
+            <div class="field"><label>Contact Person Name</label><input type="text" class="w-contact-name"></div>
+            <div class="row2">
+              <div class="field"><label>Contact Person Phone</label><input type="tel" class="w-contact-phone"></div>
+              <div class="field"><label>Contact Email</label><input type="email" class="w-contact-email"></div>
+            </div>
+          </div>
         </div>
       </div>
       <button class="add-btn" onclick="addJob()">+ Add Another Job Entry</button>
@@ -340,8 +432,11 @@ textarea{resize:vertical;min-height:80px}
             </select>
           </div>
           <div class="row2">
-            <div class="field"><label>Year of Result</label><input type="text" class="ah-year" placeholder="e.g. 2023"></div>
+            <div class="field"><label>Date of Result</label><input type="text" class="ah-date" placeholder="e.g. 15/03/2023"></div>
             <div class="field"><label>Destination in Canada</label><input type="text" class="ah-dest" placeholder="e.g. Manitoba"></div>
+          </div>
+          <div class="pr-apphist-extra" style="display:none">
+            <div class="field"><label>Reason for Rejection/Refusal (if known)</label><textarea class="ah-reason" placeholder="Leave blank if not applicable"></textarea></div>
           </div>
         </div>
       </div>
@@ -377,6 +472,7 @@ textarea{resize:vertical;min-height:80px}
             <div class="field"><label>Marital Status</label><input type="text" class="fm-marital"></div>
             <div class="field"><label>Relationship to Applicant</label><input type="text" class="fm-rel"></div>
           </div>
+          <div class="field"><label>Email Address</label><input type="email" class="fm-email" placeholder="email@example.com"></div>
           <div class="field"><label>Occupation</label><input type="text" class="fm-occ"></div>
           <div class="field"><label>Current Address (full with postal code)</label><textarea class="fm-addr"></textarea></div>
         </div>
@@ -512,6 +608,393 @@ textarea{resize:vertical;min-height:80px}
       </div>
     </div>
 
+    <!-- SECTION 13 — Personal History (PR only) -->
+    <div class="section" id="s13">
+      <div class="section-title">📝 Personal History</div>
+      <div class="section-desc">Provide details of your personal history since the age of 18 or the past 10 years, whichever is most recent. Under activity, write your occupation or job title if you were working. If not working, provide what you were doing (e.g. unemployed, studying, travelling, retired, in detention etc.). If outside Canada or your home country, indicate your status in that country.<br><strong>DO NOT LEAVE ANY GAPS IN TIME.</strong></div>
+      <div id="personalHistBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Period 1</div>
+          <div class="row2">
+            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="ph-from" placeholder="e.g. 2018-01"></div>
+            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="ph-to" placeholder="e.g. 2020-06"></div>
+          </div>
+          <div class="field"><label>Activity (Job title / Unemployed / Study / Travel / Retired)</label><input type="text" class="ph-activity" placeholder="e.g. Software Developer, Student, Unemployed"></div>
+          <div class="field"><label>City and Country</label><input type="text" class="ph-city" placeholder="e.g. Winnipeg, Canada"></div>
+          <div class="field"><label>Status in Country</label><input type="text" class="ph-status" placeholder="e.g. Study Permit, Work Permit, Citizen"></div>
+          <div class="field"><label>Name of Company / Employer / School / Facility (as applicable)</label><input type="text" class="ph-company" placeholder="e.g. ABC Corp, University of Manitoba"></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addPersonalHist()">+ Add Another Period</button>
+    </div>
+
+    <!-- SECTION 14 — Address History (PR only) -->
+    <div class="section" id="s14">
+      <div class="section-title">🏠 Address History</div>
+      <div class="section-desc">List all addresses where you have lived since your 18th Birthday or the past 10 years, whichever is most recent. Include all addresses inside and outside of Canada.<br><strong>DO NOT LEAVE ANY GAPS. MENTION FULL ADDRESS WITH POSTAL CODES.</strong></div>
+      <div id="addrHistBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Address 1</div>
+          <div class="row2">
+            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="addr-from" placeholder="e.g. 2018-01"></div>
+            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="addr-to" placeholder="e.g. 2020-06"></div>
+          </div>
+          <div class="field"><label>Street Number and Name</label><input type="text" class="addr-street" placeholder="e.g. 123 Main Street"></div>
+          <div class="row2">
+            <div class="field"><label>City or Town</label><input type="text" class="addr-city" placeholder="e.g. Winnipeg"></div>
+            <div class="field"><label>Province, State or District</label><input type="text" class="addr-province" placeholder="e.g. Manitoba"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Postal Code / Zip Code</label><input type="text" class="addr-postal" placeholder="e.g. R3T 2N2"></div>
+            <div class="field"><label>Country or Territory</label><input type="text" class="addr-country" placeholder="e.g. Canada"></div>
+          </div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addAddrHist()">+ Add Another Address</button>
+    </div>
+
+    <!-- SECTION 15 — Full Travel History (PR only) -->
+    <div class="section" id="s15">
+      <div class="section-title">✈️ Travel History (Detailed)</div>
+      <div class="section-desc">List all trips you have taken outside of Canada or your home country in the last 10 years or since the age of 18. Include all trips: tourism, business, training etc.<br><strong>LIST ALL COUNTRIES VISITED DURING TRANSIT/LAYOVER WHOSE STAMPS HAVE BEEN MARKED ON YOUR PASSPORT.</strong></div>
+      <div id="travelHistBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Trip 1</div>
+          <div class="row2">
+            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="tr-from" placeholder="e.g. 2022-06"></div>
+            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="tr-to" placeholder="e.g. 2022-07"></div>
+          </div>
+          <div class="field"><label>Duration</label><input type="text" class="tr-duration" placeholder="e.g. 2 weeks, 3 months"></div>
+          <div class="field"><label>Destination (City and Country)</label><input type="text" class="tr-dest" placeholder="e.g. New Delhi, India"></div>
+          <div class="field"><label>Purpose of Visit</label><input type="text" class="tr-purpose" placeholder="e.g. Tourism, Business, Family Visit"></div>
+          <div class="field"><label>Provide Details (if any)</label><textarea class="tr-details" placeholder="Any additional details"></textarea></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addTravelHist()">+ Add Another Trip</button>
+    </div>
+
+    <!-- SECTION 16 — Background Questions (PR only) -->
+    <div class="section" id="s16">
+      <div class="section-title">⚖️ Background Questions</div>
+      <div class="section-desc">Please answer the following questions honestly.</div>
+      <div class="field">
+        <label>1. Have you ever been a member of any political, social, youth or student organization, trade unions and professional associations?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="bgPolitical" value="Yes"> Yes</label>
+          <label><input type="radio" name="bgPolitical" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>2. Have you ever held a government position (such as civil servant, judge, police officer, employee in a security organization)?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="bgGovt" value="Yes"> Yes</label>
+          <label><input type="radio" name="bgGovt" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>3. Have you ever served in military or paramilitary service for any country?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="bgMilitary" value="Yes"> Yes</label>
+          <label><input type="radio" name="bgMilitary" value="No"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 17 — Spouse Family Info (PR only) -->
+    <div class="section" id="s17">
+      <div class="section-title">👫 Spouse — Family Information</div>
+      <div class="section-desc">If applying for your spouse also, provide all family member details for your spouse (including parents, children, siblings). If deceased, provide date of death in the address field.</div>
+      <div id="spFamilyBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Spouse's Family Member 1</div>
+          <div class="field"><label>Full Name</label><input type="text" class="sfm-name"></div>
+          <div class="row2">
+            <div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" class="sfm-dob"></div>
+            <div class="field"><label>Place of Birth (with country)</label><input type="text" class="sfm-pob"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Marital Status</label><input type="text" class="sfm-marital"></div>
+            <div class="field"><label>Relationship to Applicant</label><input type="text" class="sfm-rel"></div>
+          </div>
+          <div class="field"><label>Email Address</label><input type="email" class="sfm-email" placeholder="email@example.com"></div>
+          <div class="field"><label>Current Address (full with postal code)</label><textarea class="sfm-addr"></textarea></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addSpFamilyMember()">+ Add Another Family Member (Spouse)</button>
+    </div>
+
+    <!-- SECTION 18 — Spouse Application History (PR only) -->
+    <div class="section" id="s18">
+      <div class="section-title">🗂️ Spouse — Application History</div>
+      <div class="section-desc">List all applications your spouse has submitted to IRCC (Study permit, work permit, extensions, TRV, visitor).</div>
+      <div id="spAppHistBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Spouse Application 1</div>
+          <div class="field"><label>Type of Application</label><input type="text" class="sah-type" placeholder="e.g. Study Permit, Work Permit, TRV"></div>
+          <div class="field">
+            <label>Result</label>
+            <select class="sah-result form-select">
+              <option value="">Select...</option>
+              <option value="Approved">Approved</option>
+              <option value="Denied">Denied</option>
+            </select>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Date of Result</label><input type="text" class="sah-date" placeholder="e.g. 15/03/2023"></div>
+            <div class="field"><label>Destination in Canada</label><input type="text" class="sah-dest" placeholder="e.g. Manitoba"></div>
+          </div>
+          <div class="field"><label>Reason for Rejection/Refusal (if known)</label><textarea class="sah-reason" placeholder="Leave blank if not applicable"></textarea></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addSpAppHist()">+ Add Another Application (Spouse)</button>
+    </div>
+
+    <!-- SECTION 19 — Spouse Education (PR only) -->
+    <div class="section" id="s19">
+      <div class="section-title">🎓 Spouse — Education History</div>
+      <div class="section-desc">List all completed and incomplete education programs after Grade 10 for your spouse.</div>
+      <div id="spEduBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Spouse Education 1</div>
+          <div class="row2">
+            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="sedu-from"></div>
+            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="sedu-to"></div>
+          </div>
+          <div class="field"><label>Name of School or Institution</label><input type="text" class="sedu-inst"></div>
+          <div class="field"><label>City and Country</label><input type="text" class="sedu-city"></div>
+          <div class="row2">
+            <div class="field"><label>Level of Education</label><input type="text" class="sedu-level" placeholder="e.g. Bachelor's, Diploma"></div>
+            <div class="field"><label>Field of Study</label><input type="text" class="sedu-field" placeholder="e.g. Computer Science"></div>
+          </div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addSpEdu()">+ Add Another Education (Spouse)</button>
+    </div>
+
+    <!-- SECTION 20 — Spouse Work History (PR only) -->
+    <div class="section" id="s20">
+      <div class="section-title">💼 Spouse — Work History</div>
+      <div class="section-desc">All work done on SIN in Canada and all work done outside Canada for 6 months or more by your spouse.</div>
+      <div id="spWorkBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Spouse Job 1</div>
+          <div class="row2">
+            <div class="field"><label>From (DD/MM/YYYY)</label><input type="text" class="sw-from"></div>
+            <div class="field"><label>To (DD/MM/YYYY)</label><input type="text" class="sw-to"></div>
+          </div>
+          <div class="field"><label>Job Title</label><input type="text" class="sw-title"></div>
+          <div class="field"><label>Employer / Company Name</label><input type="text" class="sw-employer"></div>
+          <div class="field"><label>Full Employer/Work Location Address</label><textarea class="sw-addr"></textarea></div>
+          <div class="field"><label>Contact Person Name</label><input type="text" class="sw-contact-name"></div>
+          <div class="row2">
+            <div class="field"><label>Contact Person Phone</label><input type="tel" class="sw-contact-phone"></div>
+            <div class="field"><label>Contact Email</label><input type="email" class="sw-contact-email"></div>
+          </div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addSpWork()">+ Add Another Job (Spouse)</button>
+    </div>
+
+    <!-- SECTION 21 — Spouse Personal History (PR only) -->
+    <div class="section" id="s21">
+      <div class="section-title">📝 Spouse — Personal History</div>
+      <div class="section-desc">Provide details of your spouse's personal history since age 18 or past 10 years. DO NOT LEAVE ANY GAPS IN TIME.</div>
+      <div id="spPersonalHistBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Spouse Period 1</div>
+          <div class="row2">
+            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="sph-from" placeholder="e.g. 2018-01"></div>
+            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="sph-to" placeholder="e.g. 2020-06"></div>
+          </div>
+          <div class="field"><label>Activity (Job title / Unemployed / Study / Travel / Retired)</label><input type="text" class="sph-activity"></div>
+          <div class="field"><label>City and Country</label><input type="text" class="sph-city"></div>
+          <div class="field"><label>Status in Country</label><input type="text" class="sph-status"></div>
+          <div class="field"><label>Name of Company / Employer / School / Facility</label><input type="text" class="sph-company"></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addSpPersonalHist()">+ Add Another Period (Spouse)</button>
+    </div>
+
+    <!-- SECTION 22 — Spouse Address History (PR only) -->
+    <div class="section" id="s22">
+      <div class="section-title">🏠 Spouse — Address History</div>
+      <div class="section-desc">List all addresses where your spouse has lived since 18th birthday or past 10 years. DO NOT LEAVE ANY GAPS.</div>
+      <div id="spAddrHistBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Spouse Address 1</div>
+          <div class="row2">
+            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="saddr-from"></div>
+            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="saddr-to"></div>
+          </div>
+          <div class="field"><label>Street Number and Name</label><input type="text" class="saddr-street"></div>
+          <div class="row2">
+            <div class="field"><label>City or Town</label><input type="text" class="saddr-city"></div>
+            <div class="field"><label>Province, State or District</label><input type="text" class="saddr-province"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label>Postal Code / Zip Code</label><input type="text" class="saddr-postal"></div>
+            <div class="field"><label>Country or Territory</label><input type="text" class="saddr-country"></div>
+          </div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addSpAddrHist()">+ Add Another Address (Spouse)</button>
+    </div>
+
+    <!-- SECTION 23 — Spouse Travel History (PR only) -->
+    <div class="section" id="s23">
+      <div class="section-title">✈️ Spouse — Travel History</div>
+      <div class="section-desc">List all trips your spouse has taken outside Canada or home country in the last 10 years. Include transit/layover countries.</div>
+      <div id="spTravelHistBlocks">
+        <div class="job-block">
+          <div class="job-block-title">Spouse Trip 1</div>
+          <div class="row2">
+            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="str-from"></div>
+            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="str-to"></div>
+          </div>
+          <div class="field"><label>Duration</label><input type="text" class="str-duration"></div>
+          <div class="field"><label>Destination (City and Country)</label><input type="text" class="str-dest"></div>
+          <div class="field"><label>Purpose of Visit</label><input type="text" class="str-purpose"></div>
+          <div class="field"><label>Provide Details (if any)</label><textarea class="str-details"></textarea></div>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addSpTravelHist()">+ Add Another Trip (Spouse)</button>
+    </div>
+
+    <!-- SECTION 24 — Spouse Background Questions (PR only) -->
+    <div class="section" id="s24">
+      <div class="section-title">⚖️ Spouse — Background Questions</div>
+      <div class="section-desc">Please answer the following questions for your spouse.</div>
+      <div class="field">
+        <label>1. Has your spouse ever been a member of any political, social, youth or student organization, trade unions and professional associations?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="spBgPolitical" value="Yes"> Yes</label>
+          <label><input type="radio" name="spBgPolitical" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>2. Has your spouse ever held a government position (such as civil servant, judge, police officer, employee in a security organization)?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="spBgGovt" value="Yes"> Yes</label>
+          <label><input type="radio" name="spBgGovt" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>3. Has your spouse ever served in military or paramilitary service for any country?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="spBgMilitary" value="Yes"> Yes</label>
+          <label><input type="radio" name="spBgMilitary" value="No"> No</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 25 — PR Relatives in Canada -->
+    <div class="section" id="s25">
+      <div class="section-title">👪 Relatives in Canada</div>
+      <div class="section-desc">Do you have any close relatives in Canada? If yes, provide the following info.</div>
+      <div class="field">
+        <label>Do you have any close relatives in Canada?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="prRelCan" value="Yes" onclick="toggleConditional('prRelCanDetails','show')"> Yes</label>
+          <label><input type="radio" name="prRelCan" value="No" onclick="toggleConditional('prRelCanDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="prRelCanDetails">
+        <div id="prRelCanBlocks">
+          <div class="job-block">
+            <div class="job-block-title">Relative 1</div>
+            <div class="field"><label>Name</label><input type="text" class="prc-name"></div>
+            <div class="row2">
+              <div class="field"><label>Date of Birth</label><input type="text" class="prc-dob" placeholder="DD/MM/YYYY"></div>
+              <div class="field"><label>Email ID</label><input type="email" class="prc-email"></div>
+            </div>
+            <div class="row2">
+              <div class="field"><label>Phone Number</label><input type="tel" class="prc-phone"></div>
+              <div class="field"><label>Relationship to Applicant</label><input type="text" class="prc-rel"></div>
+            </div>
+            <div class="field"><label>Current Address</label><textarea class="prc-addr"></textarea></div>
+            <div class="field"><label>Status in Canada</label><input type="text" class="prc-status" placeholder="e.g. PR, Citizen, Worker"></div>
+            <div class="row2">
+              <div class="field"><label>Date they became PR (if PR or Citizen)</label><input type="text" class="prc-prdate" placeholder="MM/YYYY"></div>
+              <div class="field"><label>Date they moved to MB (if PR or Citizen)</label><input type="text" class="prc-mbdate" placeholder="MM/YYYY"></div>
+            </div>
+          </div>
+        </div>
+        <button class="add-btn" onclick="addPrRelCan()">+ Add Another Relative</button>
+      </div>
+    </div>
+
+    <!-- SECTION 26 — Staff Notes (PR only) -->
+    <div class="section" id="s26">
+      <div class="section-title">🗒️ Staff Notes / Observations</div>
+      <div class="section-desc">To be filled by staff only — not by the applicant.</div>
+      <div class="field">
+        <label>Current Address: Confirmed whether client resides in apartment or house?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffAddr" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffAddr" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Email Address: Confirmed with client that the email is accurate?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffEmail" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffEmail" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>IRCC Refusals and Approvals: Confirmed previous application approvals and refusals?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffIRCC" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffIRCC" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Personal History: Confirmed no month is missing?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffPH" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffPH" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Address History: Confirmed applicant did not miss any address (physical location)?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffAH" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffAH" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Native Language: Confirmed names in native language (except Punjabi/Hindi)?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffLang" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffLang" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Travel History: Confirmed even one-day travel to any country is declared?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffTravel" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffTravel" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>PCC: Confirmed with applicant about PCC from specific departments?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffPCC" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffPCC" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Verified no gaps in personal history and address history?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="staffGaps" value="Yes"> Yes</label>
+          <label><input type="radio" name="staffGaps" value="No"> No</label>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="field"><label>Method used to confirm information (group call / personal call / other)</label><input type="text" id="staffMethod" placeholder="e.g. Personal call on 2024-01-15"></div>
+      <div class="field"><label>Additional Staff Notes</label><textarea id="staffNotes" placeholder="Any additional observations or notes"></textarea></div>
+    </div>
+
     <!-- SUCCESS -->
     <div class="success" id="successMsg">
       <div class="icon">✅</div>
@@ -528,14 +1011,19 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJD1IgjjdcM-0DZ_Y5e02drA4XRKf6qn2hFqAMzAUhxc3TMbTwfqT-gngFiAW5AbZn/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHjGteYk9qlcz6Gj4U70z1jD30GdWrQjpCKSwvJquug5G3XTYFn2FRnqPkse0rC00H/exec";
 
 // ── DYNAMIC SECTIONS ──
-const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12'];
+const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12',
+  's13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26'];
 const SECTION_TAB_MAP = {
   s1:'tab0', s2:'tab1', s3:'tab2', s4:'tab3', s5:'tab4',
   s6:'tab5', s7:'tab6', s8:'tab7', s9:'tab8',
-  s10:'tab9', s11:'tab10', s12:'tab11'
+  s10:'tab9', s11:'tab10', s12:'tab11',
+  s13:'tab12', s14:'tab13', s15:'tab14', s16:'tab15',
+  s17:'tab16', s18:'tab17', s19:'tab18', s20:'tab19',
+  s21:'tab20', s22:'tab21', s23:'tab22', s24:'tab23',
+  s25:'tab24', s26:'tab25'
 };
 let visibleSections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
 let cur = 0, docId = '', applicationType = '', autoSaveTimer = null, isSaving = false;
@@ -545,29 +1033,41 @@ function computeVisibleSections() {
 
   const isPgwp = applicationType === 'pgwp';
   const isEoiFlow = applicationType === 'eoi' || applicationType === 'express_entry';
+  const isPR = applicationType === 'pr';
 
   var wrap = document.getElementById('outsideCanadaFamilyToggleWrap');
   var divHr = document.getElementById('outsideCanadaFamilyDivider');
-  // PGWP / EOI / Express Entry: hide outside-Canada question (study-only path). PGWP never gets Family tab.
-  if (wrap) wrap.style.display = (isPgwp || isEoiFlow) ? 'none' : '';
-  if (divHr) divHr.style.display = (isPgwp || isEoiFlow) ? 'none' : '';
+  // PGWP / EOI / Express Entry / PR: hide outside-Canada question (study-only path).
+  if (wrap) wrap.style.display = (isPgwp || isEoiFlow || isPR) ? 'none' : '';
+  if (divHr) divHr.style.display = (isPgwp || isEoiFlow || isPR) ? 'none' : '';
 
-  if (isPgwp || isEoiFlow) {
+  if (isPgwp || isEoiFlow || isPR) {
     document.querySelectorAll('input[name="showFamilyInfo"]').forEach(function (r) { r.checked = false; });
   }
 
   // Family Information tab: only when outside-Canada/LMIA/support-letter is Yes (never for PGWP)
   const familyToggle = document.querySelector('input[name="showFamilyInfo"]:checked');
-  if (!isPgwp && familyToggle && familyToggle.value === 'Yes') {
+  if (!isPgwp && !isPR && familyToggle && familyToggle.value === 'Yes') {
     visible.push('s10');
   }
 
-  // Relatives + Miscellaneous: EOI / Express Entry only (never part of study-permit outside-Canada flow)
+  // Relatives + Miscellaneous: EOI / Express Entry only
   if (isEoiFlow) {
     visible.push('s11', 's12');
   }
 
+  // PR: always show Family (s10), then PR-only sections
+  if (isPR) {
+    visible.push('s10'); // Family info for principal applicant
+    visible.push('s13','s14','s15','s16'); // Personal History, Address History, Travel, Background
+    visible.push('s17','s18','s19','s20','s21','s22','s23','s24'); // Spouse duplicate sections
+    visible.push('s25'); // PR Relatives in Canada
+  }
+
   visibleSections = visible;
+
+  // Show/hide PR-specific fields in existing sections
+  togglePRFields(isPR);
 
   // Show/hide tabs and sections
   ALL_SECTIONS.forEach(sId => {
@@ -577,7 +1077,6 @@ function computeVisibleSections() {
     const tEl = document.getElementById(tabId);
     if (sEl) {
       if (!isVisible) sEl.classList.remove('active');
-      // Don't force display on visible sections — showSection handles .active class
     }
     if (tEl) tEl.style.display = isVisible ? '' : 'none';
   });
@@ -587,6 +1086,22 @@ function computeVisibleSections() {
     cur = visibleSections.length - 1;
   }
   showSection(cur);
+}
+
+function togglePRFields(show) {
+  var display = show ? 'block' : 'none';
+  // PR-only personal fields
+  var el = document.getElementById('prPersonalFields');
+  if (el) el.style.display = display;
+  // PR-only spouse fields
+  el = document.getElementById('prSpouseFields');
+  if (el) el.style.display = display;
+  // PR education extras (level + field of study)
+  document.querySelectorAll('.pr-edu-extra').forEach(function(e){ e.style.display = display; });
+  // PR work extras (contact person)
+  document.querySelectorAll('.pr-work-extra').forEach(function(e){ e.style.display = display; });
+  // PR app history extras (reason for refusal)
+  document.querySelectorAll('.pr-apphist-extra').forEach(function(e){ e.style.display = display; });
 }
 
 // ── INIT ──
@@ -661,13 +1176,24 @@ function fillFormFields(d) {
    'child3','childExtra','ocFrom','ocTo','ocCountry','ocStatus','ocPurpose',
    'firstEntryDate','firstEntryPort','recentEntryDate','recentEntryPort','savings',
    'expenses','refCountry','refDate','refType',
-   'g12from','g12to','g12prog','g12inst','g12city','miscQ3Where'
+   'g12from','g12to','g12prog','g12inst','g12city','miscQ3Where',
+   // PR fields
+   'eyeColor','heightCm','otherNames','prLastEntryDate','prLastEntryPlace',
+   'prPrevGiven','prPrevLast','prPrevDob','prPrevFrom','prPrevTo',
+   'spouseCanadaStatus','spouseEyeColor','spouseHeightCm',
+   'g12level','g12field','staffMethod','staffNotes'
   ].forEach(id => { const el=document.getElementById(id); if(el&&d[id]) el.value=d[id]; });
 
   // Radio groups
   ['marital','prevRel','prevType','otherCountry','refused','showFamilyInfo',
    'relMB','relOtherProv',
-   'miscQ1','miscQ2','miscQ3','miscQ4','miscQ5','miscQ6','miscQ7','miscQ8','miscQ9','miscQ10'
+   'miscQ1','miscQ2','miscQ3','miscQ4','miscQ5','miscQ6','miscQ7','miscQ8','miscQ9','miscQ10',
+   // PR radios
+   'otherNameUsed','prPrevMarried','prPrevRelType',
+   'bgPolitical','bgGovt','bgMilitary',
+   'spBgPolitical','spBgGovt','spBgMilitary',
+   'prRelCan',
+   'staffAddr','staffEmail','staffIRCC','staffPH','staffAH','staffLang','staffTravel','staffPCC','staffGaps'
   ].forEach(name => {
     if(d[name]){ const r=document.querySelector(`input[name="${name}"][value="${d[name]}"]`); if(r) r.checked=true; }
   });
@@ -680,6 +1206,10 @@ function fillFormFields(d) {
   if(d.relMB==='Yes') toggleConditional('relMBDetails','show');
   if(d.relOtherProv==='Yes') toggleConditional('relOtherProvDetails','show');
   if(d.miscQ3==='Yes') toggleConditional('miscQ3Details','show');
+  // PR conditionals
+  if(d.otherNameUsed==='Yes') toggleConditional('otherNameDetails','show');
+  if(d.prPrevMarried==='Yes') toggleConditional('prPrevMarriedDetails','show');
+  if(d.prRelCan==='Yes') toggleConditional('prRelCanDetails','show');
 
   // Restore work blocks (handle both old 4-pipe and new 6-pipe format)
   if(d.work) {
@@ -746,8 +1276,12 @@ function fillFormFields(d) {
       const b = blocks[idx];
       b.querySelector('.ah-type').value = row.type||'';
       b.querySelector('.ah-result').value = row.result||'';
-      b.querySelector('.ah-year').value = row.year||'';
+      // Support both old 'year' and new 'date' field
+      var dateEl = b.querySelector('.ah-date');
+      if(dateEl) dateEl.value = row.date||row.year||'';
       b.querySelector('.ah-dest').value = row.destination||'';
+      var reasonEl = b.querySelector('.ah-reason');
+      if(reasonEl) reasonEl.value = row.reason||'';
     });
   }
 
@@ -763,6 +1297,8 @@ function fillFormFields(d) {
       b.querySelector('.fm-pob').value = m.placeOfBirth||'';
       b.querySelector('.fm-marital').value = m.maritalStatus||'';
       b.querySelector('.fm-rel').value = m.relationship||'';
+      var fmEmail = b.querySelector('.fm-email');
+      if(fmEmail) fmEmail.value = m.email||'';
       b.querySelector('.fm-occ').value = m.occupation||'';
       b.querySelector('.fm-addr').value = m.currentAddress||'';
     });
@@ -794,6 +1330,217 @@ function fillFormFields(d) {
       b.querySelector('.rop-addr').value = r.address||'';
       b.querySelector('.rop-rel').value = r.relationship||'';
       b.querySelector('.rop-status').value = r.status||'';
+    });
+  }
+
+  // ── PR SECTION RESTORATIONS ──
+
+  // Restore education extras (level + field) for post-secondary
+  if(d.educationExtras && d.educationExtras.length > 0) {
+    const eduBlks = document.querySelectorAll('#eduBlocks .job-block');
+    d.educationExtras.forEach((ext, idx) => {
+      if(!eduBlks[idx]) return;
+      var lvl = eduBlks[idx].querySelector('.edu-level');
+      var fld = eduBlks[idx].querySelector('.edu-field');
+      if(lvl) lvl.value = ext.level||'';
+      if(fld) fld.value = ext.field||'';
+    });
+  }
+
+  // Restore work contact info
+  if(d.workContactExtras && d.workContactExtras.length > 0) {
+    const wBlks = document.querySelectorAll('#workBlocks .job-block');
+    d.workContactExtras.forEach((ext, idx) => {
+      if(!wBlks[idx]) return;
+      var cn = wBlks[idx].querySelector('.w-contact-name');
+      var cp = wBlks[idx].querySelector('.w-contact-phone');
+      var ce = wBlks[idx].querySelector('.w-contact-email');
+      if(cn) cn.value = ext.contactName||'';
+      if(cp) cp.value = ext.contactPhone||'';
+      if(ce) ce.value = ext.contactEmail||'';
+    });
+  }
+
+  // Restore Personal History blocks
+  if(d.personalHistory && d.personalHistory.length > 0) {
+    while(document.querySelectorAll('#personalHistBlocks .job-block').length < d.personalHistory.length) addPersonalHist();
+    const blocks = document.querySelectorAll('#personalHistBlocks .job-block');
+    d.personalHistory.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.ph-from').value = r.from||'';
+      b.querySelector('.ph-to').value = r.to||'';
+      b.querySelector('.ph-activity').value = r.activity||'';
+      b.querySelector('.ph-city').value = r.city||'';
+      b.querySelector('.ph-status').value = r.status||'';
+      b.querySelector('.ph-company').value = r.company||'';
+    });
+  }
+
+  // Restore Address History blocks
+  if(d.addressHistory && d.addressHistory.length > 0) {
+    while(document.querySelectorAll('#addrHistBlocks .job-block').length < d.addressHistory.length) addAddrHist();
+    const blocks = document.querySelectorAll('#addrHistBlocks .job-block');
+    d.addressHistory.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.addr-from').value = r.from||'';
+      b.querySelector('.addr-to').value = r.to||'';
+      b.querySelector('.addr-street').value = r.street||'';
+      b.querySelector('.addr-city').value = r.city||'';
+      b.querySelector('.addr-province').value = r.province||'';
+      b.querySelector('.addr-postal').value = r.postal||'';
+      b.querySelector('.addr-country').value = r.country||'';
+    });
+  }
+
+  // Restore Travel History blocks
+  if(d.travelHistory && d.travelHistory.length > 0) {
+    while(document.querySelectorAll('#travelHistBlocks .job-block').length < d.travelHistory.length) addTravelHist();
+    const blocks = document.querySelectorAll('#travelHistBlocks .job-block');
+    d.travelHistory.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.tr-from').value = r.from||'';
+      b.querySelector('.tr-to').value = r.to||'';
+      b.querySelector('.tr-duration').value = r.duration||'';
+      b.querySelector('.tr-dest').value = r.destination||'';
+      b.querySelector('.tr-purpose').value = r.purpose||'';
+      b.querySelector('.tr-details').value = r.details||'';
+    });
+  }
+
+  // Restore Spouse Family blocks
+  if(d.spouseFamily && d.spouseFamily.length > 0) {
+    while(document.querySelectorAll('#spFamilyBlocks .job-block').length < d.spouseFamily.length) addSpFamilyMember();
+    const blocks = document.querySelectorAll('#spFamilyBlocks .job-block');
+    d.spouseFamily.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.sfm-name').value = r.fullName||'';
+      b.querySelector('.sfm-dob').value = r.dob||'';
+      b.querySelector('.sfm-pob').value = r.placeOfBirth||'';
+      b.querySelector('.sfm-marital').value = r.maritalStatus||'';
+      b.querySelector('.sfm-rel').value = r.relationship||'';
+      b.querySelector('.sfm-email').value = r.email||'';
+      b.querySelector('.sfm-addr').value = r.currentAddress||'';
+    });
+  }
+
+  // Restore Spouse App History blocks
+  if(d.spouseAppHistory && d.spouseAppHistory.length > 0) {
+    while(document.querySelectorAll('#spAppHistBlocks .job-block').length < d.spouseAppHistory.length) addSpAppHist();
+    const blocks = document.querySelectorAll('#spAppHistBlocks .job-block');
+    d.spouseAppHistory.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.sah-type').value = r.type||'';
+      b.querySelector('.sah-result').value = r.result||'';
+      b.querySelector('.sah-date').value = r.date||'';
+      b.querySelector('.sah-dest').value = r.destination||'';
+      b.querySelector('.sah-reason').value = r.reason||'';
+    });
+  }
+
+  // Restore Spouse Education blocks
+  if(d.spouseEducation && d.spouseEducation.length > 0) {
+    while(document.querySelectorAll('#spEduBlocks .job-block').length < d.spouseEducation.length) addSpEdu();
+    const blocks = document.querySelectorAll('#spEduBlocks .job-block');
+    d.spouseEducation.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.sedu-from').value = r.from||'';
+      b.querySelector('.sedu-to').value = r.to||'';
+      b.querySelector('.sedu-inst').value = r.institution||'';
+      b.querySelector('.sedu-city').value = r.city||'';
+      b.querySelector('.sedu-level').value = r.level||'';
+      b.querySelector('.sedu-field').value = r.field||'';
+    });
+  }
+
+  // Restore Spouse Work blocks
+  if(d.spouseWork && d.spouseWork.length > 0) {
+    while(document.querySelectorAll('#spWorkBlocks .job-block').length < d.spouseWork.length) addSpWork();
+    const blocks = document.querySelectorAll('#spWorkBlocks .job-block');
+    d.spouseWork.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.sw-from').value = r.from||'';
+      b.querySelector('.sw-to').value = r.to||'';
+      b.querySelector('.sw-title').value = r.title||'';
+      b.querySelector('.sw-employer').value = r.employer||'';
+      b.querySelector('.sw-addr').value = r.address||'';
+      b.querySelector('.sw-contact-name').value = r.contactName||'';
+      b.querySelector('.sw-contact-phone').value = r.contactPhone||'';
+      b.querySelector('.sw-contact-email').value = r.contactEmail||'';
+    });
+  }
+
+  // Restore Spouse Personal History blocks
+  if(d.spousePersonalHistory && d.spousePersonalHistory.length > 0) {
+    while(document.querySelectorAll('#spPersonalHistBlocks .job-block').length < d.spousePersonalHistory.length) addSpPersonalHist();
+    const blocks = document.querySelectorAll('#spPersonalHistBlocks .job-block');
+    d.spousePersonalHistory.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.sph-from').value = r.from||'';
+      b.querySelector('.sph-to').value = r.to||'';
+      b.querySelector('.sph-activity').value = r.activity||'';
+      b.querySelector('.sph-city').value = r.city||'';
+      b.querySelector('.sph-status').value = r.status||'';
+      b.querySelector('.sph-company').value = r.company||'';
+    });
+  }
+
+  // Restore Spouse Address History blocks
+  if(d.spouseAddrHistory && d.spouseAddrHistory.length > 0) {
+    while(document.querySelectorAll('#spAddrHistBlocks .job-block').length < d.spouseAddrHistory.length) addSpAddrHist();
+    const blocks = document.querySelectorAll('#spAddrHistBlocks .job-block');
+    d.spouseAddrHistory.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.saddr-from').value = r.from||'';
+      b.querySelector('.saddr-to').value = r.to||'';
+      b.querySelector('.saddr-street').value = r.street||'';
+      b.querySelector('.saddr-city').value = r.city||'';
+      b.querySelector('.saddr-province').value = r.province||'';
+      b.querySelector('.saddr-postal').value = r.postal||'';
+      b.querySelector('.saddr-country').value = r.country||'';
+    });
+  }
+
+  // Restore Spouse Travel History blocks
+  if(d.spouseTravelHistory && d.spouseTravelHistory.length > 0) {
+    while(document.querySelectorAll('#spTravelHistBlocks .job-block').length < d.spouseTravelHistory.length) addSpTravelHist();
+    const blocks = document.querySelectorAll('#spTravelHistBlocks .job-block');
+    d.spouseTravelHistory.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.str-from').value = r.from||'';
+      b.querySelector('.str-to').value = r.to||'';
+      b.querySelector('.str-duration').value = r.duration||'';
+      b.querySelector('.str-dest').value = r.destination||'';
+      b.querySelector('.str-purpose').value = r.purpose||'';
+      b.querySelector('.str-details').value = r.details||'';
+    });
+  }
+
+  // Restore PR Relatives in Canada blocks
+  if(d.prRelativesCanada && d.prRelativesCanada.length > 0) {
+    while(document.querySelectorAll('#prRelCanBlocks .job-block').length < d.prRelativesCanada.length) addPrRelCan();
+    const blocks = document.querySelectorAll('#prRelCanBlocks .job-block');
+    d.prRelativesCanada.forEach((r, idx) => {
+      if(!blocks[idx]) return;
+      const b = blocks[idx];
+      b.querySelector('.prc-name').value = r.name||'';
+      b.querySelector('.prc-dob').value = r.dob||'';
+      b.querySelector('.prc-email').value = r.email||'';
+      b.querySelector('.prc-phone').value = r.phone||'';
+      b.querySelector('.prc-rel').value = r.relationship||'';
+      b.querySelector('.prc-addr').value = r.address||'';
+      b.querySelector('.prc-status').value = r.status||'';
+      b.querySelector('.prc-prdate').value = r.prDate||'';
+      b.querySelector('.prc-mbdate').value = r.mbDate||'';
     });
   }
 }
@@ -903,6 +1650,73 @@ function collectData() {
     miscQ8:document.querySelector('input[name="miscQ8"]:checked')?.value||'',
     miscQ9:document.querySelector('input[name="miscQ9"]:checked')?.value||'',
     miscQ10:document.querySelector('input[name="miscQ10"]:checked')?.value||'',
+    // PR-only personal fields
+    eyeColor:document.getElementById('eyeColor')?.value||'',
+    heightCm:document.getElementById('heightCm')?.value||'',
+    otherNameUsed:document.querySelector('input[name="otherNameUsed"]:checked')?.value||'',
+    otherNames:document.getElementById('otherNames')?.value||'',
+    prLastEntryDate:document.getElementById('prLastEntryDate')?.value||'',
+    prLastEntryPlace:document.getElementById('prLastEntryPlace')?.value||'',
+    prPrevMarried:document.querySelector('input[name="prPrevMarried"]:checked')?.value||'',
+    prPrevGiven:document.getElementById('prPrevGiven')?.value||'',
+    prPrevLast:document.getElementById('prPrevLast')?.value||'',
+    prPrevDob:document.getElementById('prPrevDob')?.value||'',
+    prPrevRelType:document.querySelector('input[name="prPrevRelType"]:checked')?.value||'',
+    prPrevFrom:document.getElementById('prPrevFrom')?.value||'',
+    prPrevTo:document.getElementById('prPrevTo')?.value||'',
+    // PR spouse extra
+    spouseCanadaStatus:document.getElementById('spouseCanadaStatus')?.value||'',
+    spouseEyeColor:document.getElementById('spouseEyeColor')?.value||'',
+    spouseHeightCm:document.getElementById('spouseHeightCm')?.value||'',
+    // PR education extra (grade 12)
+    g12level:document.getElementById('g12level')?.value||'',
+    g12field:document.getElementById('g12field')?.value||'',
+    // PR education extras (post-secondary level + field)
+    educationExtras:[...document.querySelectorAll('#eduBlocks .job-block')].map(b => ({
+      level: b.querySelector('.edu-level')?.value||'',
+      field: b.querySelector('.edu-field')?.value||''
+    })),
+    // PR work contact extras
+    workContactExtras:[...document.querySelectorAll('#workBlocks .job-block')].map(b => ({
+      contactName: b.querySelector('.w-contact-name')?.value||'',
+      contactPhone: b.querySelector('.w-contact-phone')?.value||'',
+      contactEmail: b.querySelector('.w-contact-email')?.value||''
+    })),
+    // PR sections
+    personalHistory:collectPersonalHist(),
+    addressHistory:collectAddrHist(),
+    travelHistory:collectTravelHist(),
+    bgPolitical:document.querySelector('input[name="bgPolitical"]:checked')?.value||'',
+    bgGovt:document.querySelector('input[name="bgGovt"]:checked')?.value||'',
+    bgMilitary:document.querySelector('input[name="bgMilitary"]:checked')?.value||'',
+    // PR spouse sections
+    spouseFamily:collectSpFamily(),
+    spouseAppHistory:collectSpAppHist(),
+    spouseEducation:collectSpEdu(),
+    spouseWork:collectSpWork(),
+    spousePersonalHistory:collectSpPersonalHist(),
+    spouseAddrHistory:collectSpAddrHist(),
+    spouseTravelHistory:collectSpTravelHist(),
+    spBgPolitical:document.querySelector('input[name="spBgPolitical"]:checked')?.value||'',
+    spBgGovt:document.querySelector('input[name="spBgGovt"]:checked')?.value||'',
+    spBgMilitary:document.querySelector('input[name="spBgMilitary"]:checked')?.value||'',
+    // PR relatives in Canada
+    prRelCan:document.querySelector('input[name="prRelCan"]:checked')?.value||'',
+    prRelativesCanada:collectPrRelCan(),
+    // PR financial
+    prSavings:document.getElementById('savings')?.value||'',
+    // Staff Notes
+    staffAddr:document.querySelector('input[name="staffAddr"]:checked')?.value||'',
+    staffEmail:document.querySelector('input[name="staffEmail"]:checked')?.value||'',
+    staffIRCC:document.querySelector('input[name="staffIRCC"]:checked')?.value||'',
+    staffPH:document.querySelector('input[name="staffPH"]:checked')?.value||'',
+    staffAH:document.querySelector('input[name="staffAH"]:checked')?.value||'',
+    staffLang:document.querySelector('input[name="staffLang"]:checked')?.value||'',
+    staffTravel:document.querySelector('input[name="staffTravel"]:checked')?.value||'',
+    staffPCC:document.querySelector('input[name="staffPCC"]:checked')?.value||'',
+    staffGaps:document.querySelector('input[name="staffGaps"]:checked')?.value||'',
+    staffMethod:document.getElementById('staffMethod')?.value||'',
+    staffNotes:document.getElementById('staffNotes')?.value||'',
   };
 }
 
@@ -998,8 +1812,9 @@ function collectAppHistory(){
   return [...document.querySelectorAll('#appHistoryBlocks .job-block')].map(b => ({
     type: b.querySelector('.ah-type').value,
     result: b.querySelector('.ah-result').value,
-    year: b.querySelector('.ah-year').value,
-    destination: b.querySelector('.ah-dest').value
+    date: b.querySelector('.ah-date')?.value||'',
+    destination: b.querySelector('.ah-dest').value,
+    reason: b.querySelector('.ah-reason')?.value||''
   }));
 }
 
@@ -1010,6 +1825,7 @@ function collectFamilyMembers(){
     placeOfBirth: b.querySelector('.fm-pob').value,
     maritalStatus: b.querySelector('.fm-marital').value,
     relationship: b.querySelector('.fm-rel').value,
+    email: b.querySelector('.fm-email')?.value||'',
     occupation: b.querySelector('.fm-occ').value,
     currentAddress: b.querySelector('.fm-addr').value
   }));
@@ -1034,23 +1850,160 @@ function collectRelOtherProv(){
   }));
 }
 
+// ── PR COLLECT HELPERS ──
+function collectPersonalHist(){
+  return [...document.querySelectorAll('#personalHistBlocks .job-block')].map(b => ({
+    from: b.querySelector('.ph-from').value,
+    to: b.querySelector('.ph-to').value,
+    activity: b.querySelector('.ph-activity').value,
+    city: b.querySelector('.ph-city').value,
+    status: b.querySelector('.ph-status').value,
+    company: b.querySelector('.ph-company').value
+  }));
+}
+
+function collectAddrHist(){
+  return [...document.querySelectorAll('#addrHistBlocks .job-block')].map(b => ({
+    from: b.querySelector('.addr-from').value,
+    to: b.querySelector('.addr-to').value,
+    street: b.querySelector('.addr-street').value,
+    city: b.querySelector('.addr-city').value,
+    province: b.querySelector('.addr-province').value,
+    postal: b.querySelector('.addr-postal').value,
+    country: b.querySelector('.addr-country').value
+  }));
+}
+
+function collectTravelHist(){
+  return [...document.querySelectorAll('#travelHistBlocks .job-block')].map(b => ({
+    from: b.querySelector('.tr-from').value,
+    to: b.querySelector('.tr-to').value,
+    duration: b.querySelector('.tr-duration').value,
+    destination: b.querySelector('.tr-dest').value,
+    purpose: b.querySelector('.tr-purpose').value,
+    details: b.querySelector('.tr-details').value
+  }));
+}
+
+function collectSpFamily(){
+  return [...document.querySelectorAll('#spFamilyBlocks .job-block')].map(b => ({
+    fullName: b.querySelector('.sfm-name').value,
+    dob: b.querySelector('.sfm-dob').value,
+    placeOfBirth: b.querySelector('.sfm-pob').value,
+    maritalStatus: b.querySelector('.sfm-marital').value,
+    relationship: b.querySelector('.sfm-rel').value,
+    email: b.querySelector('.sfm-email').value,
+    currentAddress: b.querySelector('.sfm-addr').value
+  }));
+}
+
+function collectSpAppHist(){
+  return [...document.querySelectorAll('#spAppHistBlocks .job-block')].map(b => ({
+    type: b.querySelector('.sah-type').value,
+    result: b.querySelector('.sah-result').value,
+    date: b.querySelector('.sah-date').value,
+    destination: b.querySelector('.sah-dest').value,
+    reason: b.querySelector('.sah-reason').value
+  }));
+}
+
+function collectSpEdu(){
+  return [...document.querySelectorAll('#spEduBlocks .job-block')].map(b => ({
+    from: b.querySelector('.sedu-from').value,
+    to: b.querySelector('.sedu-to').value,
+    institution: b.querySelector('.sedu-inst').value,
+    city: b.querySelector('.sedu-city').value,
+    level: b.querySelector('.sedu-level').value,
+    field: b.querySelector('.sedu-field').value
+  }));
+}
+
+function collectSpWork(){
+  return [...document.querySelectorAll('#spWorkBlocks .job-block')].map(b => ({
+    from: b.querySelector('.sw-from').value,
+    to: b.querySelector('.sw-to').value,
+    title: b.querySelector('.sw-title').value,
+    employer: b.querySelector('.sw-employer').value,
+    address: b.querySelector('.sw-addr').value,
+    contactName: b.querySelector('.sw-contact-name').value,
+    contactPhone: b.querySelector('.sw-contact-phone').value,
+    contactEmail: b.querySelector('.sw-contact-email').value
+  }));
+}
+
+function collectSpPersonalHist(){
+  return [...document.querySelectorAll('#spPersonalHistBlocks .job-block')].map(b => ({
+    from: b.querySelector('.sph-from').value,
+    to: b.querySelector('.sph-to').value,
+    activity: b.querySelector('.sph-activity').value,
+    city: b.querySelector('.sph-city').value,
+    status: b.querySelector('.sph-status').value,
+    company: b.querySelector('.sph-company').value
+  }));
+}
+
+function collectSpAddrHist(){
+  return [...document.querySelectorAll('#spAddrHistBlocks .job-block')].map(b => ({
+    from: b.querySelector('.saddr-from').value,
+    to: b.querySelector('.saddr-to').value,
+    street: b.querySelector('.saddr-street').value,
+    city: b.querySelector('.saddr-city').value,
+    province: b.querySelector('.saddr-province').value,
+    postal: b.querySelector('.saddr-postal').value,
+    country: b.querySelector('.saddr-country').value
+  }));
+}
+
+function collectSpTravelHist(){
+  return [...document.querySelectorAll('#spTravelHistBlocks .job-block')].map(b => ({
+    from: b.querySelector('.str-from').value,
+    to: b.querySelector('.str-to').value,
+    duration: b.querySelector('.str-duration').value,
+    destination: b.querySelector('.str-dest').value,
+    purpose: b.querySelector('.str-purpose').value,
+    details: b.querySelector('.str-details').value
+  }));
+}
+
+function collectPrRelCan(){
+  return [...document.querySelectorAll('#prRelCanBlocks .job-block')].map(b => ({
+    name: b.querySelector('.prc-name').value,
+    dob: b.querySelector('.prc-dob').value,
+    email: b.querySelector('.prc-email').value,
+    phone: b.querySelector('.prc-phone').value,
+    relationship: b.querySelector('.prc-rel').value,
+    address: b.querySelector('.prc-addr').value,
+    status: b.querySelector('.prc-status').value,
+    prDate: b.querySelector('.prc-prdate').value,
+    mbDate: b.querySelector('.prc-mbdate').value
+  }));
+}
+
 // ── DYNAMIC BLOCK ADDERS ──
-let eduCount=1, jobCount=1, appHistCount=1, familyCount=1, relMBCount=1, relOPCount=1;
+let eduCount=1, jobCount=1, appHistCount=1, familyCount=1, relMBCount=1, relOPCount=1,
+    phCount=1, addrHCount=1, travelHCount=1, spFamCount=1, spAppHCount=1, spEduCount=1,
+    spWorkCount=1, spPHCount=1, spAddrHCount=1, spTravelHCount=1, prRelCanCount=1;
 
 function addEdu(){
   eduCount++;
+  var isPR = applicationType === 'pr';
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Education Entry ${eduCount}</div>
     <div class="row2"><div class="field"><label>From (MM/YYYY)</label><input type="text" class="edu-from"></div>
     <div class="field"><label>To (MM/YYYY)</label><input type="text" class="edu-to"></div></div>
     <div class="field"><label>Program Name</label><input type="text" class="edu-prog"></div>
     <div class="field"><label>Institute / University Name</label><input type="text" class="edu-inst"></div>
-    <div class="field"><label>Campus City</label><input type="text" class="edu-city"></div>`;
+    <div class="field"><label>City and Country</label><input type="text" class="edu-city"></div>
+    <div class="pr-edu-extra" style="${isPR?'display:block':'display:none'}">
+      <div class="row2"><div class="field"><label>Level of Education</label><input type="text" class="edu-level" placeholder="e.g. Bachelor's, Diploma"></div>
+      <div class="field"><label>Field of Study</label><input type="text" class="edu-field" placeholder="e.g. Computer Science"></div></div>
+    </div>`;
   document.getElementById('eduBlocks').appendChild(d);
 }
 
 function addJob(){
   jobCount++;
+  var isPR = applicationType === 'pr';
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Job Entry ${jobCount}</div>
     <div class="row2"><div class="field"><label>From (DD/MM/YYYY)</label><input type="text" class="w-from"></div>
@@ -1060,19 +2013,28 @@ function addJob(){
       <select class="w-ftpt form-select"><option value="">Select...</option><option value="Full-time">Full-time</option><option value="Part-time">Part-time</option></select></div>
     <div class="field"><label>Hours per week</label><input type="text" class="w-hours" placeholder="e.g. 40"></div></div>
     <div class="field"><label>Employer / Company Name</label><input type="text" class="w-employer"></div>
-    <div class="field"><label>Full Work Location Address</label><textarea class="w-addr"></textarea></div>`;
+    <div class="field"><label>Full Work Location Address</label><textarea class="w-addr"></textarea></div>
+    <div class="pr-work-extra" style="${isPR?'display:block':'display:none'}">
+      <div class="field"><label>Contact Person Name</label><input type="text" class="w-contact-name"></div>
+      <div class="row2"><div class="field"><label>Contact Person Phone</label><input type="tel" class="w-contact-phone"></div>
+      <div class="field"><label>Contact Email</label><input type="email" class="w-contact-email"></div></div>
+    </div>`;
   document.getElementById('workBlocks').appendChild(d);
 }
 
 function addAppHistory(){
   appHistCount++;
+  var isPR = applicationType === 'pr';
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Application ${appHistCount}</div>
     <div class="field"><label>Type of Application</label><input type="text" class="ah-type" placeholder="e.g. Study Permit, Work Permit, TRV"></div>
     <div class="field"><label>Result</label>
       <select class="ah-result form-select"><option value="">Select...</option><option value="Approved">Approved</option><option value="Denied">Denied</option></select></div>
-    <div class="row2"><div class="field"><label>Year of Result</label><input type="text" class="ah-year" placeholder="e.g. 2023"></div>
-    <div class="field"><label>Destination in Canada</label><input type="text" class="ah-dest" placeholder="e.g. Manitoba"></div></div>`;
+    <div class="row2"><div class="field"><label>Date of Result</label><input type="text" class="ah-date" placeholder="e.g. 15/03/2023"></div>
+    <div class="field"><label>Destination in Canada</label><input type="text" class="ah-dest" placeholder="e.g. Manitoba"></div></div>
+    <div class="pr-apphist-extra" style="${isPR?'display:block':'display:none'}">
+      <div class="field"><label>Reason for Rejection/Refusal (if known)</label><textarea class="ah-reason" placeholder="Leave blank if not applicable"></textarea></div>
+    </div>`;
   document.getElementById('appHistoryBlocks').appendChild(d);
 }
 
@@ -1085,6 +2047,7 @@ function addFamilyMember(){
     <div class="field"><label>Place of Birth (with country)</label><input type="text" class="fm-pob"></div></div>
     <div class="row2"><div class="field"><label>Marital Status</label><input type="text" class="fm-marital"></div>
     <div class="field"><label>Relationship to Applicant</label><input type="text" class="fm-rel"></div></div>
+    <div class="field"><label>Email Address</label><input type="email" class="fm-email" placeholder="email@example.com"></div>
     <div class="field"><label>Occupation</label><input type="text" class="fm-occ"></div>
     <div class="field"><label>Current Address (full with postal code)</label><textarea class="fm-addr"></textarea></div>`;
   document.getElementById('familyBlocks').appendChild(d);
@@ -1111,6 +2074,158 @@ function addRelOtherProv(){
     <div class="row2"><div class="field"><label>Relationship to Applicant</label><input type="text" class="rop-rel"></div>
     <div class="field"><label>Status in Canada</label><input type="text" class="rop-status"></div></div>`;
   document.getElementById('relOtherProvBlocks').appendChild(d);
+}
+
+// ── PR-ONLY DYNAMIC BLOCK ADDERS ──
+function addPersonalHist(){
+  phCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Period ${phCount}</div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="ph-from"></div>
+    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="ph-to"></div></div>
+    <div class="field"><label>Activity (Job title / Unemployed / Study / Travel / Retired)</label><input type="text" class="ph-activity"></div>
+    <div class="field"><label>City and Country</label><input type="text" class="ph-city"></div>
+    <div class="field"><label>Status in Country</label><input type="text" class="ph-status"></div>
+    <div class="field"><label>Name of Company / Employer / School / Facility</label><input type="text" class="ph-company"></div>`;
+  document.getElementById('personalHistBlocks').appendChild(d);
+}
+
+function addAddrHist(){
+  addrHCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Address ${addrHCount}</div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="addr-from"></div>
+    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="addr-to"></div></div>
+    <div class="field"><label>Street Number and Name</label><input type="text" class="addr-street"></div>
+    <div class="row2"><div class="field"><label>City or Town</label><input type="text" class="addr-city"></div>
+    <div class="field"><label>Province, State or District</label><input type="text" class="addr-province"></div></div>
+    <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="addr-postal"></div>
+    <div class="field"><label>Country or Territory</label><input type="text" class="addr-country"></div></div>`;
+  document.getElementById('addrHistBlocks').appendChild(d);
+}
+
+function addTravelHist(){
+  travelHCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Trip ${travelHCount}</div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="tr-from"></div>
+    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="tr-to"></div></div>
+    <div class="field"><label>Duration</label><input type="text" class="tr-duration"></div>
+    <div class="field"><label>Destination (City and Country)</label><input type="text" class="tr-dest"></div>
+    <div class="field"><label>Purpose of Visit</label><input type="text" class="tr-purpose"></div>
+    <div class="field"><label>Provide Details (if any)</label><textarea class="tr-details"></textarea></div>`;
+  document.getElementById('travelHistBlocks').appendChild(d);
+}
+
+function addSpFamilyMember(){
+  spFamCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Spouse's Family Member ${spFamCount}</div>
+    <div class="field"><label>Full Name</label><input type="text" class="sfm-name"></div>
+    <div class="row2"><div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" class="sfm-dob"></div>
+    <div class="field"><label>Place of Birth (with country)</label><input type="text" class="sfm-pob"></div></div>
+    <div class="row2"><div class="field"><label>Marital Status</label><input type="text" class="sfm-marital"></div>
+    <div class="field"><label>Relationship to Applicant</label><input type="text" class="sfm-rel"></div></div>
+    <div class="field"><label>Email Address</label><input type="email" class="sfm-email"></div>
+    <div class="field"><label>Current Address (full with postal code)</label><textarea class="sfm-addr"></textarea></div>`;
+  document.getElementById('spFamilyBlocks').appendChild(d);
+}
+
+function addSpAppHist(){
+  spAppHCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Spouse Application ${spAppHCount}</div>
+    <div class="field"><label>Type of Application</label><input type="text" class="sah-type"></div>
+    <div class="field"><label>Result</label>
+      <select class="sah-result form-select"><option value="">Select...</option><option value="Approved">Approved</option><option value="Denied">Denied</option></select></div>
+    <div class="row2"><div class="field"><label>Date of Result</label><input type="text" class="sah-date"></div>
+    <div class="field"><label>Destination in Canada</label><input type="text" class="sah-dest"></div></div>
+    <div class="field"><label>Reason for Rejection/Refusal (if known)</label><textarea class="sah-reason"></textarea></div>`;
+  document.getElementById('spAppHistBlocks').appendChild(d);
+}
+
+function addSpEdu(){
+  spEduCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Spouse Education ${spEduCount}</div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="sedu-from"></div>
+    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="sedu-to"></div></div>
+    <div class="field"><label>Name of School or Institution</label><input type="text" class="sedu-inst"></div>
+    <div class="field"><label>City and Country</label><input type="text" class="sedu-city"></div>
+    <div class="row2"><div class="field"><label>Level of Education</label><input type="text" class="sedu-level"></div>
+    <div class="field"><label>Field of Study</label><input type="text" class="sedu-field"></div></div>`;
+  document.getElementById('spEduBlocks').appendChild(d);
+}
+
+function addSpWork(){
+  spWorkCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Spouse Job ${spWorkCount}</div>
+    <div class="row2"><div class="field"><label>From (DD/MM/YYYY)</label><input type="text" class="sw-from"></div>
+    <div class="field"><label>To (DD/MM/YYYY)</label><input type="text" class="sw-to"></div></div>
+    <div class="field"><label>Job Title</label><input type="text" class="sw-title"></div>
+    <div class="field"><label>Employer / Company Name</label><input type="text" class="sw-employer"></div>
+    <div class="field"><label>Full Employer/Work Location Address</label><textarea class="sw-addr"></textarea></div>
+    <div class="field"><label>Contact Person Name</label><input type="text" class="sw-contact-name"></div>
+    <div class="row2"><div class="field"><label>Contact Person Phone</label><input type="tel" class="sw-contact-phone"></div>
+    <div class="field"><label>Contact Email</label><input type="email" class="sw-contact-email"></div></div>`;
+  document.getElementById('spWorkBlocks').appendChild(d);
+}
+
+function addSpPersonalHist(){
+  spPHCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Spouse Period ${spPHCount}</div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="sph-from"></div>
+    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="sph-to"></div></div>
+    <div class="field"><label>Activity</label><input type="text" class="sph-activity"></div>
+    <div class="field"><label>City and Country</label><input type="text" class="sph-city"></div>
+    <div class="field"><label>Status in Country</label><input type="text" class="sph-status"></div>
+    <div class="field"><label>Name of Company / Employer / School / Facility</label><input type="text" class="sph-company"></div>`;
+  document.getElementById('spPersonalHistBlocks').appendChild(d);
+}
+
+function addSpAddrHist(){
+  spAddrHCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Spouse Address ${spAddrHCount}</div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="saddr-from"></div>
+    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="saddr-to"></div></div>
+    <div class="field"><label>Street Number and Name</label><input type="text" class="saddr-street"></div>
+    <div class="row2"><div class="field"><label>City or Town</label><input type="text" class="saddr-city"></div>
+    <div class="field"><label>Province, State or District</label><input type="text" class="saddr-province"></div></div>
+    <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="saddr-postal"></div>
+    <div class="field"><label>Country or Territory</label><input type="text" class="saddr-country"></div></div>`;
+  document.getElementById('spAddrHistBlocks').appendChild(d);
+}
+
+function addSpTravelHist(){
+  spTravelHCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Spouse Trip ${spTravelHCount}</div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="str-from"></div>
+    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="str-to"></div></div>
+    <div class="field"><label>Duration</label><input type="text" class="str-duration"></div>
+    <div class="field"><label>Destination (City and Country)</label><input type="text" class="str-dest"></div>
+    <div class="field"><label>Purpose of Visit</label><input type="text" class="str-purpose"></div>
+    <div class="field"><label>Provide Details (if any)</label><textarea class="str-details"></textarea></div>`;
+  document.getElementById('spTravelHistBlocks').appendChild(d);
+}
+
+function addPrRelCan(){
+  prRelCanCount++;
+  const d=document.createElement('div');d.className='job-block';
+  d.innerHTML=`<div class="job-block-title">Relative ${prRelCanCount}</div>
+    <div class="field"><label>Name</label><input type="text" class="prc-name"></div>
+    <div class="row2"><div class="field"><label>Date of Birth</label><input type="text" class="prc-dob" placeholder="DD/MM/YYYY"></div>
+    <div class="field"><label>Email ID</label><input type="email" class="prc-email"></div></div>
+    <div class="row2"><div class="field"><label>Phone Number</label><input type="tel" class="prc-phone"></div>
+    <div class="field"><label>Relationship to Applicant</label><input type="text" class="prc-rel"></div></div>
+    <div class="field"><label>Current Address</label><textarea class="prc-addr"></textarea></div>
+    <div class="field"><label>Status in Canada</label><input type="text" class="prc-status"></div>
+    <div class="row2"><div class="field"><label>Date they became PR (if PR or Citizen)</label><input type="text" class="prc-prdate" placeholder="MM/YYYY"></div>
+    <div class="field"><label>Date they moved to MB (if PR or Citizen)</label><input type="text" class="prc-mbdate" placeholder="MM/YYYY"></div></div>`;
+  document.getElementById('prRelCanBlocks').appendChild(d);
 }
 
 showSection(0);
