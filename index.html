@@ -454,6 +454,19 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Result Date (MM/YYYY)</label><input type="text" id="refDate"></div>
         <div class="field"><label>Type of Application (Visit / Work / PR)</label><input type="text" id="refType"></div>
       </div>
+      <div class="divider" id="criminalDivider"></div>
+      <div id="criminalWrap">
+        <div class="field">
+          <label>Have you ever committed, been arrested for or been charged with or convicted of any criminal offense in any country?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="criminalRecord" value="Yes" onclick="toggleConditional('criminalDetails','show')"> Yes</label>
+            <label><input type="radio" name="criminalRecord" value="No" onclick="toggleConditional('criminalDetails','hide')"> No</label>
+          </div>
+        </div>
+        <div class="conditional" id="criminalDetails">
+          <div class="field"><label>Please provide details</label><textarea id="criminalInfo" placeholder="Provide details of the offense, date, country, and outcome"></textarea></div>
+        </div>
+      </div>
     </div>
 
     <!-- SECTION 10 — Family Information (conditional toggle) -->
@@ -1011,7 +1024,7 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHjGteYk9qlcz6Gj4U70z1jD30GdWrQjpCKSwvJquug5G3XTYFn2FRnqPkse0rC00H/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKHvQT5a5TdAvdtLY45GYfOwjrui_LSODOOi2Nsx1y8hE8RKPBKcHYLF7eMmbY_XxE/exec";
 
 // ── DYNAMIC SECTIONS ──
 const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12',
@@ -1055,6 +1068,12 @@ function computeVisibleSections() {
   if (isEoiFlow) {
     visible.push('s11', 's12');
   }
+
+  // Criminal record question: hide for EOI / Express Entry, show for all others
+  var crimWrap = document.getElementById('criminalWrap');
+  var crimDiv = document.getElementById('criminalDivider');
+  if (crimWrap) crimWrap.style.display = isEoiFlow ? 'none' : '';
+  if (crimDiv) crimDiv.style.display = isEoiFlow ? 'none' : '';
 
   // PR: always show Family (s10), then PR-only sections
   if (isPR) {
@@ -1175,7 +1194,7 @@ function fillFormFields(d) {
    'spouseAddr','prevGiven','prevLast','prevDob','prevFrom','prevTo','child1','child2',
    'child3','childExtra','ocFrom','ocTo','ocCountry','ocStatus','ocPurpose',
    'firstEntryDate','firstEntryPort','recentEntryDate','recentEntryPort','savings',
-   'expenses','refCountry','refDate','refType',
+   'expenses','refCountry','refDate','refType','criminalInfo',
    'g12from','g12to','g12prog','g12inst','g12city','miscQ3Where',
    // PR fields
    'eyeColor','heightCm','otherNames','prLastEntryDate','prLastEntryPlace',
@@ -1192,7 +1211,7 @@ function fillFormFields(d) {
    'otherNameUsed','prPrevMarried','prPrevRelType',
    'bgPolitical','bgGovt','bgMilitary',
    'spBgPolitical','spBgGovt','spBgMilitary',
-   'prRelCan',
+   'prRelCan','criminalRecord',
    'staffAddr','staffEmail','staffIRCC','staffPH','staffAH','staffLang','staffTravel','staffPCC','staffGaps'
   ].forEach(name => {
     if(d[name]){ const r=document.querySelector(`input[name="${name}"][value="${d[name]}"]`); if(r) r.checked=true; }
@@ -1203,6 +1222,7 @@ function fillFormFields(d) {
   if(d.prevRel==='Yes') toggleConditional('prevRelDetails','show');
   if(d.otherCountry==='Yes') toggleConditional('otherCountryDetails','show');
   if(d.refused==='Yes') toggleConditional('refusalDetails','show');
+  if(d.criminalRecord==='Yes') toggleConditional('criminalDetails','show');
   if(d.relMB==='Yes') toggleConditional('relMBDetails','show');
   if(d.relOtherProv==='Yes') toggleConditional('relOtherProvDetails','show');
   if(d.miscQ3==='Yes') toggleConditional('miscQ3Details','show');
@@ -1631,6 +1651,9 @@ function collectData() {
     refCountry:document.getElementById('refCountry').value,
     refDate:document.getElementById('refDate').value,
     refType:document.getElementById('refType').value,
+    // Criminal Record
+    criminalRecord:document.querySelector('input[name="criminalRecord"]:checked')?.value||'',
+    criminalInfo:document.getElementById('criminalInfo')?.value||'',
     // Family Info
     familyMembers:collectFamilyMembers(),
     // Relatives in Canada
