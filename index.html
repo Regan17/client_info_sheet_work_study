@@ -649,8 +649,8 @@ textarea{resize:vertical;min-height:80px}
         <div class="job-block">
           <div class="job-block-title">Address 1</div>
           <div class="row2">
-            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="addr-from" placeholder="e.g. 2018-01"></div>
-            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="addr-to" placeholder="e.g. 2020-06"></div>
+            <div class="field"><label>From (YYYY-MM-DD)</label><input type="text" class="addr-from" placeholder="e.g. 2018-01-15"></div>
+            <div class="field"><label>To (YYYY-MM-DD)</label><input type="text" class="addr-to" placeholder="e.g. 2020-06-30"></div>
           </div>
           <div class="field"><label>Street Number and Name</label><input type="text" class="addr-street" placeholder="e.g. 123 Main Street"></div>
           <div class="row2">
@@ -658,7 +658,7 @@ textarea{resize:vertical;min-height:80px}
             <div class="field"><label>Province, State or District</label><input type="text" class="addr-province" placeholder="e.g. Manitoba"></div>
           </div>
           <div class="row2">
-            <div class="field"><label>Postal Code / Zip Code</label><input type="text" class="addr-postal" placeholder="e.g. R3T 2N2"></div>
+            <div class="field"><label>Postal Code / Zip Code</label><input type="text" class="addr-postal" placeholder="e.g. R3T 2N2" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
             <div class="field"><label>Country or Territory</label><input type="text" class="addr-country" placeholder="e.g. Canada"></div>
           </div>
         </div>
@@ -836,8 +836,8 @@ textarea{resize:vertical;min-height:80px}
         <div class="job-block">
           <div class="job-block-title">Spouse Address 1</div>
           <div class="row2">
-            <div class="field"><label>From (YYYY-MM)</label><input type="text" class="saddr-from"></div>
-            <div class="field"><label>To (YYYY-MM)</label><input type="text" class="saddr-to"></div>
+            <div class="field"><label>From (YYYY-MM-DD)</label><input type="text" class="saddr-from" placeholder="e.g. 2018-01-15"></div>
+            <div class="field"><label>To (YYYY-MM-DD)</label><input type="text" class="saddr-to" placeholder="e.g. 2020-06-30"></div>
           </div>
           <div class="field"><label>Street Number and Name</label><input type="text" class="saddr-street"></div>
           <div class="row2">
@@ -845,7 +845,7 @@ textarea{resize:vertical;min-height:80px}
             <div class="field"><label>Province, State or District</label><input type="text" class="saddr-province"></div>
           </div>
           <div class="row2">
-            <div class="field"><label>Postal Code / Zip Code</label><input type="text" class="saddr-postal"></div>
+            <div class="field"><label>Postal Code / Zip Code</label><input type="text" class="saddr-postal" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
             <div class="field"><label>Country or Territory</label><input type="text" class="saddr-country"></div>
           </div>
         </div>
@@ -2117,12 +2117,12 @@ function addAddrHist(){
   addrHCount++;
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Address ${addrHCount}</div>
-    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="addr-from"></div>
-    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="addr-to"></div></div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM-DD)</label><input type="text" class="addr-from" placeholder="e.g. 2018-01-15"></div>
+    <div class="field"><label>To (YYYY-MM-DD)</label><input type="text" class="addr-to" placeholder="e.g. 2020-06-30"></div></div>
     <div class="field"><label>Street Number and Name</label><input type="text" class="addr-street"></div>
     <div class="row2"><div class="field"><label>City or Town</label><input type="text" class="addr-city"></div>
     <div class="field"><label>Province, State or District</label><input type="text" class="addr-province"></div></div>
-    <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="addr-postal"></div>
+    <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="addr-postal" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="field"><label>Country or Territory</label><input type="text" class="addr-country"></div></div>`;
   document.getElementById('addrHistBlocks').appendChild(d);
 }
@@ -2212,12 +2212,12 @@ function addSpAddrHist(){
   spAddrHCount++;
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Spouse Address ${spAddrHCount}</div>
-    <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="saddr-from"></div>
-    <div class="field"><label>To (YYYY-MM)</label><input type="text" class="saddr-to"></div></div>
+    <div class="row2"><div class="field"><label>From (YYYY-MM-DD)</label><input type="text" class="saddr-from" placeholder="e.g. 2018-01-15"></div>
+    <div class="field"><label>To (YYYY-MM-DD)</label><input type="text" class="saddr-to" placeholder="e.g. 2020-06-30"></div></div>
     <div class="field"><label>Street Number and Name</label><input type="text" class="saddr-street"></div>
     <div class="row2"><div class="field"><label>City or Town</label><input type="text" class="saddr-city"></div>
     <div class="field"><label>Province, State or District</label><input type="text" class="saddr-province"></div></div>
-    <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="saddr-postal"></div>
+    <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="saddr-postal" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="field"><label>Country or Territory</label><input type="text" class="saddr-country"></div></div>`;
   document.getElementById('spAddrHistBlocks').appendChild(d);
 }
