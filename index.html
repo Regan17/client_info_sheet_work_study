@@ -1024,7 +1024,7 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKHvQT5a5TdAvdtLY45GYfOwjrui_LSODOOi2Nsx1y8hE8RKPBKcHYLF7eMmbY_XxE/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQzg0O1U4AMaBLU3FjZVfC_Xw_AZcAL6UuPAgwgIM6Bt8EAghyWAjAlA7-byqAgkKA/exec";
 
 // ── DYNAMIC SECTIONS ──
 const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12',
@@ -1173,7 +1173,7 @@ function copyLink() {
 // ── LOAD / SAVE ──
 function loadSavedData(email) {
   setSaveStatus('loading');
-  fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'load', email }) })
+  fetch(SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'load', email, applicationType: applicationType || undefined }) })
   .then(r=>r.json())
   .then(res => {
     if (res.data) {
