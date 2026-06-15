@@ -1826,8 +1826,9 @@ function collectEdu(){
 }
 
 function collectWork(){
+  const oneLine = v => (v||'').replace(/[\r\n]+/g, ', ').replace(/\s*\|\s*/g, ' / ');
   return [...document.querySelectorAll('#workBlocks .job-block')].map((b,i)=>
-    `Job ${i+1}: ${b.querySelector('.w-from').value} to ${b.querySelector('.w-to').value} | ${b.querySelector('.w-title').value} | ${b.querySelector('.w-ftpt').value} | ${b.querySelector('.w-hours').value} | ${b.querySelector('.w-employer').value} | ${b.querySelector('.w-addr').value}`
+    `Job ${i+1}: ${oneLine(b.querySelector('.w-from').value)} to ${oneLine(b.querySelector('.w-to').value)} | ${oneLine(b.querySelector('.w-title').value)} | ${oneLine(b.querySelector('.w-ftpt').value)} | ${oneLine(b.querySelector('.w-hours').value)} | ${oneLine(b.querySelector('.w-employer').value)} | ${oneLine(b.querySelector('.w-addr').value)}`
   ).join('\n');
 }
 
