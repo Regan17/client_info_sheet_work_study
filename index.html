@@ -57,8 +57,7 @@ textarea{resize:vertical;min-height:80px}
 .radio-group{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
 .radio-group label{display:flex;align-items:center;gap:6px;font-weight:400;background:#f8fafc;border:1.5px solid #d1d5db;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;color:#374151}
 .radio-group input{accent-color:#1a56db;width:16px;height:16px}
-.conditional{display:none;background:#f8fafc;border-left:3px solid #1a56db;padding:14px;border-radius:0 8px 8px 0;margin-top:10px}
-.conditional.show{display:block}
+.conditional{display:none;background:#f8fafc;border-left:3px solid #1a56db;padding:14px;border-radius:0 8px 8px 0;margin-top:10px}.conditional.show{display:block}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:480px){.row2{grid-template-columns:1fr}}
 .job-block{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px}
@@ -173,10 +172,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="field" id="domField" style="display:none"><label>Date of Marriage (DD/MM/YYYY)</label><input type="text" id="dom" placeholder="e.g. 10/05/2015"></div>
       <div class="field"><label>Native Language (Mother Tongue) <span class="req">*</span></label><input type="text" id="nativeLang" placeholder="e.g. Punjabi"></div>
       <div class="field"><label>Current Status in Canada <span class="req">*</span></label><input type="text" id="canadaStatus" placeholder="e.g. Student, Visitor, Worker"></div>
-      <div class="row2">
-        <div class="field"><label>Passport Number <span class="req">*</span></label><input type="text" id="passport" placeholder="Passport No."></div>
-        <div class="field"><label>UCI Number</label><input type="text" id="uci" placeholder="UCI No. (if known)"></div>
-      </div>
+      <div class="field"><label>Passport Number <span class="req">*</span></label><input type="text" id="passport" placeholder="Passport No."></div>
       <!-- PR-only fields -->
       <div id="prPersonalFields" style="display:none">
         <div class="row2">
@@ -1024,7 +1020,7 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDRzgHHzmR8818QZGLm-DTldalqhjfwe6Q_JkHzgMrU2zPJhmv4S44_TE0521rJlq4/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5vXEVoqelsLG1n9HZO_ntWNjHrQj7d24bm8Y4T6XstFYFPCymvNkZhVw_bopyU3St/exec";
 
 // ── DYNAMIC SECTIONS ──
 const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12',
@@ -1190,7 +1186,7 @@ function loadSavedData(email) {
 function fillFormFields(d) {
   // Simple ID-based fields
   ['givenName','lastName','dob','phone','address','dom','nativeLang','canadaStatus',
-   'passport','uci','spouseGiven','spouseLast','spouseDob','spouseEmail','spousePhone',
+   'passport','spouseGiven','spouseLast','spouseDob','spouseEmail','spousePhone',
    'spouseAddr','prevGiven','prevLast','prevDob','prevFrom','prevTo','child1','child2',
    'child3','childExtra','ocFrom','ocTo','ocCountry','ocStatus','ocPurpose',
    'firstEntryDate','firstEntryPort','recentEntryDate','recentEntryPort','savings',
@@ -1600,7 +1596,6 @@ function collectData() {
     nativeLang:document.getElementById('nativeLang').value,
     canadaStatus:document.getElementById('canadaStatus').value,
     passport:document.getElementById('passport').value,
-    uci:document.getElementById('uci').value,
     showFamilyInfo:document.querySelector('input[name="showFamilyInfo"]:checked')?.value||'',
     // Spouse
     spouseGiven:document.getElementById('spouseGiven').value,
