@@ -46,6 +46,10 @@ body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;min-height:100vh;paddi
 .section{background:#fff;padding:22px 20px;display:none;border-bottom:1px solid #f1f5f9}
 .section.active{display:block}
 .section-title{font-size:1rem;font-weight:700;color:#1e3a5f;margin-bottom:4px}
+.audio-guide{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#eef4fb;border:1px solid #d5e3f3;border-radius:8px;padding:8px 12px;margin:8px 0 14px}
+.audio-guide .ag-label{font-size:0.82rem;font-weight:600;color:#1e3a5f}
+.audio-guide button{border:1px solid #1e3a5f;background:#fff;color:#1e3a5f;border-radius:20px;padding:4px 14px;font-size:0.85rem;cursor:pointer}
+.audio-guide button.playing{background:#1e3a5f;color:#fff}
 .section-desc{font-size:.8rem;color:#64748b;margin-bottom:18px;margin-top:4px}
 .field{margin-bottom:16px}
 label{display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:5px}
@@ -1132,6 +1136,7 @@ window.addEventListener('DOMContentLoaded', () => {
     computeVisibleSections();
     loadSavedData(decodeURIComponent(clientEmail));
   }
+  initAudioGuides();
   document.body.addEventListener('input', scheduleAutoSave);
   document.body.addEventListener('change', scheduleAutoSave);
   document.querySelectorAll('input[name="marital"]').forEach(r => {
@@ -1146,6 +1151,61 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// ── SECTION AUDIO GUIDES ──
+// Pre-recorded how-to-fill instructions per section. Drop files into the audios/
+// folder named <sectionId>-<lang>.mp3 (e.g. audios/s6-en.mp3, audios/s6-pa.mp3)
+// and the matching button appears automatically — no code changes needed.
+const AUDIO_BASE = 'audios/';
+const AUDIO_LANGS = [ {code:'en', label:'English'}, {code:'pa', label:'ਪੰਜਾਬੀ'} ];
+let guideAudio = null, guideBtn = null;
+
+function stopGuideAudio(){
+  if (guideAudio) { guideAudio.pause(); guideAudio = null; }
+  if (guideBtn) { guideBtn.classList.remove('playing'); guideBtn.textContent = guideBtn.dataset.label; guideBtn = null; }
+}
+
+function playGuide(btn, url){
+  if (guideBtn === btn) { stopGuideAudio(); return; } // clicking the playing button stops it
+  stopGuideAudio();
+  guideAudio = new Audio(url);
+  guideBtn = btn;
+  btn.classList.add('playing');
+  btn.textContent = '⏸ ' + btn.dataset.label.replace(/^▶ /,'');
+  guideAudio.onended = stopGuideAudio;
+  guideAudio.onerror = stopGuideAudio;
+  guideAudio.play().catch(stopGuideAudio);
+}
+
+function initAudioGuides(){
+  if (location.protocol === 'file:') return; // needs a web server for the availability checks
+  ALL_SECTIONS.forEach(sid => {
+    const sEl = document.getElementById(sid);
+    const titleEl = sEl && sEl.querySelector('.section-title');
+    if (!titleEl) return;
+    AUDIO_LANGS.forEach(lang => {
+      const url = AUDIO_BASE + sid + '-' + lang.code + '.mp3';
+      fetch(url, { method:'HEAD' }).then(r => {
+        if (!r.ok) return;
+        let bar = sEl.querySelector('.audio-guide');
+        if (!bar) {
+          bar = document.createElement('div');
+          bar.className = 'audio-guide';
+          bar.innerHTML = '<span class="ag-label">🔊 Listen: how to fill this section</span>';
+          titleEl.insertAdjacentElement('afterend', bar);
+        }
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.label = '▶ ' + lang.label;
+        btn.textContent = '▶ ' + lang.label;
+        btn.onclick = () => playGuide(btn, url);
+        // Keep English first even though availability checks finish in any order
+        if (lang.code === 'en' && bar.querySelector('button')) bar.insertBefore(btn, bar.querySelector('button'));
+        else bar.appendChild(btn);
+      }).catch(()=>{});
+    });
+  });
+}
 
 // ── LINK GENERATION ──
 function generateClientLink() {
@@ -1792,6 +1852,7 @@ function goToSectionById(sId) {
 }
 
 function showSection(i) {
+  stopGuideAudio(); // instructions from the previous page shouldn't keep talking
   visibleSections.forEach((s, idx) => document.getElementById(s).classList.toggle('active', idx === i));
   document.getElementById('backBtn').style.visibility = i===0 ? 'hidden' : 'visible';
   const isLast = (i === visibleSections.length - 1);
