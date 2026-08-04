@@ -333,6 +333,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="section" id="s6">
       <div class="section-title">🎓 Education</div>
       <div class="section-desc">Please list Grade 12 and all post-secondary programs — completed or not, inside or outside Canada.</div>
+      <div id="audio-s6a"></div>
       <div class="job-block" id="grade12Block">
         <div class="job-block-title">Grade 12 (High School)</div>
         <div class="row2">
@@ -351,6 +352,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <div class="divider"></div>
       <div class="section-desc">Post-Secondary Education (after Grade 12)</div>
+      <div id="audio-s6b"></div>
       <div id="eduBlocks">
         <div class="job-block">
           <div class="job-block-title">Education Entry 1</div>
@@ -1156,6 +1158,8 @@ window.addEventListener('DOMContentLoaded', () => {
 // Pre-recorded how-to-fill instructions per section. Drop files into the audios/
 // folder named <sectionId>-<lang>.mp3 (e.g. audios/s6-en.mp3, audios/s6-pa.mp3)
 // and the matching button appears automatically — no code changes needed.
+// Sub-section audios (e.g. s6a-pa.mp3) mount into their <div id="audio-s6a">
+// anchor inside the section instead of the section top.
 const AUDIO_BASE = 'audios/';
 const AUDIO_LANGS = [ {code:'en', label:'English'}, {code:'pa', label:'ਪੰਜਾਬੀ'} ];
 let guideAudio = null, guideBtn = null;
@@ -1177,32 +1181,48 @@ function playGuide(btn, url){
   guideAudio.play().catch(stopGuideAudio);
 }
 
+const AUDIO_EXTRA_SPOTS = [
+  { key:'s6a', label:'🔊 Listen: Grade 12' },
+  { key:'s6b', label:'🔊 Listen: Post-Secondary Education' }
+];
+
+function addGuideButton(spot, lang, url){
+  let bar = spot.container.querySelector('.audio-guide[data-key="' + spot.key + '"]');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.className = 'audio-guide';
+    bar.dataset.key = spot.key;
+    bar.innerHTML = '<span class="ag-label">' + spot.label + '</span>';
+    spot.mount(bar);
+  }
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.dataset.label = '▶ ' + lang.label;
+  btn.textContent = '▶ ' + lang.label;
+  btn.onclick = () => playGuide(btn, url);
+  // Keep English first even though availability checks finish in any order
+  if (lang.code === 'en' && bar.querySelector('button')) bar.insertBefore(btn, bar.querySelector('button'));
+  else bar.appendChild(btn);
+}
+
 function initAudioGuides(){
   if (location.protocol === 'file:') return; // needs a web server for the availability checks
+  const spots = [];
   ALL_SECTIONS.forEach(sid => {
     const sEl = document.getElementById(sid);
     const titleEl = sEl && sEl.querySelector('.section-title');
-    if (!titleEl) return;
+    if (titleEl) spots.push({ key: sid, label: '🔊 Listen: how to fill this section', container: sEl,
+      mount: bar => titleEl.insertAdjacentElement('afterend', bar) });
+  });
+  AUDIO_EXTRA_SPOTS.forEach(x => {
+    const anchor = document.getElementById('audio-' + x.key);
+    if (anchor) spots.push({ key: x.key, label: x.label, container: anchor,
+      mount: bar => anchor.appendChild(bar) });
+  });
+  spots.forEach(spot => {
     AUDIO_LANGS.forEach(lang => {
-      const url = AUDIO_BASE + sid + '-' + lang.code + '.mp3';
-      fetch(url, { method:'HEAD' }).then(r => {
-        if (!r.ok) return;
-        let bar = sEl.querySelector('.audio-guide');
-        if (!bar) {
-          bar = document.createElement('div');
-          bar.className = 'audio-guide';
-          bar.innerHTML = '<span class="ag-label">🔊 Listen: how to fill this section</span>';
-          titleEl.insertAdjacentElement('afterend', bar);
-        }
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.dataset.label = '▶ ' + lang.label;
-        btn.textContent = '▶ ' + lang.label;
-        btn.onclick = () => playGuide(btn, url);
-        // Keep English first even though availability checks finish in any order
-        if (lang.code === 'en' && bar.querySelector('button')) bar.insertBefore(btn, bar.querySelector('button'));
-        else bar.appendChild(btn);
-      }).catch(()=>{});
+      const url = AUDIO_BASE + spot.key + '-' + lang.code + '.mp3';
+      fetch(url, { method:'HEAD' }).then(r => { if (r.ok) addGuideButton(spot, lang, url); }).catch(()=>{});
     });
   });
 }
