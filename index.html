@@ -448,7 +448,7 @@ textarea{resize:vertical;min-height:80px}
 
     <!-- SECTION 9 — Application History -->
     <div class="section" id="s9">
-      <div class="section-title">🗂️ Application History</div>
+      <div class="section-title">🗂️ Applications History and Background</div>
       <div class="section-desc">List all applications you have previously submitted to IRCC (Study permit, work permit, extensions, TRV, visitor).</div>
       <div id="audio-appdate"></div>
       <div id="appHistoryBlocks">
@@ -1104,16 +1104,19 @@ function hasChildrenSelected() {
 }
 
 function computeVisibleSections() {
+  const isPgwp = applicationType === 'pgwp';
+  const isEoiFlow = applicationType === 'eoi' || applicationType === 'express_entry';
+
   // Spouse and Children sections appear only when the client's answers call for them.
   const showSpouse = hasSpouseSelected();
   const showChildren = hasChildrenSelected();
   let visible = ['s1'];
   if (showSpouse) visible.push('s2');
   if (showChildren) visible.push('s3');
-  visible.push('s4','s5','s6','s7','s8','s9');
+  visible.push('s4','s5','s6','s7');
+  if (!isPgwp) visible.push('s8'); // Financial information is not collected for PGWP
+  visible.push('s9');
 
-  const isPgwp = applicationType === 'pgwp';
-  const isEoiFlow = applicationType === 'eoi' || applicationType === 'express_entry';
   const isPR = applicationType === 'pr';
 
   var wrap = document.getElementById('outsideCanadaFamilyToggleWrap');
@@ -1275,8 +1278,8 @@ function playGuide(btn, url){
 const AUDIO_EXTRA_SPOTS = [
   { key:'s6a', label:'🔊 Listen: Grade 12' },
   { key:'s6b', label:'🔊 Listen: Post-Secondary Education' },
-  { key:'dates-s6', file:'dates-edu', label:'🔊 Listen: how to enter dates' },
-  { key:'dates-s7', file:'dates', label:'🔊 Listen: how to enter dates' },
+  { key:'dates-s6', file:'dates-edu', label:'🔊 Listen: How to enter dates' },
+  { key:'dates-s7', file:'dates', label:'🔊 Listen: How to enter dates' },
   { key:'appdate', label:'🔊 Listen: Date of Result' }
 ];
 
@@ -1305,7 +1308,7 @@ function initAudioGuides(){
   ALL_SECTIONS.forEach(sid => {
     const sEl = document.getElementById(sid);
     const titleEl = sEl && sEl.querySelector('.section-title');
-    if (titleEl) spots.push({ key: sid, label: '🔊 Listen: how to fill this section', container: sEl,
+    if (titleEl) spots.push({ key: sid, label: '🔊 Listen: How to fill this section', container: sEl,
       mount: bar => titleEl.insertAdjacentElement('afterend', bar) });
   });
   AUDIO_EXTRA_SPOTS.forEach(x => {
