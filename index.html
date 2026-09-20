@@ -450,7 +450,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="section" id="s9">
       <div class="section-title">🗂️ Application History</div>
       <div class="section-desc">List all applications you have previously submitted to IRCC (Study permit, work permit, extensions, TRV, visitor).</div>
-      <div id="audio-dates-s9"></div>
+      <div id="audio-appdate"></div>
       <div id="appHistoryBlocks">
         <div class="job-block">
           <div class="job-block-title">Application 1</div>
@@ -1275,9 +1275,9 @@ function playGuide(btn, url){
 const AUDIO_EXTRA_SPOTS = [
   { key:'s6a', label:'🔊 Listen: Grade 12' },
   { key:'s6b', label:'🔊 Listen: Post-Secondary Education' },
-  { key:'dates-s6', file:'dates', label:'🔊 Listen: how to enter dates' },
+  { key:'dates-s6', file:'dates-edu', label:'🔊 Listen: how to enter dates' },
   { key:'dates-s7', file:'dates', label:'🔊 Listen: how to enter dates' },
-  { key:'dates-s9', file:'dates', label:'🔊 Listen: how to enter dates' }
+  { key:'appdate', label:'🔊 Listen: Date of Result' }
 ];
 
 function addGuideButton(spot, lang, url){
