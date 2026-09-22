@@ -1,0 +1,37 @@
+# s4-pa — Other Country Residency (Section 4)
+# Record to: audios/s4-pa.mp3
+# Replaces the old recording in audios/disabled/s4-pa.mp3 (that file had Travel History text by mistake).
+
+--- PUNJABI SCRIPT (romanized; speak naturally) ---
+
+Eh section “Other Country Residency” baare hai.
+
+Pehla sawaal eh hai: kya tusi India te Canada to alawa kise hor desh vich chhe mahine ya us ton vadd reh chuke ho?
+
+Jé tusi sirf India vich reh chuke ho, ya sirf Canada vich, ya dono jagah rehna chhota-chhota si — matlab kise hor desh vich lagatar chhe mahine ton vadd nahi — ta “No” chuno.
+
+Jé tusi kise hor desh vich — jiven USA, UK, Australia, UAE, ya koi hor — chhe mahine ya us ton vadd reh chuke ho, ta “Yes” chuno.
+
+Jé “Yes” hai, ta thalle di jaankari likhni hai:
+
+“From” — rehaish kab shuru hoi: mahina te saal, jiven 01/2020.
+
+“To” — rehaish kab khatam hoi: mahina te saal, jiven 06/2022.
+
+“Country Name” — desh da poora naam.
+
+“Status” — oh dio ki tusi keho bande ho: jiven Work Visa, Study Visa, Visitor, PR, ya Permanent Resident.
+
+“Purpose of Stay” — thodi jahi jaankari ke kyon reh rahe si: jiven study, job, business, ya family.
+
+Yaad rakho: India apna desh hai te Canada alag — in dono nu is section vich likhna nahi. Sirf hor deshaan di rehaish dasni hai.
+
+--- ENGLISH REFERENCE (for staff / recorder) ---
+
+This section asks whether the client lived in any country other than India (home country) and Canada for six months or more in total.
+
+If they only lived in India and/or Canada, or any stay elsewhere was under six months, select No.
+
+If they lived elsewhere (e.g. USA, UK, Australia, UAE) for six months or more, select Yes and complete From, To, Country Name, Status, and Purpose of Stay (MM/YYYY for dates).
+
+Do not list India or Canada here — only other countries.
