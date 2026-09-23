@@ -1,37 +1,21 @@
-# s4-pa — Other Country Residency (Section 4)
-# Record to: audios/s4-pa.mp3
-# Replaces the old recording in audios/disabled/s4-pa.mp3 (that file had Travel History text by mistake).
+ਇਹ ਸੈਕਸ਼ਨ ਹੋਰ ਦੇਸ਼ਾਂ ਵਿੱਚ ਰਿਹਾਇਸ਼ ਬਾਰੇ ਹੈ।
 
---- PUNJABI SCRIPT (romanized; speak naturally) ---
+ਪਹਿਲਾ ਸਵਾਲ ਇਹ ਹੈ: ਕੀ ਤੁਸੀਂ ਭਾਰਤ ਅਤੇ ਕੈਨੇਡਾ ਤੋਂ ਇਲਾਵਾ ਕਿਸੇ ਹੋਰ ਦੇਸ਼ ਵਿੱਚ ਛੇ ਮਹੀਨੇ ਜਾਂ ਇਸ ਤੋਂ ਵੱਧ ਰਹਿ ਚੁੱਕੇ ਹੋ?
 
-Eh section “Other Country Residency” baare hai.
+ਜੇ ਤੁਸੀਂ ਸਿਰਫ਼ ਭਾਰਤ ਵਿੱਚ ਰਹਿ ਚੁੱਕੇ ਹੋ, ਜਾਂ ਸਿਰਫ਼ ਕੈਨੇਡਾ ਵਿੱਚ, ਜਾਂ ਦੋਨਾਂ ਥਾਵਾਂ ਤੇ ਰਿਹਾਇਸ਼ ਛੋਟੀ-ਛੋਟੀ ਸੀ — ਮਤਲਬ ਕਿਸੇ ਹੋਰ ਦੇਸ਼ ਵਿੱਚ ਲਗਾਤਾਰ ਛੇ ਮਹੀਨੇ ਤੋਂ ਵੱਧ ਨਹੀਂ — ਤਾਂ ਨਹੀਂ ਚੁਣੋ।
 
-Pehla sawaal eh hai: kya tusi India te Canada to alawa kise hor desh vich chhe mahine ya us ton vadd reh chuke ho?
+ਜੇ ਤੁਸੀਂ ਕਿਸੇ ਹੋਰ ਦੇਸ਼ ਵਿੱਚ — ਜਿਵੇਂ ਅਮਰੀਕਾ, ਯੂਕੇ, ਆਸਟਰੇਲੀਆ, ਯੂਏਈ, ਜਾਂ ਕੋਈ ਹੋਰ — ਛੇ ਮਹੀਨੇ ਜਾਂ ਇਸ ਤੋਂ ਵੱਧ ਰਹਿ ਚੁੱਕੇ ਹੋ, ਤਾਂ ਹਾਂ ਚੁਣੋ।
 
-Jé tusi sirf India vich reh chuke ho, ya sirf Canada vich, ya dono jagah rehna chhota-chhota si — matlab kise hor desh vich lagatar chhe mahine ton vadd nahi — ta “No” chuno.
+ਜੇ ਹਾਂ ਹੈ, ਤਾਂ ਹੇਠਾਂ ਦਿੱਤੀ ਜਾਣਕਾਰੀ ਲਿਖਣੀ ਹੈ।
 
-Jé tusi kise hor desh vich — jiven USA, UK, Australia, UAE, ya koi hor — chhe mahine ya us ton vadd reh chuke ho, ta “Yes” chuno.
+ਸ਼ੁਰੂ — ਰਿਹਾਇਸ਼ ਕਦੋਂ ਸ਼ੁਰੂ ਹੋਈ: ਮਹੀਨਾ ਅਤੇ ਸਾਲ, ਜਿਵੇਂ ਜਨਵਰੀ ਦੋ ਹਜ਼ਾਰ ਬੀਸ।
 
-Jé “Yes” hai, ta thalle di jaankari likhni hai:
+ਖਤਮ — ਰਿਹਾਇਸ਼ ਕਦੋਂ ਖਤਮ ਹੋਈ: ਮਹੀਨਾ ਅਤੇ ਸਾਲ, ਜਿਵੇਂ ਜੂਨ ਦੋ ਹਜ਼ਾਰ ਬਾਈ।
 
-“From” — rehaish kab shuru hoi: mahina te saal, jiven 01/2020.
+ਦੇਸ਼ ਦਾ ਨਾਮ — ਦੇਸ਼ ਦਾ ਪੂਰਾ ਨਾਮ ਲਿਖੋ।
 
-“To” — rehaish kab khatam hoi: mahina te saal, jiven 06/2022.
+ਸਟੇਟਸ — ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਕੀਹੋ ਬੰਦੇ ਹੋ: ਜਿਵੇਂ ਕੰਮ ਦਾ ਵੀਜ਼ਾ, ਪੜ੍ਹਾਈ ਦਾ ਵੀਜ਼ਾ, ਵਿਜ਼ਟਰ, ਪੀਆਰ, ਜਾਂ ਸਥਾਈ ਨਿਵਾਸੀ।
 
-“Country Name” — desh da poora naam.
+ਰਿਹਾਇਸ਼ ਦਾ ਮਕਸਦ — ਥੋੜ੍ਹੀ ਜਿਹੀ ਜਾਣਕਾਰੀ ਕਿ ਕਿਉਂ ਰਹਿ ਰਹੇ ਸੀ: ਜਿਵੇਂ ਪੜ੍ਹਾਈ, ਨੌਕਰੀ, ਕਾਰੋਬਾਰ, ਜਾਂ ਪਰਿਵਾਰ।
 
-“Status” — oh dio ki tusi keho bande ho: jiven Work Visa, Study Visa, Visitor, PR, ya Permanent Resident.
-
-“Purpose of Stay” — thodi jahi jaankari ke kyon reh rahe si: jiven study, job, business, ya family.
-
-Yaad rakho: India apna desh hai te Canada alag — in dono nu is section vich likhna nahi. Sirf hor deshaan di rehaish dasni hai.
-
---- ENGLISH REFERENCE (for staff / recorder) ---
-
-This section asks whether the client lived in any country other than India (home country) and Canada for six months or more in total.
-
-If they only lived in India and/or Canada, or any stay elsewhere was under six months, select No.
-
-If they lived elsewhere (e.g. USA, UK, Australia, UAE) for six months or more, select Yes and complete From, To, Country Name, Status, and Purpose of Stay (MM/YYYY for dates).
-
-Do not list India or Canada here — only other countries.
+ਯਾਦ ਰੱਖੋ: ਭਾਰਤ ਤੁਹਾਡਾ ਦੇਸ਼ ਹੈ ਅਤੇ ਕੈਨੇਡਾ ਅਲਗ — ਇਨ੍ਹਾਂ ਦੋਨਾਂ ਨੂੰ ਇਸ ਸੈਕਸ਼ਨ ਵਿੱਚ ਲਿਖਣਾ ਨਹੀਂ। ਸਿਰਫ਼ ਹੋਰ ਦੇਸ਼ਾਂ ਦੀ ਰਿਹਾਇਸ਼ ਦੱਸਣੀ ਹੈ।
