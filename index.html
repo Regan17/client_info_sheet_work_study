@@ -1766,7 +1766,19 @@ function setSaveStatus(state) {
 }
 
 // ── COLLECT DATA ──
-// The generated document still shows one address line, so build it from the separate fields.
+const PRINCIPAL_ADDR_FIELD_IDS = [
+  'addrPoBox', 'addrUnit', 'addrStreetNo', 'addrStreetName',
+  'addrCity', 'addrProvince', 'addrPostal', 'addrCountry'
+];
+
+function hasSplitPrincipalAddress() {
+  return PRINCIPAL_ADDR_FIELD_IDS.some(id => {
+    const el = document.getElementById(id);
+    return el && el.value.trim();
+  });
+}
+
+// Legacy single-line address (pre–IRCC split fields). Still used when loading very old saves.
 function composeAddress() {
   const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const poBox = v('addrPoBox') ? 'P.O. Box ' + v('addrPoBox') : '';
@@ -1785,7 +1797,9 @@ function collectData() {
     lastName:document.getElementById('lastName').value,
     dob:document.getElementById('dob').value,
     phone:document.getElementById('phone').value,
-    address:composeAddress(),
+    // Omit combined line when split fields are filled — doc lists each part above; avoids duplicate row.
+    address: hasSplitPrincipalAddress() ? '' : composeAddress(),
+    principalAddressUsesSplitFields: hasSplitPrincipalAddress(),
     addrPoBox:document.getElementById('addrPoBox').value,
     addrUnit:document.getElementById('addrUnit').value,
     addrStreetNo:document.getElementById('addrStreetNo').value,
