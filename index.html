@@ -96,6 +96,7 @@ textarea{resize:vertical;min-height:80px}
       <option value="pgwp">PGWP</option>
       <option value="dummy_work_permit">Dummy Work Permit</option>
       <option value="visitor_record">Visitor Record</option>
+      <option value="visitor_visa">Visitor Visa</option>
       <option value="eoi">EOI (Expression of Interest)</option>
       <option value="express_entry">Express Entry</option>
       <option value="pnp">Manitoba PNP (MPNP)</option>
@@ -118,6 +119,7 @@ textarea{resize:vertical;min-height:80px}
     <div class="tabs-wrap">
       <div class="tabs-scroll">
         <button class="tab active" id="tab0" onclick="goToSectionById('s1')">👤 Personal</button>
+        <button class="tab" id="tab26" onclick="goToSectionById('s27')" style="display:none">🤝 Sponsor</button>
         <button class="tab" id="tab1" onclick="goToSectionById('s2')">💑 Spouse</button>
         <button class="tab" id="tab2" onclick="goToSectionById('s3')">👶 Children</button>
         <button class="tab" id="tab3" onclick="goToSectionById('s4')">🌍 Residency</button>
@@ -498,6 +500,20 @@ textarea{resize:vertical;min-height:80px}
         </div>
         <div class="conditional" id="criminalDetails">
           <div class="field"><label>Please provide details</label><textarea id="criminalInfo" placeholder="Provide details of the offense, date, country, and outcome"></textarea></div>
+        </div>
+      </div>
+      <!-- Biometrics — Visitor Visa only -->
+      <div id="biometricsWrap" style="display:none">
+        <div class="divider"></div>
+        <div class="field">
+          <label>Have you ever submitted biometrics?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="biometricsGiven" value="Yes" onclick="toggleConditional('biometricsDetails','show')"> Yes</label>
+            <label><input type="radio" name="biometricsGiven" value="No" onclick="toggleConditional('biometricsDetails','hide')"> No</label>
+          </div>
+        </div>
+        <div class="conditional" id="biometricsDetails">
+          <div class="field"><label>When did you give your biometrics? (DD/MM/YYYY)</label><input type="text" id="biometricsDate" placeholder="e.g. 15/03/2023"></div>
         </div>
       </div>
     </div>
@@ -1041,6 +1057,105 @@ textarea{resize:vertical;min-height:80px}
       <div class="field"><label>Additional Staff Notes</label><textarea id="staffNotes" placeholder="Any additional observations or notes"></textarea></div>
     </div>
 
+    <!-- SECTION 27 — Sponsor (Visitor Visa only) -->
+    <div class="section" id="s27">
+      <div class="section-title">🤝 Sponsor Information</div>
+      <div class="section-desc">Details of the person in Canada who is inviting or supporting this visit.</div>
+      <div class="row2">
+        <div class="field"><label>Given Name <span class="req">*</span></label><input type="text" id="sponsorGiven" placeholder="First name"></div>
+        <div class="field"><label>Last Name <span class="req">*</span></label><input type="text" id="sponsorLast" placeholder="Last name"></div>
+      </div>
+      <div class="field"><label>Relationship to Applicant <span class="req">*</span></label><input type="text" id="sponsorRelationship" placeholder="e.g. Brother, Uncle, Friend"></div>
+      <div class="field"><label>Date of Birth (DD/MM/YYYY) <span class="req">*</span></label><input type="text" id="sponsorDob" placeholder="e.g. 15/08/1990"></div>
+      <div class="field"><label>Email ID <span class="req">*</span></label><input type="email" id="sponsorEmail" placeholder="sponsor@email.com"></div>
+      <div class="field"><label>Phone Number <span class="req">*</span></label><input type="tel" id="sponsorPhone" placeholder="+1 000 000 0000"></div>
+      <!-- Sponsor mailing address — same layout as the applicant's -->
+      <div class="field"><label>Current Mailing Address <span class="req">*</span></label></div>
+      <div class="row2">
+        <div class="field"><label>P.O. Box</label><input type="text" id="sponsorAddrPoBox" placeholder="Leave blank if none"></div>
+        <div class="field"><label>Apt / Unit Number</label><input type="text" id="sponsorAddrUnit" placeholder="e.g. 101"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Street Number <span class="req">*</span></label><input type="text" id="sponsorAddrStreetNo" placeholder="e.g. 123"></div>
+        <div class="field"><label>Street Name <span class="req">*</span></label><input type="text" id="sponsorAddrStreetName" placeholder="e.g. Main Street"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>City / Town <span class="req">*</span></label><input type="text" id="sponsorAddrCity" placeholder="e.g. Winnipeg"></div>
+        <div class="field"><label>Country or Territory <span class="req">*</span></label><input type="text" id="sponsorAddrCountry" placeholder="e.g. Canada"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Province <span class="req">*</span></label><input type="text" id="sponsorAddrProvince" placeholder="e.g. MB"></div>
+        <div class="field"><label>Postal Code <span class="req">*</span></label><input type="text" id="sponsorAddrPostal" placeholder="e.g. A1A 1A1"></div>
+      </div>
+      <div class="field">
+        <label>Marital Status <span class="req">*</span></label>
+        <div class="radio-group">
+          <label><input type="radio" name="sponsorMarital" value="Married" onclick="toggleSponsorDom()"> Married</label>
+          <label><input type="radio" name="sponsorMarital" value="Common-law partner" onclick="toggleSponsorDom()"> Common-law partner</label>
+          <label><input type="radio" name="sponsorMarital" value="Single" onclick="toggleSponsorDom()"> Single</label>
+          <label><input type="radio" name="sponsorMarital" value="Divorced" onclick="toggleSponsorDom()"> Divorced</label>
+          <label><input type="radio" name="sponsorMarital" value="Widowed" onclick="toggleSponsorDom()"> Widowed</label>
+        </div>
+      </div>
+      <div class="field" id="sponsorDomField" style="display:none"><label>Date of Marriage (DD/MM/YYYY)</label><input type="text" id="sponsorDom" placeholder="e.g. 10/05/2015"></div>
+      <div class="field">
+        <label>Do they have any children?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="sponsorHasChildren" value="Yes"> Yes</label>
+          <label><input type="radio" name="sponsorHasChildren" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field"><label>Native Language (Mother Tongue)</label><input type="text" id="sponsorNativeLang" placeholder="e.g. Punjabi"></div>
+      <div class="field"><label>Current Status in Canada <span class="req">*</span></label><input type="text" id="sponsorCanadaStatus" placeholder="e.g. Citizen, PR, Worker"></div>
+      <div class="field"><label>Passport Number</label><input type="text" id="sponsorPassport" placeholder="Passport No."></div>
+      <div class="divider"></div>
+      <div class="field"><label>Current Employment <span class="req">*</span></label><input type="text" id="sponsorEmployment" placeholder="e.g. Cook at Tim Hortons, Winnipeg"></div>
+      <div class="field"><label>Current Bank Balance <span class="req">*</span></label><input type="text" id="sponsorBankBalance" placeholder="e.g. CAD 25,000"></div>
+      <div class="divider"></div>
+      <div class="field">
+        <label>Have they ever used any other name (e.g. nickname, maiden name, alias)?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="sponsorOtherNameUsed" value="Yes" onclick="toggleConditional('sponsorOtherNameDetails','show')"> Yes</label>
+          <label><input type="radio" name="sponsorOtherNameUsed" value="No" onclick="toggleConditional('sponsorOtherNameDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="sponsorOtherNameDetails">
+        <div class="field"><label>Other Name(s) Used</label><input type="text" id="sponsorOtherNames" placeholder="e.g. maiden name, nickname"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="field"><label>Date and place of their last entry to Canada (if they never went outside of Canada, then date and place of 1st Entry to Canada)</label></div>
+      <div class="row2">
+        <div class="field"><label>Date (YYYY/MM/DD)</label><input type="text" id="sponsorLastEntryDate" placeholder="e.g. 2023/05/15"></div>
+        <div class="field"><label>Place</label><input type="text" id="sponsorLastEntryPlace" placeholder="e.g. Toronto Pearson Airport"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="field">
+        <label>Have they previously been married or in a common-law relationship?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="sponsorPrevMarried" value="Yes" onclick="toggleConditional('sponsorPrevMarriedDetails','show')"> Yes</label>
+          <label><input type="radio" name="sponsorPrevMarried" value="No" onclick="toggleConditional('sponsorPrevMarriedDetails','hide')"> No</label>
+        </div>
+      </div>
+      <div class="conditional" id="sponsorPrevMarriedDetails">
+        <div class="job-block-title">Previous Relationship Details (Sponsor)</div>
+        <div class="row2">
+          <div class="field"><label>Given Name</label><input type="text" id="sponsorPrevGiven"></div>
+          <div class="field"><label>Last Name</label><input type="text" id="sponsorPrevLast"></div>
+        </div>
+        <div class="field"><label>Date of Birth (DD/MM/YYYY)</label><input type="text" id="sponsorPrevDob"></div>
+        <div class="field"><label>Type of Relationship</label>
+          <div class="radio-group">
+            <label><input type="radio" name="sponsorPrevRelType" value="Married"> Married</label>
+            <label><input type="radio" name="sponsorPrevRelType" value="Common-Law"> Common-Law</label>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>From (MM/YYYY)</label><input type="text" id="sponsorPrevFrom"></div>
+          <div class="field"><label>To (MM/YYYY)</label><input type="text" id="sponsorPrevTo"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- SUCCESS -->
     <div class="success" id="successMsg">
       <div class="icon">✅</div>
@@ -1064,6 +1179,7 @@ const APP_TYPE_LABELS = {
   pgwp: 'PGWP',
   dummy_work_permit: 'Dummy Work Permit',
   visitor_record: 'Visitor Record',
+  visitor_visa: 'Visitor Visa',
   pnp: 'Manitoba PNP (MPNP)',
   pnp_based_pr: 'PNP based PR',
   pr: 'PR (Permanent Residence)',
@@ -1081,7 +1197,7 @@ function updateHeaderSubtitle() {
 
 // ── DYNAMIC SECTIONS ──
 const ALL_SECTIONS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12',
-  's13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26'];
+  's13','s14','s15','s16','s17','s18','s19','s20','s21','s22','s23','s24','s25','s26','s27'];
 const SECTION_TAB_MAP = {
   s1:'tab0', s2:'tab1', s3:'tab2', s4:'tab3', s5:'tab4',
   s6:'tab5', s7:'tab6', s8:'tab7', s9:'tab8',
@@ -1089,7 +1205,7 @@ const SECTION_TAB_MAP = {
   s13:'tab12', s14:'tab13', s15:'tab14', s16:'tab15',
   s17:'tab16', s18:'tab17', s19:'tab18', s20:'tab19',
   s21:'tab20', s22:'tab21', s23:'tab22', s24:'tab23',
-  s25:'tab24', s26:'tab25'
+  s25:'tab24', s26:'tab25', s27:'tab26'
 };
 let visibleSections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
 let cur = 0, docId = '', applicationType = '', autoSaveTimer = null, isSaving = false;
@@ -1111,32 +1227,48 @@ function computeVisibleSections() {
   // Manitoba PNP (MPNP): PR-style depth, but no Travel, Personal History,
   // Address History or Family Information sections.
   const isMpnp = applicationType === 'pnp';
+  // Visitor Visa: Personal, Sponsor, Spouse, Children, Education, Work,
+  // Family Information, Applications History. Nothing else.
+  const isVisitorVisa = applicationType === 'visitor_visa';
 
   // Spouse and Children sections appear only when the client's answers call for them.
   const showSpouse = hasSpouseSelected();
   const showChildren = hasChildrenSelected();
   let visible = ['s1'];
-  if (showSpouse) visible.push('s2');
-  if (showChildren) visible.push('s3');
-  visible.push('s4');
-  if (!isMpnp) visible.push('s5'); // Travel history is not collected for MPNP
-  visible.push('s6','s7');
-  if (!isPgwp) visible.push('s8'); // Financial information is not collected for PGWP
-  visible.push('s9');
+
+  if (isVisitorVisa) {
+    visible.push('s27');                    // Sponsor, straight after Personal
+    if (showSpouse) visible.push('s2');
+    if (showChildren) visible.push('s3');
+    visible.push('s6', 's7');               // Education, Work
+    visible.push('s10');                    // Family Information
+    visible.push('s9');                     // Applications History and Background
+  } else {
+    if (showSpouse) visible.push('s2');
+    if (showChildren) visible.push('s3');
+    visible.push('s4');
+    if (!isMpnp) visible.push('s5'); // Travel history is not collected for MPNP
+    visible.push('s6','s7');
+    if (!isPgwp) visible.push('s8'); // Financial information is not collected for PGWP
+    visible.push('s9');
+  }
 
   var wrap = document.getElementById('outsideCanadaFamilyToggleWrap');
   var divHr = document.getElementById('outsideCanadaFamilyDivider');
-  // PGWP / EOI / Express Entry / PR / MPNP: hide outside-Canada question (study-only path).
-  if (wrap) wrap.style.display = (isPgwp || isEoiFlow || isPR || isMpnp) ? 'none' : '';
-  if (divHr) divHr.style.display = (isPgwp || isEoiFlow || isPR || isMpnp) ? 'none' : '';
+  // PGWP / EOI / Express Entry / PR / MPNP / Visitor Visa: hide outside-Canada
+  // question (study-only path).
+  var hideOutside = (isPgwp || isEoiFlow || isPR || isMpnp || isVisitorVisa);
+  if (wrap) wrap.style.display = hideOutside ? 'none' : '';
+  if (divHr) divHr.style.display = hideOutside ? 'none' : '';
 
-  if (isPgwp || isEoiFlow || isPR || isMpnp) {
+  if (hideOutside) {
     document.querySelectorAll('input[name="showFamilyInfo"]').forEach(function (r) { r.checked = false; });
   }
 
-  // Family Information tab: only when outside-Canada/LMIA/support-letter is Yes (never for PGWP)
+  // Family Information tab: only when outside-Canada/LMIA/support-letter is Yes
+  // (never for PGWP). Visitor Visa always shows it, pushed in its own branch above.
   const familyToggle = document.querySelector('input[name="showFamilyInfo"]:checked');
-  if (!isPgwp && !isPR && !isMpnp && familyToggle && familyToggle.value === 'Yes') {
+  if (!isPgwp && !isPR && !isMpnp && !isVisitorVisa && familyToggle && familyToggle.value === 'Yes') {
     visible.push('s10');
   }
 
@@ -1168,13 +1300,19 @@ function computeVisibleSections() {
     visible.push('s25'); // Relatives in Canada (asks date moved to Manitoba)
   }
 
+  // Biometrics questions live in Applications History, Visitor Visa only.
+  var bioWrap = document.getElementById('biometricsWrap');
+  if (bioWrap) bioWrap.style.display = isVisitorVisa ? '' : 'none';
+
   visibleSections = visible;
   updateHeaderSubtitle();
 
   // Show/hide PR-specific fields in existing sections.
-  // MPNP reuses the PR field set (eye colour, height, other names, education
-  // level/field, work contact person, refusal reason).
-  togglePRFields(isPR || isMpnp);
+  // MPNP reuses the whole PR field set (eye colour, height, other names,
+  // education level/field, work contact person, refusal reason).
+  // Visitor Visa takes only the Personal and Spouse extras, so Education,
+  // Work and Application History keep their standard fields.
+  togglePRFields(isPR || isMpnp || isVisitorVisa, isPR || isMpnp);
   togglePgwpFields(isPgwp);
 
   // Show/hide tabs and sections
@@ -1188,6 +1326,22 @@ function computeVisibleSections() {
     }
     if (tEl) tEl.style.display = isVisible ? '' : 'none';
   });
+
+  // Keep the tab strip in the same left-to-right order as the Next/Back
+  // navigation. Section order differs per application type, so the strip is
+  // re-ordered here rather than being fixed by the order of the markup.
+  var tabsScroll = document.querySelector('.tabs-scroll');
+  if (tabsScroll) {
+    visible.forEach(function (sId) {
+      var t = document.getElementById(SECTION_TAB_MAP[sId]);
+      if (t) tabsScroll.appendChild(t);
+    });
+    ALL_SECTIONS.forEach(function (sId) {
+      if (visible.indexOf(sId) !== -1) return;
+      var t = document.getElementById(SECTION_TAB_MAP[sId]);
+      if (t) tabsScroll.appendChild(t);
+    });
+  }
 
   // Adjust current index if out of bounds
   if (cur >= visibleSections.length) {
@@ -1215,8 +1369,13 @@ function togglePgwpFields(isPgwp) {
     : 'Post-Secondary Education (after Grade 12)';
 }
 
-function togglePRFields(show) {
+// `show` drives the Personal and Spouse extras. `showRowExtras` drives the
+// per-row extras inside Education, Work and Application History, and defaults
+// to `show` so existing callers behave exactly as before.
+function togglePRFields(show, showRowExtras) {
+  if (showRowExtras === undefined) showRowExtras = show;
   var display = show ? 'block' : 'none';
+  var rowDisplay = showRowExtras ? 'block' : 'none';
   // PR-only personal fields
   var el = document.getElementById('prPersonalFields');
   if (el) el.style.display = display;
@@ -1224,11 +1383,18 @@ function togglePRFields(show) {
   el = document.getElementById('prSpouseFields');
   if (el) el.style.display = display;
   // PR education extras (level + field of study)
-  document.querySelectorAll('.pr-edu-extra').forEach(function(e){ e.style.display = display; });
+  document.querySelectorAll('.pr-edu-extra').forEach(function(e){ e.style.display = rowDisplay; });
   // PR work extras (contact person)
-  document.querySelectorAll('.pr-work-extra').forEach(function(e){ e.style.display = display; });
+  document.querySelectorAll('.pr-work-extra').forEach(function(e){ e.style.display = rowDisplay; });
   // PR app history extras (reason for refusal)
-  document.querySelectorAll('.pr-apphist-extra').forEach(function(e){ e.style.display = display; });
+  document.querySelectorAll('.pr-apphist-extra').forEach(function(e){ e.style.display = rowDisplay; });
+}
+
+// Sponsor's date-of-marriage field mirrors the applicant's behaviour.
+function toggleSponsorDom() {
+  var r = document.querySelector('input[name="sponsorMarital"]:checked');
+  var f = document.getElementById('sponsorDomField');
+  if (f) f.style.display = (r && r.value === 'Married') ? 'block' : 'none';
 }
 
 // ── INIT ──
@@ -1392,7 +1558,17 @@ function fillFormFields(d) {
    'eyeColor','heightCm','otherNames','prLastEntryDate','prLastEntryPlace',
    'prPrevGiven','prPrevLast','prPrevDob','prPrevFrom','prPrevTo',
    'spouseCanadaStatus','spouseEyeColor','spouseHeightCm',
-   'g12level','g12field','staffMethod','staffNotes'
+   'g12level','g12field','staffMethod','staffNotes',
+   // Sponsor (Visitor Visa)
+   'sponsorGiven','sponsorLast','sponsorRelationship','sponsorDob','sponsorEmail',
+   'sponsorPhone','sponsorAddrPoBox','sponsorAddrUnit','sponsorAddrStreetNo',
+   'sponsorAddrStreetName','sponsorAddrCity','sponsorAddrProvince','sponsorAddrPostal',
+   'sponsorAddrCountry','sponsorDom','sponsorNativeLang','sponsorCanadaStatus',
+   'sponsorPassport','sponsorEmployment','sponsorBankBalance','sponsorOtherNames',
+   'sponsorLastEntryDate','sponsorLastEntryPlace','sponsorPrevGiven','sponsorPrevLast',
+   'sponsorPrevDob','sponsorPrevFrom','sponsorPrevTo',
+   // Biometrics (Visitor Visa)
+   'biometricsDate'
   ].forEach(id => { const el=document.getElementById(id); if(el&&d[id]) el.value=d[id]; });
 
   // Radio groups
@@ -1404,7 +1580,10 @@ function fillFormFields(d) {
    'bgPolitical','bgGovt','bgMilitary',
    'spBgPolitical','spBgGovt','spBgMilitary',
    'prRelCan','criminalRecord',
-   'staffAddr','staffEmail','staffIRCC','staffPH','staffAH','staffLang','staffTravel','staffPCC','staffGaps'
+   'staffAddr','staffEmail','staffIRCC','staffPH','staffAH','staffLang','staffTravel','staffPCC','staffGaps',
+   // Sponsor + biometrics radios (Visitor Visa)
+   'sponsorMarital','sponsorHasChildren','sponsorOtherNameUsed','sponsorPrevMarried',
+   'sponsorPrevRelType','biometricsGiven'
   ].forEach(name => {
     if(d[name]){ const r=document.querySelector(`input[name="${name}"][value="${d[name]}"]`); if(r) r.checked=true; }
   });
@@ -1427,6 +1606,11 @@ function fillFormFields(d) {
   if(d.otherNameUsed==='Yes') toggleConditional('otherNameDetails','show');
   if(d.prPrevMarried==='Yes') toggleConditional('prPrevMarriedDetails','show');
   if(d.prRelCan==='Yes') toggleConditional('prRelCanDetails','show');
+  // Sponsor + biometrics conditionals (Visitor Visa)
+  if(d.sponsorMarital==='Married') { var sdf=document.getElementById('sponsorDomField'); if(sdf) sdf.style.display='block'; }
+  if(d.sponsorOtherNameUsed==='Yes') toggleConditional('sponsorOtherNameDetails','show');
+  if(d.sponsorPrevMarried==='Yes') toggleConditional('sponsorPrevMarriedDetails','show');
+  if(d.biometricsGiven==='Yes') toggleConditional('biometricsDetails','show');
 
   // Restore work blocks (handle both old 4-pipe and new 6-pipe format)
   if(d.work) {
@@ -1792,6 +1976,16 @@ function composeAddress() {
     .filter(Boolean).join(', ');
 }
 
+// Same shape as composeAddress(), for the sponsor's address boxes.
+function composeSponsorAddress() {
+  const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  const poBox = v('sponsorAddrPoBox') ? 'P.O. Box ' + v('sponsorAddrPoBox') : '';
+  const unit = v('sponsorAddrUnit') ? 'Unit ' + v('sponsorAddrUnit') : '';
+  const street = [v('sponsorAddrStreetNo'), v('sponsorAddrStreetName')].filter(Boolean).join(' ');
+  return [poBox, unit, street, v('sponsorAddrCity'), v('sponsorAddrProvince'),
+    v('sponsorAddrPostal'), v('sponsorAddrCountry')].filter(Boolean).join(', ');
+}
+
 function collectData() {
   return {
     action:'save', email:document.getElementById('email').value, docId,
@@ -1955,6 +2149,44 @@ function collectData() {
     staffGaps:document.querySelector('input[name="staffGaps"]:checked')?.value||'',
     staffMethod:document.getElementById('staffMethod')?.value||'',
     staffNotes:document.getElementById('staffNotes')?.value||'',
+    // Sponsor (Visitor Visa)
+    sponsorGiven:document.getElementById('sponsorGiven')?.value||'',
+    sponsorLast:document.getElementById('sponsorLast')?.value||'',
+    sponsorRelationship:document.getElementById('sponsorRelationship')?.value||'',
+    sponsorDob:document.getElementById('sponsorDob')?.value||'',
+    sponsorEmail:document.getElementById('sponsorEmail')?.value||'',
+    sponsorPhone:document.getElementById('sponsorPhone')?.value||'',
+    sponsorAddress:composeSponsorAddress(),
+    sponsorAddrPoBox:document.getElementById('sponsorAddrPoBox')?.value||'',
+    sponsorAddrUnit:document.getElementById('sponsorAddrUnit')?.value||'',
+    sponsorAddrStreetNo:document.getElementById('sponsorAddrStreetNo')?.value||'',
+    sponsorAddrStreetName:document.getElementById('sponsorAddrStreetName')?.value||'',
+    sponsorAddrCity:document.getElementById('sponsorAddrCity')?.value||'',
+    sponsorAddrProvince:document.getElementById('sponsorAddrProvince')?.value||'',
+    sponsorAddrPostal:document.getElementById('sponsorAddrPostal')?.value||'',
+    sponsorAddrCountry:document.getElementById('sponsorAddrCountry')?.value||'',
+    sponsorMarital:document.querySelector('input[name="sponsorMarital"]:checked')?.value||'',
+    sponsorDom:document.getElementById('sponsorDom')?.value||'',
+    sponsorHasChildren:document.querySelector('input[name="sponsorHasChildren"]:checked')?.value||'',
+    sponsorNativeLang:document.getElementById('sponsorNativeLang')?.value||'',
+    sponsorCanadaStatus:document.getElementById('sponsorCanadaStatus')?.value||'',
+    sponsorPassport:document.getElementById('sponsorPassport')?.value||'',
+    sponsorEmployment:document.getElementById('sponsorEmployment')?.value||'',
+    sponsorBankBalance:document.getElementById('sponsorBankBalance')?.value||'',
+    sponsorOtherNameUsed:document.querySelector('input[name="sponsorOtherNameUsed"]:checked')?.value||'',
+    sponsorOtherNames:document.getElementById('sponsorOtherNames')?.value||'',
+    sponsorLastEntryDate:document.getElementById('sponsorLastEntryDate')?.value||'',
+    sponsorLastEntryPlace:document.getElementById('sponsorLastEntryPlace')?.value||'',
+    sponsorPrevMarried:document.querySelector('input[name="sponsorPrevMarried"]:checked')?.value||'',
+    sponsorPrevGiven:document.getElementById('sponsorPrevGiven')?.value||'',
+    sponsorPrevLast:document.getElementById('sponsorPrevLast')?.value||'',
+    sponsorPrevDob:document.getElementById('sponsorPrevDob')?.value||'',
+    sponsorPrevRelType:document.querySelector('input[name="sponsorPrevRelType"]:checked')?.value||'',
+    sponsorPrevFrom:document.getElementById('sponsorPrevFrom')?.value||'',
+    sponsorPrevTo:document.getElementById('sponsorPrevTo')?.value||'',
+    // Biometrics (Visitor Visa)
+    biometricsGiven:document.querySelector('input[name="biometricsGiven"]:checked')?.value||'',
+    biometricsDate:document.getElementById('biometricsDate')?.value||'',
   };
 }
 
