@@ -98,6 +98,7 @@ textarea{resize:vertical;min-height:80px}
       <option value="visitor_record">Visitor Record</option>
       <option value="eoi">EOI (Expression of Interest)</option>
       <option value="express_entry">Express Entry</option>
+      <option value="pnp">Manitoba PNP (MPNP)</option>
       <option value="pr">PR (Permanent Residence)</option>
     </select>
     <input type="email" class="admin-input" id="adminEmail" placeholder="Client's email address e.g. john@gmail.com"/>
@@ -141,7 +142,7 @@ textarea{resize:vertical;min-height:80px}
         <button class="tab" id="tab21" onclick="goToSectionById('s22')" style="display:none">🏠 Sp. Addresses</button>
         <button class="tab" id="tab22" onclick="goToSectionById('s23')" style="display:none">✈️ Sp. Travel</button>
         <button class="tab" id="tab23" onclick="goToSectionById('s24')" style="display:none">⚖️ Sp. Background</button>
-        <button class="tab" id="tab24" onclick="goToSectionById('s25')" style="display:none">👪 PR Relatives</button>
+        <button class="tab" id="tab24" onclick="goToSectionById('s25')" style="display:none">👪 Relatives in CA</button>
         <button class="tab" id="tab25" onclick="goToSectionById('s26')" style="display:none">🗒️ Staff Notes</button>
       </div>
     </div>
@@ -1056,14 +1057,14 @@ textarea{resize:vertical;min-height:80px}
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwciK5gEn4TGz7AMFuLFkJPZCugeDswab8Uq7QWIrS2AAofS8-C97M4G9A7RT6ES2-D/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwox4fpHS9VWZJSiObDCSwAZOpKyNdNRVHOxafK5miWSlnf4fLMPhB2xPit4e2ve08/exec";
 
 const APP_TYPE_LABELS = {
   study_permit_extension: 'Study Permit Extension',
   pgwp: 'PGWP',
   dummy_work_permit: 'Dummy Work Permit',
   visitor_record: 'Visitor Record',
-  pnp: 'PNP',
+  pnp: 'Manitoba PNP (MPNP)',
   pnp_based_pr: 'PNP based PR',
   pr: 'PR (Permanent Residence)',
   eoi: 'EOI (Expression of Interest)',
@@ -1106,6 +1107,10 @@ function hasChildrenSelected() {
 function computeVisibleSections() {
   const isPgwp = applicationType === 'pgwp';
   const isEoiFlow = applicationType === 'eoi' || applicationType === 'express_entry';
+  const isPR = applicationType === 'pr';
+  // Manitoba PNP (MPNP): PR-style depth, but no Travel, Personal History,
+  // Address History or Family Information sections.
+  const isMpnp = applicationType === 'pnp';
 
   // Spouse and Children sections appear only when the client's answers call for them.
   const showSpouse = hasSpouseSelected();
@@ -1113,25 +1118,25 @@ function computeVisibleSections() {
   let visible = ['s1'];
   if (showSpouse) visible.push('s2');
   if (showChildren) visible.push('s3');
-  visible.push('s4','s5','s6','s7');
+  visible.push('s4');
+  if (!isMpnp) visible.push('s5'); // Travel history is not collected for MPNP
+  visible.push('s6','s7');
   if (!isPgwp) visible.push('s8'); // Financial information is not collected for PGWP
   visible.push('s9');
 
-  const isPR = applicationType === 'pr';
-
   var wrap = document.getElementById('outsideCanadaFamilyToggleWrap');
   var divHr = document.getElementById('outsideCanadaFamilyDivider');
-  // PGWP / EOI / Express Entry / PR: hide outside-Canada question (study-only path).
-  if (wrap) wrap.style.display = (isPgwp || isEoiFlow || isPR) ? 'none' : '';
-  if (divHr) divHr.style.display = (isPgwp || isEoiFlow || isPR) ? 'none' : '';
+  // PGWP / EOI / Express Entry / PR / MPNP: hide outside-Canada question (study-only path).
+  if (wrap) wrap.style.display = (isPgwp || isEoiFlow || isPR || isMpnp) ? 'none' : '';
+  if (divHr) divHr.style.display = (isPgwp || isEoiFlow || isPR || isMpnp) ? 'none' : '';
 
-  if (isPgwp || isEoiFlow || isPR) {
+  if (isPgwp || isEoiFlow || isPR || isMpnp) {
     document.querySelectorAll('input[name="showFamilyInfo"]').forEach(function (r) { r.checked = false; });
   }
 
   // Family Information tab: only when outside-Canada/LMIA/support-letter is Yes (never for PGWP)
   const familyToggle = document.querySelector('input[name="showFamilyInfo"]:checked');
-  if (!isPgwp && !isPR && familyToggle && familyToggle.value === 'Yes') {
+  if (!isPgwp && !isPR && !isMpnp && familyToggle && familyToggle.value === 'Yes') {
     visible.push('s10');
   }
 
@@ -1154,11 +1159,22 @@ function computeVisibleSections() {
     visible.push('s25'); // PR Relatives in Canada
   }
 
+  // MPNP: Background + spouse App History / Education / Work / Background + Relatives.
+  // Travel (s5, s15, s23), Personal History (s13, s21), Address History (s14, s22)
+  // and Family Information (s10, s17) are intentionally excluded.
+  if (isMpnp) {
+    visible.push('s16'); // Background Questions
+    if (showSpouse) visible.push('s18','s19','s20','s24'); // Spouse App Hx, Education, Work, Background
+    visible.push('s25'); // Relatives in Canada (asks date moved to Manitoba)
+  }
+
   visibleSections = visible;
   updateHeaderSubtitle();
 
-  // Show/hide PR-specific fields in existing sections
-  togglePRFields(isPR);
+  // Show/hide PR-specific fields in existing sections.
+  // MPNP reuses the PR field set (eye colour, height, other names, education
+  // level/field, work contact person, refusal reason).
+  togglePRFields(isPR || isMpnp);
   togglePgwpFields(isPgwp);
 
   // Show/hide tabs and sections
@@ -2210,7 +2226,8 @@ let eduCount=1, jobCount=1, appHistCount=1, familyCount=1, relMBCount=1, relOPCo
 
 function addEdu(){
   eduCount++;
-  var isPR = applicationType === 'pr';
+  // MPNP uses the same extra fields as PR.
+  var isPR = applicationType === 'pr' || applicationType === 'pnp';
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Education Entry ${eduCount}</div>
     <div class="row2"><div class="field"><label>From (MM/YYYY)</label><input type="text" class="edu-from"></div>
@@ -2227,7 +2244,8 @@ function addEdu(){
 
 function addJob(){
   jobCount++;
-  var isPR = applicationType === 'pr';
+  // MPNP uses the same extra fields as PR.
+  var isPR = applicationType === 'pr' || applicationType === 'pnp';
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Job Entry ${jobCount}</div>
     <div class="row2"><div class="field"><label>From (DD/MM/YYYY)</label><input type="text" class="w-from"></div>
@@ -2248,7 +2266,8 @@ function addJob(){
 
 function addAppHistory(){
   appHistCount++;
-  var isPR = applicationType === 'pr';
+  // MPNP uses the same extra fields as PR.
+  var isPR = applicationType === 'pr' || applicationType === 'pnp';
   const d=document.createElement('div');d.className='job-block';
   d.innerHTML=`<div class="job-block-title">Application ${appHistCount}</div>
     <div class="field"><label>Type of Application</label><input type="text" class="ah-type" placeholder="e.g. Study Permit, Work Permit, TRV"></div>
