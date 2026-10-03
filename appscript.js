@@ -146,16 +146,18 @@ function saveClient(data) {
 
   // Update existing doc or create new one
   var doc;
+  var isCustom = data.applicationType && String(data.applicationType).indexOf('custom__') === 0;
   var isPnpBasedPr = (data.applicationType === 'pnp_based_pr');
   var isPR = (data.applicationType === 'pr');
   var isPnp = (data.applicationType === 'pnp');
   var isVisitorVisa = (data.applicationType === 'visitor_visa');
   var isEOI = (data.applicationType === 'eoi' || data.applicationType === 'express_entry');
-  var fillDocFn = isPR ? fillDocPR
+  var fillDocFn = isCustom ? fillDocCustom
+    : (isPR ? fillDocPR
     : (isPnpBasedPr ? fillDocPnpBasedPr
     : (isPnp ? fillDocPNP
     : (isVisitorVisa ? fillDocVisitorVisa
-    : (isEOI ? fillDocEOI : fillDoc))));
+    : (isEOI ? fillDocEOI : fillDoc)))));
 
   if (docId) {
     try {
@@ -176,8 +178,12 @@ function saveClient(data) {
 
   if (!docId) {
     var docTitle = 'Client Information Sheet';
-    var typeLabel = data.applicationType && APPLICATION_TYPE_LABELS[data.applicationType];
-    if (typeLabel) docTitle += ' - ' + typeLabel;
+    if (isCustom && data.customSheetName) {
+      docTitle += ' - ' + data.customSheetName;
+    } else {
+      var typeLabel = data.applicationType && APPLICATION_TYPE_LABELS[data.applicationType];
+      if (typeLabel) docTitle += ' - ' + typeLabel;
+    }
     var newDoc = DocumentApp.create(docTitle);
     docId = newDoc.getId();
     fillDocFn(newDoc.getBody(), data);
@@ -1967,4 +1973,382 @@ function fillDocPR(body, data) {
   if (data.staffNotes) addField(body, 'Additional Staff Notes', data.staffNotes);
   body.appendParagraph('').setSpacingAfter(4);
   body.appendParagraph('Note: Please ensure that these details are confirmed with the client either in a group or through a personal call. Additionally, kindly specify the method used to confirm the information.').setItalic(true);
+}
+
+// ── CUSTOM SHEETS: compose Google Doc from staff-selected section list ──
+var CUSTOM_DOC_SECTION_ORDER = [
+  's1', 's27', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10',
+  's13', 's14', 's15', 's16'
+];
+
+function customSectionsFromData_(data) {
+  var list = data.customSections;
+  if (list && list.length) return list;
+  var appType = String(data.applicationType || '');
+  if (appType.indexOf('custom__') !== 0) return ['s1'];
+  return appType.replace(/^custom__/, '').split('_').filter(function (s) {
+    return /^s\d+$/.test(s);
+  });
+}
+
+function fillDocCustom(body, data) {
+  var sections = customSectionsFromData_(data);
+  var sectionSet = {};
+  sections.forEach(function (s) { sectionSet[s] = true; });
+  var usePrPersonal = !!(sectionSet.s13 || sectionSet.s14 || sectionSet.s15 || sectionSet.s16 || sectionSet.s27);
+
+  function addSectionHeader(title) {
+    body.appendParagraph('').setSpacingAfter(2);
+    var h = body.appendParagraph(title);
+    h.setHeading(DocumentApp.ParagraphHeading.HEADING2);
+    h.setSpacingBefore(14);
+    h.setSpacingAfter(6);
+  }
+  function addField(label, value) {
+    var p = body.appendParagraph('');
+    p.setSpacingAfter(5).setSpacingBefore(0);
+    p.appendText(label + ':  ').setBold(true);
+    p.appendText(value || '—');
+  }
+  function addSubHeader(title) {
+    var p = body.appendParagraph(title);
+    p.setBold(true).setItalic(true);
+    p.setSpacingBefore(8).setSpacingAfter(4);
+  }
+  function addKeyValueTable(rows) {
+    var table = body.appendTable(rows);
+    table.setBorderWidth(1);
+    for (var r = 0; r < rows.length; r++) {
+      table.getCell(r, 0).setWidth(260).getChild(0).asParagraph().editAsText().setBold(true);
+      table.getCell(r, 0).setPaddingTop(4).setPaddingBottom(4).setPaddingLeft(6).setPaddingRight(6);
+      table.getCell(r, 1).setPaddingTop(4).setPaddingBottom(4).setPaddingLeft(6).setPaddingRight(6);
+    }
+  }
+  function addTableFromRows(headers, rows, keys) {
+    if (!rows || rows.length === 0) {
+      body.appendTable([headers]).setBorderWidth(1);
+      return;
+    }
+    var tableData = [headers].concat(rows.map(function (r) {
+      return keys.map(function (k) { return r[k] || '—'; });
+    }));
+    body.appendTable(tableData).setBorderWidth(1);
+  }
+
+  var title = body.appendParagraph('INFORMATION SHEET (CUSTOM)');
+  title.setHeading(DocumentApp.ParagraphHeading.HEADING1);
+  title.setSpacingAfter(4);
+  if (data.customSheetName) {
+    body.appendParagraph(data.customSheetName).setItalic(true).setSpacingAfter(8);
+  }
+
+  CUSTOM_DOC_SECTION_ORDER.forEach(function (sid) {
+    if (!sectionSet[sid]) return;
+
+    if (sid === 's1') {
+      addSectionHeader('🔹 CLIENT INFORMATION (PRINCIPAL APPLICANT)');
+      var tableData;
+      if (usePrPersonal) {
+        tableData = [
+          ['Given Name', data.givenName || '—'],
+          ['Last Name', data.lastName || '—'],
+          ['Date of Birth (DD/MM/YYYY)', data.dob || '—'],
+          ['Email ID', data.email || '—'],
+          ['Phone Number', data.phone || '—'],
+          ['Current Residential Address (full with Postal code)', data.address || '—'],
+          ['Marital Status', data.maritalStatus || '—'],
+          ['Date of Marriage (DD/MM/YYYY)', data.dom || '—'],
+          ['Native Language (Mother Tongue)', data.nativeLang || '—'],
+          ['Status in Canada (current)', data.canadaStatus || '—'],
+          ['Eye Color', data.eyeColor || '—'],
+          ['Height (in cm)', data.heightCm || '—'],
+          ['Passport No.', data.passport || '—'],
+          ['UCI No.', data.uci || '—'],
+          ['Have you ever used any other name? (yes/no)', data.otherNameUsed || '—']
+        ];
+        if (data.otherNameUsed === 'Yes') tableData.push(['Other Name(s) Used', data.otherNames || '—']);
+        tableData.push(['Date of last entry to Canada', data.prLastEntryDate || '—']);
+        tableData.push(['Place of last entry to Canada', data.prLastEntryPlace || '—']);
+        tableData.push(['Have you previously been married or in a common-law relationship? (yes/no)', data.prPrevMarried || '—']);
+        if (data.prPrevMarried === 'Yes') {
+          tableData.push(['Previous Partner — Given Name', data.prPrevGiven || '—']);
+          tableData.push(['Previous Partner — Last Name', data.prPrevLast || '—']);
+          tableData.push(['Previous Partner — Date of Birth', data.prPrevDob || '—']);
+          tableData.push(['Previous Partner — Type of Relationship', data.prPrevRelType || '—']);
+          tableData.push(['Previous Partner — From', data.prPrevFrom || '—']);
+          tableData.push(['Previous Partner — To', data.prPrevTo || '—']);
+        }
+      } else {
+        tableData = [
+          ['Given Name', data.givenName || '—'],
+          ['Last Name', data.lastName || '—'],
+          ['Date of Birth (DD/MM/YYYY)', data.dob || '—'],
+          ['Email ID', data.email || '—'],
+          ['Phone Number', data.phone || '—'],
+          ['P.O. Box', data.addrPoBox || '—'],
+          ['Apt / Unit Number', data.addrUnit || '—'],
+          ['Street Number', data.addrStreetNo || '—'],
+          ['Street Name', data.addrStreetName || '—'],
+          ['City / Town', data.addrCity || '—'],
+          ['Province', data.addrProvince || '—'],
+          ['Postal Code', data.addrPostal || '—'],
+          ['Country or Territory', data.addrCountry || '—'],
+          ['Marital Status', data.maritalStatus || '—'],
+          ['Date of Marriage (DD/MM/YYYY)', data.dom || '—'],
+          ['Do you have any children?', data.hasChildren || '—'],
+          ['Native Language (Mother Tongue)', data.nativeLang || '—'],
+          ['Status in Canada (current)', data.canadaStatus || '—'],
+          ['Passport No.', data.passport || '—'],
+          ['UCI No.', data.uci || '—']
+        ];
+      }
+      addKeyValueTable(tableData);
+      body.appendParagraph('').setSpacingAfter(8);
+      return;
+    }
+
+    if (sid === 's27') {
+      addSectionHeader('🤝 SPONSOR INFORMATION');
+      body.appendParagraph('Details of the person in Canada inviting or supporting this visit.').setItalic(true).setSpacingAfter(6);
+      var sponsorRows = [
+        ['Given Name', data.sponsorGiven || '—'],
+        ['Last Name', data.sponsorLast || '—'],
+        ['Relationship to Applicant', data.sponsorRelationship || '—'],
+        ['Date of Birth (DD/MM/YYYY)', data.sponsorDob || '—'],
+        ['Email ID', data.sponsorEmail || '—'],
+        ['Phone Number', data.sponsorPhone || '—'],
+        ['Current Mailing Address (full with Postal code)', data.sponsorAddress || '—'],
+        ['Marital Status', data.sponsorMarital || '—'],
+        ['Status in Canada (current)', data.sponsorCanadaStatus || '—'],
+        ['Passport No.', data.sponsorPassport || '—']
+      ];
+      addKeyValueTable(sponsorRows);
+      body.appendParagraph('').setSpacingAfter(8);
+      return;
+    }
+
+    if (sid === 's2' && showSpouseSection_(data)) {
+      addSectionHeader('🔹 SPOUSE / COMMON-LAW PARTNER INFO (If Any)');
+      addField('Given Name', data.spouseGiven);
+      addField('Last Name', data.spouseLast);
+      addField('Date of Birth (DD/MM/YYYY)', data.spouseDob);
+      addField('Email ID', data.spouseEmail);
+      addField('Phone Number', data.spousePhone);
+      addField('Current Address', data.spouseAddr);
+      if (usePrPersonal) {
+        addField('Status in Canada (if in Canada)', data.spouseCanadaStatus);
+        addField('Eye Color', data.spouseEyeColor);
+        addField('Height (in cm)', data.spouseHeightCm);
+      }
+      addField('Have you been married or in a common-law relationship before your current marriage?', data.prevRel);
+      if (data.prevRel === 'Yes') {
+        addSubHeader('If yes, kindly provide the following details:');
+        addField('Given Name', data.prevGiven);
+        addField('Last Name', data.prevLast);
+        addField('Date of Birth (DD/MM/YYYY)', data.prevDob);
+        addField('Type of Relationship', data.prevType);
+        addField('From', data.prevFrom);
+        addField('To', data.prevTo);
+      }
+      body.appendParagraph('').setSpacingAfter(8);
+      return;
+    }
+
+    if (sid === 's3' && showChildrenSection_(data)) {
+      addSectionHeader('🔹 CHILDREN INFO (If Any)');
+      addField('1', data.child1);
+      addField('2', data.child2);
+      addField('3', data.child3);
+      if (data.childExtra) addField('Additional', data.childExtra);
+      return;
+    }
+
+    if (sid === 's4') {
+      addSectionHeader('🌍 OTHER COUNTRY RESIDENCY (6+ months)');
+      addField('Have you lived in any other country for 6+ months (not Canada or home country)?', data.otherCountry);
+      if (data.otherCountry === 'Yes') {
+        addField('From (MM/YYYY)', data.ocFrom);
+        addField('To (MM/YYYY)', data.ocTo);
+        addField('Country Name', data.ocCountry);
+        addField('Status (e.g., Work/Study Visa, PR)', data.ocStatus);
+        addField('Purpose of Stay', data.ocPurpose);
+      }
+      return;
+    }
+
+    if (sid === 's5') {
+      addSectionHeader('✈️ TRAVEL HISTORY');
+      addField('First Entry to Canada (Date)', data.firstEntryDate);
+      addField('First Entry to Canada (Airport where first landed)', data.firstEntryPort);
+      addField('Recent Entry to Canada (Date)', data.recentEntryDate);
+      addField('Recent Entry to Canada (Place where first landed)', data.recentEntryPort);
+      return;
+    }
+
+    if (sid === 's6') {
+      addSectionHeader('🎓 EDUCATION');
+      body.appendParagraph('Grade 12 and all post-secondary programs — completed or not, inside or outside of Canada.').setItalic(true).setSpacingAfter(6);
+      body.appendParagraph('Grade 12 (High School)').setBold(true);
+      addField('From (MM/YYYY)', data.g12from);
+      addField('To (MM/YYYY)', data.g12to);
+      addField('Program / Stream', data.g12prog);
+      addField('School Name', data.g12inst);
+      addField('City', data.g12city);
+      if (data.g12level) addField('Level of Education', data.g12level);
+      if (data.g12field) addField('Field of Study', data.g12field);
+      body.appendParagraph('').setSpacingAfter(4);
+      var eduEntries = (data.education || '').split('\n').filter(function (e) {
+        if (!e.trim()) return false;
+        var c = e.replace(/^Entry \d+:\s*/, '').trim();
+        return c.replace(/to\s*\|\s*\|\s*\|/, '').replace(/\|/g, '').trim() !== '';
+      });
+      var eduExtras = data.educationExtras || [];
+      if (eduEntries.length > 0) {
+        addSubHeader('Post-Secondary Education');
+        eduEntries.forEach(function (entry, idx) {
+          var parts = entry.replace(/^Entry \d+:\s*/, '').split(' | ');
+          var dates = (parts[0] || '').split(' to ');
+          var extra = eduExtras[idx] || {};
+          body.appendParagraph('Education ' + (idx + 1)).setBold(true);
+          addField('From (MM/YYYY)', dates[0] ? dates[0].trim() : '—');
+          addField('To (MM/YYYY)', dates[1] ? dates[1].trim() : '—');
+          addField('Program Name', parts[1] || '—');
+          addField('Institute Name', parts[2] || '—');
+          addField('Campus City', parts[3] || '—');
+          if (extra.level) addField('Level of Education', extra.level);
+          if (extra.field) addField('Field of Study', extra.field);
+          body.appendParagraph('').setSpacingAfter(4);
+        });
+      }
+      return;
+    }
+
+    if (sid === 's7') {
+      addSectionHeader('💼 WORK HISTORY');
+      var workEntries = (data.work || '').split('\n').filter(function (e) {
+        if (!e.trim()) return false;
+        var c = e.replace(/^Job \d+:\s*/, '').trim();
+        return c.replace(/\|/g, '').trim() !== '';
+      });
+      var workExtras = data.workContactExtras || [];
+      if (workEntries.length === 0) body.appendParagraph('—');
+      else {
+        workEntries.forEach(function (entry, idx) {
+          var parts = entry.replace(/^Job \d+:\s*/, '').split(' | ');
+          var dates = (parts[0] || '').split(' to ');
+          var isNewFormat = parts.length >= 6;
+          var extra = workExtras[idx] || {};
+          body.appendParagraph((idx === 0 ? '1️⃣ Current employment details:' : (idx + 1) + '️⃣')).setBold(true);
+          addField('From (DD/MM/YYYY)', dates[0] ? dates[0].trim() : '—');
+          addField('To (DD/MM/YYYY)', dates[1] ? dates[1].trim() : '—');
+          addField('Job Title', parts[1] || '—');
+          if (isNewFormat) {
+            addField('Full-time or Part-time', parts[2] || '—');
+            addField('Hours per week', parts[3] || '—');
+            addField('Employer / Company Name', parts[4] || '—');
+            addField('Full Work Location Address', parts[5] || '—');
+          } else {
+            addField('Employer / Company Name', parts[2] || '—');
+            addField('Full Employer / Work Location Address', parts[3] || '—');
+          }
+          if (extra.contactName) addField('Contact Person Name', extra.contactName);
+          if (extra.contactPhone) addField('Contact Person Phone', extra.contactPhone);
+          if (extra.contactEmail) addField('Contact Email', extra.contactEmail);
+          body.appendParagraph('').setSpacingAfter(4);
+        });
+      }
+      return;
+    }
+
+    if (sid === 's8') {
+      addSectionHeader('💰 Financial Questions');
+      addField('How much do you have in savings or checking accounts?', data.savings);
+      addField('If you do not have a job, who and how are you paying for the expenses?', data.expenses);
+      return;
+    }
+
+    if (sid === 's9') {
+      addSectionHeader('🗂️ APPLICATIONS HISTORY AND BACKGROUND');
+      body.appendParagraph('List all applications submitted to IRCC.').setItalic(true).setSpacingAfter(6);
+      var appRows = data.appHistoryRows || [];
+      var appHeaderRow = ['Type of application', 'Result (Approved/denied)', 'Date of result', 'Destination in Canada', 'Reason for refusal (if known)'];
+      if (appRows.length === 0) body.appendTable([appHeaderRow]).setBorderWidth(1);
+      else {
+        var appTableData = [appHeaderRow].concat(appRows.map(function (r) {
+          return [r.type || '—', r.result || '—', r.date || r.year || '—', r.destination || '—', r.reason || '—'];
+        }));
+        body.appendTable(appTableData).setBorderWidth(1);
+      }
+      body.appendParagraph('').setSpacingAfter(8);
+      addField('Have you ever been refused by IRCC or (US, AUS, NZ or any other country)?', data.refused);
+      if (data.refused === 'Yes') {
+        addField('Country', data.refCountry);
+        addField('Result Date (MM/YYYY)', data.refDate);
+        addField('Type of Application (Visit / Work / PR)', data.refType);
+      }
+      addField('Have you ever committed, been arrested for or been charged with or convicted of any criminal offense in any country?', data.criminalRecord);
+      if (data.criminalRecord === 'Yes') addField('Details', data.criminalInfo);
+      if (data.biometricsGiven) {
+        addField('Have you previously provided biometrics for this application?', data.biometricsGiven);
+        if (data.biometricsDate) addField('Biometrics date', data.biometricsDate);
+      }
+      return;
+    }
+
+    if (sid === 's10') {
+      addSectionHeader('👪 Family Information');
+      body.appendParagraph('Family members (parents, siblings, spouse, children). If deceased, date of death in address field.').setItalic(true).setSpacingAfter(6);
+      addTableFromRows(
+        ['Full Name', 'Date of Birth', 'Place of Birth', 'Marital Status', 'Relationship', 'Email', 'Occupation', 'Current Address'],
+        data.familyMembers || [],
+        ['fullName', 'dob', 'placeOfBirth', 'maritalStatus', 'relationship', 'email', 'occupation', 'currentAddress']
+      );
+      body.appendParagraph('').setSpacingAfter(8);
+      return;
+    }
+
+    if (sid === 's13') {
+      addSectionHeader('📝 PERSONAL HISTORY');
+      body.appendParagraph('Details since age 18 or past 10 years.').setItalic(true).setSpacingAfter(6);
+      addTableFromRows(
+        ['From (YYYY-MM)', 'To (YYYY-MM)', 'Activity', 'City and Country', 'Status in Country', 'Name of Company/Employer/School'],
+        data.personalHistory || [],
+        ['from', 'to', 'activity', 'city', 'status', 'company']
+      );
+      body.appendParagraph('').setSpacingAfter(8);
+      return;
+    }
+
+    if (sid === 's14') {
+      addSectionHeader('🏠 ADDRESS HISTORY');
+      body.appendParagraph('All addresses since 18th birthday or past 10 years.').setBold(true).setSpacingAfter(6);
+      addTableFromRows(
+        ['From (YYYY-MM-DD)', 'To (YYYY-MM-DD)', 'Street Number and Name', 'City or Town', 'Province/State/District', 'Postal/Zip Code', 'Country'],
+        data.addressHistory || [],
+        ['from', 'to', 'street', 'city', 'province', 'postal', 'country']
+      );
+      body.appendParagraph('').setSpacingAfter(8);
+      return;
+    }
+
+    if (sid === 's15') {
+      addSectionHeader('✈️ TRAVEL HISTORY (Detailed)');
+      body.appendParagraph('All trips outside Canada or home country in last 10 years or since age 18.').setItalic(true).setSpacingAfter(6);
+      addTableFromRows(
+        ['From (YYYY-MM)', 'To (YYYY-MM)', 'Duration', 'Destination (City and Country)', 'Purpose of Visit', 'Details'],
+        data.travelHistory || [],
+        ['from', 'to', 'duration', 'destination', 'purpose', 'details']
+      );
+      body.appendParagraph('').setSpacingAfter(8);
+      return;
+    }
+
+    if (sid === 's16') {
+      addSectionHeader('⚖️ BACKGROUND QUESTIONS');
+      addField('Member of any political/social/youth/student organization, trade unions or professional associations?', data.bgPolitical);
+      addField('Ever held a government position (civil servant, judge, police officer, security organization)?', data.bgGovt);
+      addField('Ever served in military or paramilitary service?', data.bgMilitary);
+      return;
+    }
+  });
 }

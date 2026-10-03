@@ -77,6 +77,9 @@ textarea{resize:vertical;min-height:80px}
 .success h2{color:#16a34a;font-size:1.3rem;margin-bottom:8px}
 .success p{color:#64748b;font-size:.9rem}
 .divider{height:1px;background:#e2e8f0;margin:16px 0}
+.custom-section-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px 12px}
+.custom-section-grid label{display:flex;align-items:flex-start;gap:8px;font-size:.84rem;color:#374151;cursor:pointer;line-height:1.35}
+.custom-section-grid input{margin-top:3px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -91,7 +94,7 @@ textarea{resize:vertical;min-height:80px}
     <h2>🔐 Staff: Generate Client Link</h2>
     <p>Enter the client's email address and select the application type. Send the generated link to the client — they open it to fill their information.</p>
     <label for="adminAppType" style="display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:5px">Application type</label>
-    <select id="adminAppType" class="admin-input" style="margin-bottom:12px">
+    <select id="adminAppType" class="admin-input" style="margin-bottom:12px" onchange="toggleCustomSheetPanel()">
       <option value="study_permit_extension">Study Permit Extension</option>
       <option value="pgwp">PGWP</option>
       <option value="dummy_work_permit">Dummy Work Permit</option>
@@ -101,7 +104,14 @@ textarea{resize:vertical;min-height:80px}
       <option value="express_entry">Express Entry</option>
       <option value="pnp">Manitoba PNP (MPNP)</option>
       <option value="pr">PR (Permanent Residence)</option>
+      <option value="custom">Custom (pick sections)</option>
     </select>
+    <div id="customSheetPanel" style="display:none;margin-bottom:14px;padding:14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px">
+      <label for="customSheetName" style="display:block;font-size:.83rem;font-weight:600;color:#374151;margin-bottom:5px">Custom sheet name</label>
+      <input type="text" class="admin-input" id="customSheetName" placeholder="e.g. Travel &amp; Education update" style="margin-bottom:12px"/>
+      <p style="font-size:.85rem;color:#475569;margin:0 0 10px">Choose which sections the client should fill. <strong>Personal Information</strong> is always included.</p>
+      <div id="customSectionChecks" class="custom-section-grid"></div>
+    </div>
     <input type="email" class="admin-input" id="adminEmail" placeholder="Client's email address e.g. john@gmail.com"/>
     <button class="admin-btn" onclick="generateClientLink()">Generate Client Link →</button>
     <div class="generated-link" id="generatedLinkBox">
@@ -1191,8 +1201,91 @@ const APP_TYPE_LABELS = {
 // Unknown or missing type keeps the generic staff-facing subtitle.
 function updateHeaderSubtitle() {
   var el = document.getElementById('headerSubtitle');
+  if (el && isCustomApplicationType(applicationType)) {
+    el.textContent = customSheetName || 'Custom Information Sheet';
+    return;
+  }
   var label = APP_TYPE_LABELS[applicationType];
   if (el && label) el.textContent = label;
+}
+
+// ── CUSTOM SHEETS (sections encoded in URL) ──
+const CUSTOM_PICKABLE_SECTIONS = [
+  { id: 's5', label: 'Travel History (standard)' },
+  { id: 's15', label: 'Travel History (detailed — PR style)' },
+  { id: 's13', label: 'Personal History' },
+  { id: 's14', label: 'Address History' },
+  { id: 's6', label: 'Education History' },
+  { id: 's7', label: 'Work History' },
+  { id: 's9', label: 'Applications History & Background' },
+  { id: 's8', label: 'Financial Information' },
+  { id: 's4', label: 'Other Country Residency' },
+  { id: 's10', label: 'Family Information' },
+  { id: 's2', label: 'Spouse / Common-Law (when marital status applies)' },
+  { id: 's3', label: 'Children (when applicable)' },
+  { id: 's16', label: 'Background Questions (PR)' },
+  { id: 's27', label: 'Sponsor Information' }
+];
+
+function isCustomApplicationType(t) {
+  return !!t && String(t).indexOf('custom__') === 0;
+}
+
+function parseSectionsParam(raw) {
+  if (!raw) return [];
+  return raw.split(',').map(function (s) { return s.trim().toLowerCase(); })
+    .filter(function (s) { return /^s\d+$/.test(s) && ALL_SECTIONS.indexOf(s) !== -1; });
+}
+
+function normalizeCustomSectionTemplate(list) {
+  var set = { s1: true };
+  (list || []).forEach(function (s) {
+    if (ALL_SECTIONS.indexOf(s) !== -1) set[s] = true;
+  });
+  return ALL_SECTIONS.filter(function (s) { return set[s]; });
+}
+
+function buildCustomApplicationType(sections) {
+  return 'custom__' + normalizeCustomSectionTemplate(sections).join('_');
+}
+
+function getCustomSectionTemplate() {
+  if (customSectionTemplate.length) return customSectionTemplate;
+  if (isCustomApplicationType(applicationType)) {
+    return normalizeCustomSectionTemplate(applicationType.replace(/^custom__/, '').split('_'));
+  }
+  return [];
+}
+
+function applyCustomFromUrlParams(p) {
+  if (p.get('type') !== 'custom') return false;
+  customSheetName = (p.get('name') || 'Custom Information Sheet').trim() || 'Custom Information Sheet';
+  customSectionTemplate = normalizeCustomSectionTemplate(parseSectionsParam(p.get('sections')));
+  applicationType = buildCustomApplicationType(customSectionTemplate);
+  return true;
+}
+
+function initCustomSectionCheckboxes() {
+  var box = document.getElementById('customSectionChecks');
+  if (!box || box.dataset.built === '1') return;
+  CUSTOM_PICKABLE_SECTIONS.forEach(function (opt) {
+    var lbl = document.createElement('label');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = opt.id;
+    cb.className = 'custom-section-cb';
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(opt.label));
+    box.appendChild(lbl);
+  });
+  box.dataset.built = '1';
+}
+
+function toggleCustomSheetPanel() {
+  var isCustom = document.getElementById('adminAppType').value === 'custom';
+  var panel = document.getElementById('customSheetPanel');
+  if (panel) panel.style.display = isCustom ? 'block' : 'none';
+  if (isCustom) initCustomSectionCheckboxes();
 }
 
 // ── DYNAMIC SECTIONS ──
@@ -1208,7 +1301,8 @@ const SECTION_TAB_MAP = {
   s25:'tab24', s26:'tab25', s27:'tab26'
 };
 let visibleSections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
-let cur = 0, docId = '', applicationType = '', autoSaveTimer = null, isSaving = false;
+let cur = 0, docId = '', applicationType = '', customSheetName = '', customSectionTemplate = [];
+let autoSaveTimer = null, isSaving = false;
 
 function hasSpouseSelected() {
   const m = document.querySelector('input[name="marital"]:checked');
@@ -1221,6 +1315,68 @@ function hasChildrenSelected() {
 }
 
 function computeVisibleSections() {
+  if (isCustomApplicationType(applicationType)) {
+    const template = getCustomSectionTemplate();
+    const showSpouse = hasSpouseSelected();
+    const showChildren = hasChildrenSelected();
+    let visible = template.filter(function (s) {
+      if (s === 's2') return showSpouse;
+      if (s === 's3') return showChildren;
+      return true;
+    });
+    const hasPrDepth = ['s13', 's14', 's15', 's16', 's21', 's22', 's23'].some(function (id) {
+      return template.indexOf(id) !== -1;
+    });
+    const hasVisitorSponsor = template.indexOf('s27') !== -1;
+
+    var wrap = document.getElementById('outsideCanadaFamilyToggleWrap');
+    var divHr = document.getElementById('outsideCanadaFamilyDivider');
+    if (wrap) wrap.style.display = template.indexOf('s10') !== -1 ? 'none' : '';
+    if (divHr) divHr.style.display = template.indexOf('s10') !== -1 ? 'none' : '';
+    if (template.indexOf('s10') !== -1) {
+      document.querySelectorAll('input[name="showFamilyInfo"]').forEach(function (r) { r.checked = false; });
+    }
+
+    var bioWrap = document.getElementById('biometricsWrap');
+    if (bioWrap) bioWrap.style.display = hasVisitorSponsor ? '' : 'none';
+
+    var crimWrap = document.getElementById('criminalWrap');
+    var crimDiv = document.getElementById('criminalDivider');
+    if (crimWrap) crimWrap.style.display = template.indexOf('s9') !== -1 ? '' : 'none';
+    if (crimDiv) crimDiv.style.display = template.indexOf('s9') !== -1 ? '' : 'none';
+
+    visibleSections = visible;
+    updateHeaderSubtitle();
+    togglePRFields(hasPrDepth || hasVisitorSponsor, hasPrDepth);
+    togglePgwpFields(false);
+
+    ALL_SECTIONS.forEach(function (sId) {
+      const tabId = SECTION_TAB_MAP[sId];
+      const isVisible = visible.includes(sId);
+      const sEl = document.getElementById(sId);
+      const tEl = document.getElementById(tabId);
+      if (sEl && !isVisible) sEl.classList.remove('active');
+      if (tEl) tEl.style.display = isVisible ? '' : 'none';
+    });
+
+    var tabsScroll = document.querySelector('.tabs-scroll');
+    if (tabsScroll) {
+      visible.forEach(function (sId) {
+        var t = document.getElementById(SECTION_TAB_MAP[sId]);
+        if (t) tabsScroll.appendChild(t);
+      });
+      ALL_SECTIONS.forEach(function (sId) {
+        if (visible.indexOf(sId) !== -1) return;
+        var t = document.getElementById(SECTION_TAB_MAP[sId]);
+        if (t) tabsScroll.appendChild(t);
+      });
+    }
+
+    if (cur >= visibleSections.length) cur = visibleSections.length - 1;
+    showSection(cur);
+    return;
+  }
+
   const isPgwp = applicationType === 'pgwp';
   const isEoiFlow = applicationType === 'eoi' || applicationType === 'express_entry';
   const isPR = applicationType === 'pr';
@@ -1402,13 +1558,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const p = new URLSearchParams(window.location.search);
   const clientEmail = p.get('email');
   if (clientEmail) {
-    applicationType = p.get('type') || '';
+    if (!applyCustomFromUrlParams(p)) applicationType = p.get('type') || '';
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('formWrapper').style.display = 'block';
     document.getElementById('email').value = decodeURIComponent(clientEmail);
     computeVisibleSections();
     loadSavedData(decodeURIComponent(clientEmail));
   }
+  initCustomSectionCheckboxes();
+  toggleCustomSheetPanel();
   initAudioGuides();
   document.body.addEventListener('input', scheduleAutoSave);
   document.body.addEventListener('change', scheduleAutoSave);
@@ -1512,7 +1670,19 @@ function generateClientLink() {
   const type = document.getElementById('adminAppType').value;
   if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
   let link = window.location.origin + window.location.pathname + '?email=' + encodeURIComponent(email);
-  if (type) link += '&type=' + encodeURIComponent(type);
+  if (type === 'custom') {
+    const name = (document.getElementById('customSheetName').value || '').trim() || 'Custom Information Sheet';
+    const picked = [...document.querySelectorAll('#customSectionChecks input:checked')].map(function (cb) { return cb.value; });
+    const sections = normalizeCustomSectionTemplate(picked);
+    if (sections.length <= 1) {
+      alert('Please select at least one section besides Personal Information.');
+      return;
+    }
+    const sectionsParam = sections.filter(function (s) { return s !== 's1'; }).join(',');
+    link += '&type=custom&sections=' + encodeURIComponent(sectionsParam) + '&name=' + encodeURIComponent(name);
+  } else if (type) {
+    link += '&type=' + encodeURIComponent(type);
+  }
   document.getElementById('generatedLinkText').textContent = link;
   document.getElementById('generatedLinkBox').style.display = 'block';
 }
@@ -1536,6 +1706,10 @@ function loadSavedData(email) {
       fillFormFields(res.data);
       if (res.docId) docId = res.docId;
       if (res.data.applicationType) applicationType = res.data.applicationType;
+      if (res.data.customSheetName) customSheetName = res.data.customSheetName;
+      if (res.data.customSections && res.data.customSections.length) {
+        customSectionTemplate = normalizeCustomSectionTemplate(res.data.customSections);
+      }
       computeVisibleSections();
       setSaveStatus('saved');
     } else setSaveStatus('none');
@@ -1990,6 +2164,8 @@ function collectData() {
   return {
     action:'save', email:document.getElementById('email').value, docId,
     applicationType: applicationType || undefined,
+    customSheetName: isCustomApplicationType(applicationType) ? (customSheetName || undefined) : undefined,
+    customSections: isCustomApplicationType(applicationType) ? getCustomSectionTemplate() : undefined,
     // Personal
     givenName:document.getElementById('givenName').value,
     lastName:document.getElementById('lastName').value,
