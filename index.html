@@ -184,6 +184,7 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Province <span class="req">*</span></label><input type="text" id="addrProvince" placeholder="e.g. MB"></div>
         <div class="field"><label>Postal Code <span class="req">*</span></label><input type="text" id="addrPostal" placeholder="e.g. A1A 1A1"></div>
       </div>
+      <div id="audio-marital"></div>
       <div class="field">
         <label>Marital Status <span class="req">*</span></label>
         <div class="radio-group">
@@ -211,6 +212,7 @@ textarea{resize:vertical;min-height:80px}
           <div class="field"><label>Eye Color</label><input type="text" id="eyeColor" placeholder="e.g. Brown, Black, Blue"></div>
           <div class="field"><label>Height (in cm)</label><input type="text" id="heightCm" placeholder="e.g. 170"></div>
         </div>
+        <div id="audio-other-name"></div>
         <div class="field">
           <label>Have you ever used any other name (e.g. nickname, maiden name, alias)?</label>
           <div class="radio-group">
@@ -222,6 +224,7 @@ textarea{resize:vertical;min-height:80px}
           <div class="field"><label>Other Name(s) Used</label><input type="text" id="otherNames" placeholder="e.g. maiden name, nickname"></div>
         </div>
         <div class="divider"></div>
+        <div id="audio-last-entry-pr"></div>
         <div class="field"><label>Date and place of your last entry to Canada (if you never went outside of Canada, then date and place of 1st Entry to Canada)</label></div>
         <div class="row2">
           <div class="field"><label>Date (YYYY/MM/DD)</label><input type="text" id="prLastEntryDate" placeholder="e.g. 2023/05/15"></div>
@@ -349,9 +352,11 @@ textarea{resize:vertical;min-height:80px}
     <!-- SECTION 5 — Travel -->
     <div class="section" id="s5">
       <div class="section-title">✈️ Travel History</div>
+      <div id="audio-first-entry"></div>
       <div class="field"><label>First Entry to Canada – Date (DD/MM/YYYY)</label><input type="text" id="firstEntryDate"></div>
       <div class="field"><label>First Entry to Canada – Airport / Port of Entry</label><input type="text" id="firstEntryPort"></div>
       <div class="divider"></div>
+      <div id="audio-last-entry"></div>
       <div class="field"><label>Most Recent Entry to Canada – Date (DD/MM/YYYY)</label><input type="text" id="recentEntryDate"></div>
       <div class="field"><label>Most Recent Entry to Canada – Place / Airport</label><input type="text" id="recentEntryPort"></div>
     </div>
@@ -477,6 +482,7 @@ textarea{resize:vertical;min-height:80px}
       </div>
       <button class="add-btn" onclick="addAppHistory()">+ Add Another Application</button>
       <div class="divider"></div>
+      <div id="audio-refusal"></div>
       <div class="field">
         <label>Have you ever been refused by IRCC or (US, AUS, NZ or any other country)?</label>
         <div class="radio-group">
@@ -1087,6 +1093,7 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Province <span class="req">*</span></label><input type="text" id="sponsorAddrProvince" placeholder="e.g. MB"></div>
         <div class="field"><label>Postal Code <span class="req">*</span></label><input type="text" id="sponsorAddrPostal" placeholder="e.g. A1A 1A1"></div>
       </div>
+      <div id="audio-sponsor-marital"></div>
       <div class="field">
         <label>Marital Status <span class="req">*</span></label>
         <div class="radio-group">
@@ -1112,6 +1119,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="field"><label>Current Employment <span class="req">*</span></label><input type="text" id="sponsorEmployment" placeholder="e.g. Cook at Tim Hortons, Winnipeg"></div>
       <div class="field"><label>Current Bank Balance <span class="req">*</span></label><input type="text" id="sponsorBankBalance" placeholder="e.g. CAD 25,000"></div>
       <div class="divider"></div>
+      <div id="audio-sponsor-other-name"></div>
       <div class="field">
         <label>Have they ever used any other name (e.g. nickname, maiden name, alias)?</label>
         <div class="radio-group">
@@ -1123,6 +1131,7 @@ textarea{resize:vertical;min-height:80px}
         <div class="field"><label>Other Name(s) Used</label><input type="text" id="sponsorOtherNames" placeholder="e.g. maiden name, nickname"></div>
       </div>
       <div class="divider"></div>
+      <div id="audio-sponsor-last-entry"></div>
       <div class="field"><label>Date and place of their last entry to Canada (if they never went outside of Canada, then date and place of 1st Entry to Canada)</label></div>
       <div class="row2">
         <div class="field"><label>Date (YYYY/MM/DD)</label><input type="text" id="sponsorLastEntryDate" placeholder="e.g. 2023/05/15"></div>
@@ -1436,7 +1445,9 @@ window.addEventListener('DOMContentLoaded', () => {
 // Sub-section audios (e.g. s6a-pa.mp3) mount into their <div id="audio-s6a">
 // anchor inside the section instead of the section top.
 const AUDIO_BASE = 'audios/';
-const AUDIO_LANGS = [ {code:'en', label:'English'}, {code:'pa', label:'ਪੰਜਾਬੀ'} ];
+const AUDIO_LANGS = [ {code:'en', label:'English'}, {code:'pa', label:'ਪੰਜਾਬੀ'}, {code:'hi', label:'हिंदी'} ];
+// Spouse sections reuse the principal applicant's section recording.
+const AUDIO_SECTION_FILES = { s18:'s9', s20:'s7', s21:'s13' };
 let guideAudio = null, guideBtn = null;
 
 function stopGuideAudio(){
@@ -1458,11 +1469,20 @@ function playGuide(btn, url){
 
 // `file` lets several spots share one recording (audios/<file>-<lang>.mp3).
 const AUDIO_EXTRA_SPOTS = [
+  { key:'marital', label:'🔊 Listen: Marital Status' },
+  { key:'other-name', label:'🔊 Listen: Other Name' },
+  { key:'last-entry-pr', file:'last-entry', label:'🔊 Listen: Last Entry to Canada' },
+  { key:'first-entry', label:'🔊 Listen: First Entry to Canada' },
+  { key:'last-entry', label:'🔊 Listen: Last Entry to Canada' },
   { key:'s6a', label:'🔊 Listen: Grade 12' },
   { key:'s6b', label:'🔊 Listen: Post-Secondary Education' },
   { key:'dates-s6', file:'dates-edu', label:'🔊 Listen: How to enter dates' },
   { key:'dates-s7', file:'dates', label:'🔊 Listen: How to enter dates' },
-  { key:'appdate', label:'🔊 Listen: Date of Result' }
+  { key:'appdate', label:'🔊 Listen: Date of Result' },
+  { key:'refusal', label:'🔊 Listen: Refusal' },
+  { key:'sponsor-marital', file:'marital', label:'🔊 Listen: Marital Status' },
+  { key:'sponsor-other-name', file:'other-name', label:'🔊 Listen: Other Name' },
+  { key:'sponsor-last-entry', file:'last-entry', label:'🔊 Listen: Last Entry to Canada' }
 ];
 
 function addGuideButton(spot, lang, url){
@@ -1477,11 +1497,12 @@ function addGuideButton(spot, lang, url){
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.dataset.label = '▶ ' + lang.label;
+  btn.dataset.order = AUDIO_LANGS.indexOf(lang);
   btn.textContent = '▶ ' + lang.label;
   btn.onclick = () => playGuide(btn, url);
-  // Keep English first even though availability checks finish in any order
-  if (lang.code === 'en' && bar.querySelector('button')) bar.insertBefore(btn, bar.querySelector('button'));
-  else bar.appendChild(btn);
+  // Keep AUDIO_LANGS order even though availability checks finish in any order
+  const next = [...bar.querySelectorAll('button')].find(b => +b.dataset.order > +btn.dataset.order);
+  bar.insertBefore(btn, next || null);
 }
 
 function initAudioGuides(){
@@ -1490,7 +1511,7 @@ function initAudioGuides(){
   ALL_SECTIONS.forEach(sid => {
     const sEl = document.getElementById(sid);
     const titleEl = sEl && sEl.querySelector('.section-title');
-    if (titleEl) spots.push({ key: sid, label: '🔊 Listen: How to fill this section', container: sEl,
+    if (titleEl) spots.push({ key: sid, file: AUDIO_SECTION_FILES[sid], label: '🔊 Listen: How to fill this section', container: sEl,
       mount: bar => titleEl.insertAdjacentElement('afterend', bar) });
   });
   AUDIO_EXTRA_SPOTS.forEach(x => {
