@@ -373,7 +373,7 @@ function fillDoc(body, data) {
     addField(body,'To (MM/YYYY)',data.g12to);
     addField(body,'Program / Stream',data.g12prog);
     addField(body,'School Name',data.g12inst);
-    addField(body,'City',data.g12city);
+    addField(body, 'Full Address of Institution', data.g12city);
     body.appendParagraph('').setSpacingAfter(4);
   }
 
@@ -393,7 +393,7 @@ function fillDoc(body, data) {
       addField(body,'To (MM/YYYY)',dates[1]?dates[1].trim():'—');
       addField(body,'Program Name',parts[1]||'—');
       addField(body,'Institute Name',parts[2]||'—');
-      addField(body,'Campus City',parts[3]||'—');
+      addField(body, 'Full Address of Institution', parts[3]||'—');
       body.appendParagraph('').setSpacingAfter(4);
     });
   }
@@ -603,7 +603,7 @@ function fillDocEOI(body, data) {
   addField(body,'To (MM/YYYY)',data.g12to);
   addField(body,'Program / Stream',data.g12prog);
   addField(body,'School Name',data.g12inst);
-  addField(body,'City',data.g12city);
+  addField(body, 'Full Address of Institution', data.g12city);
   body.appendParagraph('').setSpacingAfter(4);
   var eduEntries = (data.education||'').split('\n').filter(function(e){
     if(!e.trim()) return false;
@@ -620,7 +620,7 @@ function fillDocEOI(body, data) {
       addField(body,'To (MM/YYYY)',dates[1]?dates[1].trim():'—');
       addField(body,'Program Name',parts[1]||'—');
       addField(body,'Institute Name',parts[2]||'—');
-      addField(body,'Campus City',parts[3]||'—');
+      addField(body, 'Full Address of Institution', parts[3]||'—');
       body.appendParagraph('').setSpacingAfter(4);
     });
   }
@@ -903,7 +903,7 @@ function fillDocPNP(body, data) {
   addField(body, 'To (MM/YYYY)', data.g12to);
   addField(body, 'Program / Stream', data.g12prog);
   addField(body, 'School Name', data.g12inst);
-  addField(body, 'City', data.g12city);
+  addField(body, 'Full Address of Institution', data.g12city);
   if (data.g12level) addField(body, 'Level of Education', data.g12level);
   if (data.g12field) addField(body, 'Field of Study', data.g12field);
   body.appendParagraph('').setSpacingAfter(4);
@@ -925,7 +925,7 @@ function fillDocPNP(body, data) {
       addField(body, 'To (MM/YYYY)', dates[1] ? dates[1].trim() : '—');
       addField(body, 'Program Name', parts[1] || '—');
       addField(body, 'Institute Name', parts[2] || '—');
-      addField(body, 'Campus City', parts[3] || '—');
+      addField(body, 'Full Address of Institution', parts[3] || '—');
       if (extra.level) addField(body, 'Level of Education', extra.level);
       if (extra.field) addField(body, 'Field of Study', extra.field);
       body.appendParagraph('').setSpacingAfter(4);
@@ -1021,7 +1021,7 @@ function fillDocPNP(body, data) {
     if (spEducation.length > 0) {
       addSectionHeader(body, '🎓 Spouse — Education History');
       addTableFromRows(body,
-        ['From (YYYY-MM)', 'To (YYYY-MM)', 'Institution', 'City and Country', 'Level of Education', 'Field of Study'],
+        ['From (YYYY-MM)', 'To (YYYY-MM)', 'Institution', 'Full Address of Institution', 'Level of Education', 'Field of Study'],
         spEducation,
         ['from', 'to', 'institution', 'city', 'level', 'field']
       );
@@ -1197,7 +1197,7 @@ function fillDocPnpBasedPr(body, data) {
 
   addSectionHeader(body, '📖 EDUCATION HISTORY (List all the completed and incomplete education programs after Grade 10):');
   body.appendParagraph('Note: If you have applied your PNP through us then, do not rewrite the educational details mentioned previously:').setItalic(true).setSpacingAfter(4);
-  addTableFromRows(body, ['From (YYYY-MM)', 'To (YYYY-MM)', 'Name of School or Institution', 'City and Country', 'Level Education', 'Field of Study'], data.educationRowsPR || [], ['from', 'to', 'institution', 'cityCountry', 'level', 'fieldOfStudy']);
+  addTableFromRows(body, ['From (YYYY-MM)', 'To (YYYY-MM)', 'Name of School or Institution', 'Full Address of Institution', 'Level Education', 'Field of Study'], data.educationRowsPR || [], ['from', 'to', 'institution', 'cityCountry', 'level', 'fieldOfStudy']);
   body.appendParagraph('').setSpacingAfter(8);
 
   addSectionHeader(body, '💼 PERSONAL HISTORY:');
@@ -1241,7 +1241,7 @@ function fillDocPnpBasedPr(body, data) {
     body.appendParagraph('').setSpacingAfter(8);
     addSectionHeader(body, '📖 EDUCATION HISTORY (List all the completed and incomplete education programs after Grade 10):');
     body.appendParagraph('Note: If you have applied your PNP through us then, do not rewrite the educational details mentioned previously:').setItalic(true).setSpacingAfter(4);
-    addTableFromRows(body, ['From (YYYY-MM)', 'To (YYYY-MM)', 'Name of School or Institution', 'City and Country', 'Level Education', 'Field of Study'], data.spouseEducationRowsPR || [], ['from', 'to', 'institution', 'cityCountry', 'level', 'fieldOfStudy']);
+    addTableFromRows(body, ['From (YYYY-MM)', 'To (YYYY-MM)', 'Name of School or Institution', 'Full Address of Institution', 'Level Education', 'Field of Study'], data.spouseEducationRowsPR || [], ['from', 'to', 'institution', 'cityCountry', 'level', 'fieldOfStudy']);
     body.appendParagraph('').setSpacingAfter(8);
     addSectionHeader(body, '💼 PERSONAL HISTORY:');
     body.appendParagraph('Provide the details of your personal history since the age of 18 or the past 10 years, whichever is most recent. Under activity, write your occupation or job title if you were working. If you were not working, provide information on what you were doing (For example: unemployed, studying, travelling, retired, in detention etc.)').setItalic(true).setSpacingAfter(2);
@@ -1455,7 +1455,7 @@ function fillDocVisitorVisa(body, data) {
   addField(body, 'To (MM/YYYY)', data.g12to);
   addField(body, 'Program / Stream', data.g12prog);
   addField(body, 'School Name', data.g12inst);
-  addField(body, 'City', data.g12city);
+  addField(body, 'Full Address of Institution', data.g12city);
   body.appendParagraph('').setSpacingAfter(4);
 
   var eduEntries = (data.education || '').split('\n').filter(function(e) {
@@ -1473,7 +1473,7 @@ function fillDocVisitorVisa(body, data) {
       addField(body, 'To (MM/YYYY)', dates[1] ? dates[1].trim() : '—');
       addField(body, 'Program Name', parts[1] || '—');
       addField(body, 'Institute Name', parts[2] || '—');
-      addField(body, 'Campus City', parts[3] || '—');
+      addField(body, 'Full Address of Institution', parts[3] || '—');
       body.appendParagraph('').setSpacingAfter(4);
     });
   }
@@ -1697,7 +1697,7 @@ function fillDocPR(body, data) {
   addField(body, 'To (MM/YYYY)', data.g12to);
   addField(body, 'Program / Stream', data.g12prog);
   addField(body, 'School Name', data.g12inst);
-  addField(body, 'City', data.g12city);
+  addField(body, 'Full Address of Institution', data.g12city);
   if (data.g12level) addField(body, 'Level of Education', data.g12level);
   if (data.g12field) addField(body, 'Field of Study', data.g12field);
   body.appendParagraph('').setSpacingAfter(4);
@@ -1720,7 +1720,7 @@ function fillDocPR(body, data) {
       addField(body, 'To (MM/YYYY)', dates[1] ? dates[1].trim() : '—');
       addField(body, 'Program Name', parts[1] || '—');
       addField(body, 'Institute Name', parts[2] || '—');
-      addField(body, 'Campus City', parts[3] || '—');
+      addField(body, 'Full Address of Institution', parts[3] || '—');
       if (extra.level) addField(body, 'Level of Education', extra.level);
       if (extra.field) addField(body, 'Field of Study', extra.field);
       body.appendParagraph('').setSpacingAfter(4);
@@ -1864,7 +1864,7 @@ function fillDocPR(body, data) {
     if (data.spouseEducation && data.spouseEducation.length > 0) {
       addSectionHeader(body, '🎓 Spouse — Education History');
       addTableFromRows(body,
-        ['From (YYYY-MM)', 'To (YYYY-MM)', 'Institution', 'City and Country', 'Level of Education', 'Field of Study'],
+        ['From (YYYY-MM)', 'To (YYYY-MM)', 'Institution', 'Full Address of Institution', 'Level of Education', 'Field of Study'],
         data.spouseEducation,
         ['from', 'to', 'institution', 'city', 'level', 'field']
       );

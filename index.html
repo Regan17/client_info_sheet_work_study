@@ -376,7 +376,7 @@ textarea{resize:vertical;min-height:80px}
         </div>
         <div class="field"><label>Program / Stream</label><input type="text" id="g12prog" placeholder="e.g. Science, Commerce, Arts"></div>
         <div class="field"><label>School Name</label><input type="text" id="g12inst"></div>
-        <div class="field"><label>City and Country</label><input type="text" id="g12city"></div>
+        <div class="field"><label>Full Address of Institution</label><input type="text" id="g12city" placeholder="Street, city, province/state, country"></div>
         <div class="pr-edu-extra" style="display:none">
           <div class="row2">
             <div class="field"><label>Level of Education</label><input type="text" id="g12level" placeholder="e.g. Secondary"></div>
@@ -397,7 +397,7 @@ textarea{resize:vertical;min-height:80px}
           </div>
           <div class="field"><label>Program Name</label><input type="text" class="edu-prog"></div>
           <div class="field"><label>Institute / University Name</label><input type="text" class="edu-inst"></div>
-          <div class="field"><label>City and Country</label><input type="text" class="edu-city"></div>
+          <div class="field"><label>Full Address of Institution</label><input type="text" class="edu-city" placeholder="Street, city, province/state, country"></div>
           <div class="pr-edu-extra" style="display:none">
             <div class="row2">
               <div class="field"><label>Level of Education</label><input type="text" class="edu-level" placeholder="e.g. Bachelor's, Diploma"></div>
@@ -829,7 +829,7 @@ textarea{resize:vertical;min-height:80px}
             <div class="field"><label>To (YYYY-MM)</label><input type="text" class="sedu-to"></div>
           </div>
           <div class="field"><label>Name of School or Institution</label><input type="text" class="sedu-inst"></div>
-          <div class="field"><label>City and Country</label><input type="text" class="sedu-city"></div>
+          <div class="field"><label>Full Address of Institution</label><input type="text" class="sedu-city" placeholder="Street, city, province/state, country"></div>
           <div class="row2">
             <div class="field"><label>Level of Education</label><input type="text" class="sedu-level" placeholder="e.g. Bachelor's, Diploma"></div>
             <div class="field"><label>Field of Study</label><input type="text" class="sedu-field" placeholder="e.g. Computer Science"></div>
@@ -2487,7 +2487,7 @@ function addEdu(){
     <div class="field"><label>To (MM/YYYY)</label><input type="text" class="edu-to"></div></div>
     <div class="field"><label>Program Name</label><input type="text" class="edu-prog"></div>
     <div class="field"><label>Institute / University Name</label><input type="text" class="edu-inst"></div>
-    <div class="field"><label>City and Country</label><input type="text" class="edu-city"></div>
+    <div class="field"><label>Full Address of Institution</label><input type="text" class="edu-city" placeholder="Street, city, province/state, country"></div>
     <div class="pr-edu-extra" style="${isPR?'display:block':'display:none'}">
       <div class="row2"><div class="field"><label>Level of Education</label><input type="text" class="edu-level" placeholder="e.g. Bachelor's, Diploma"></div>
       <div class="field"><label>Field of Study</label><input type="text" class="edu-field" placeholder="e.g. Computer Science"></div></div>
@@ -2647,7 +2647,7 @@ function addSpEdu(){
     <div class="row2"><div class="field"><label>From (YYYY-MM)</label><input type="text" class="sedu-from"></div>
     <div class="field"><label>To (YYYY-MM)</label><input type="text" class="sedu-to"></div></div>
     <div class="field"><label>Name of School or Institution</label><input type="text" class="sedu-inst"></div>
-    <div class="field"><label>City and Country</label><input type="text" class="sedu-city"></div>
+    <div class="field"><label>Full Address of Institution</label><input type="text" class="sedu-city" placeholder="Street, city, province/state, country"></div>
     <div class="row2"><div class="field"><label>Level of Education</label><input type="text" class="sedu-level"></div>
     <div class="field"><label>Field of Study</label><input type="text" class="sedu-field"></div></div>`;
   document.getElementById('spEduBlocks').appendChild(d);
