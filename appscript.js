@@ -1680,6 +1680,17 @@ function fillDocPR(body, data) {
     if (data.childExtra) addField(body, 'Additional', data.childExtra);
   }
 
+  // Other Country Residency (the PR form asks it)
+  addSectionHeader(body, '🌍 OTHER COUNTRY RESIDENCY (6+ months)');
+  addField(body, 'Have you lived in any other country for 6+ months (not Canada or home country)?', data.otherCountry);
+  if (data.otherCountry === 'Yes') {
+    addField(body, 'From (MM/YYYY)', data.ocFrom);
+    addField(body, 'To (MM/YYYY)', data.ocTo);
+    addField(body, 'Country Name', data.ocCountry);
+    addField(body, 'Status (e.g., Work/Study Visa, PR)', data.ocStatus);
+    addField(body, 'Purpose of Stay', data.ocPurpose);
+  }
+
   // Section 4 — Travel (basic)
   addSectionHeader(body, '✈️ TRAVEL HISTORY');
   addField(body, 'First Entry to Canada (Date)', data.firstEntryDate);
