@@ -345,8 +345,8 @@ function fillDoc(body, data) {
   addSectionHeader(body,'🌍 OTHER COUNTRY RESIDENCY (6+ months)');
   addField(body,'Have you lived in any other country for 6+ months (not Canada or home country)?',data.otherCountry);
   if(data.otherCountry==='Yes'){
-    addField(body,'From (MM/YYYY)',data.ocFrom);
-    addField(body,'To (MM/YYYY)',data.ocTo);
+    addField(body,'From (DD/MM/YYYY)',data.ocFrom);
+    addField(body,'To (DD/MM/YYYY)',data.ocTo);
     addField(body,'Country Name',data.ocCountry);
     addField(body,'Status (e.g., Work/Study Visa, PR)',data.ocStatus);
     addField(body,'Purpose of Stay',data.ocPurpose);
@@ -581,8 +581,8 @@ function fillDocEOI(body, data) {
   addSectionHeader(body,'🌍 OTHER COUNTRY RESIDENCY (6+ months)');
   addField(body,'Have you lived in any other country for 6+ months (not Canada or home country)?',data.otherCountry);
   if(data.otherCountry==='Yes'){
-    addField(body,'From (MM/YYYY)',data.ocFrom);
-    addField(body,'To (MM/YYYY)',data.ocTo);
+    addField(body,'From (DD/MM/YYYY)',data.ocFrom);
+    addField(body,'To (DD/MM/YYYY)',data.ocTo);
     addField(body,'Country Name',data.ocCountry);
     addField(body,'Status (e.g., Work/Study Visa, PR)',data.ocStatus);
     addField(body,'Purpose of Stay',data.ocPurpose);
@@ -888,8 +888,8 @@ function fillDocPNP(body, data) {
   addSectionHeader(body, '🌍 OTHER COUNTRY RESIDENCY (6+ months)');
   addField(body, 'Have you lived in any other country for 6+ months (not Canada or home country)?', data.otherCountry);
   if (data.otherCountry === 'Yes') {
-    addField(body, 'From (MM/YYYY)', data.ocFrom);
-    addField(body, 'To (MM/YYYY)', data.ocTo);
+    addField(body, 'From (DD/MM/YYYY)', data.ocFrom);
+    addField(body, 'To (DD/MM/YYYY)', data.ocTo);
     addField(body, 'Country Name', data.ocCountry);
     addField(body, 'Status (e.g., Work/Study Visa, PR)', data.ocStatus);
     addField(body, 'Purpose of Stay', data.ocPurpose);
@@ -1684,8 +1684,8 @@ function fillDocPR(body, data) {
   addSectionHeader(body, '🌍 OTHER COUNTRY RESIDENCY (6+ months)');
   addField(body, 'Have you lived in any other country for 6+ months (not Canada or home country)?', data.otherCountry);
   if (data.otherCountry === 'Yes') {
-    addField(body, 'From (MM/YYYY)', data.ocFrom);
-    addField(body, 'To (MM/YYYY)', data.ocTo);
+    addField(body, 'From (DD/MM/YYYY)', data.ocFrom);
+    addField(body, 'To (DD/MM/YYYY)', data.ocTo);
     addField(body, 'Country Name', data.ocCountry);
     addField(body, 'Status (e.g., Work/Study Visa, PR)', data.ocStatus);
     addField(body, 'Purpose of Stay', data.ocPurpose);
