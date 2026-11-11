@@ -44,6 +44,15 @@ function getStoredDocId_(key) {
 }
 
 // Application types that use the same client information sheet (for doc title)
+// Address History: exact From/To dates (YYYY-MM-DD) only for PR - Express Entry (the PR form
+// opened with program=ee). Every other type gives month and year (YYYY-MM).
+function exactDates_(data) {
+  return data.applicationType === 'pr' && data.prProgram === 'express_entry';
+}
+function addrDateCols_(data) {
+  return exactDates_(data) ? ['From (YYYY-MM-DD)', 'To (YYYY-MM-DD)'] : ['From (YYYY-MM)', 'To (YYYY-MM)'];
+}
+
 var APPLICATION_TYPE_LABELS = {
   'study_permit_extension': 'Study Permit Extension',
   'pgwp': 'PGWP',
@@ -176,7 +185,7 @@ function saveClient(data) {
 
   if (!docId) {
     var docTitle = 'Client Information Sheet';
-    var typeLabel = data.applicationType && APPLICATION_TYPE_LABELS[data.applicationType];
+    var typeLabel = exactDates_(data) ? 'PR – Express Entry' : (data.applicationType && APPLICATION_TYPE_LABELS[data.applicationType]);
     if (typeLabel) docTitle += ' - ' + typeLabel;
     var newDoc = DocumentApp.create(docTitle);
     docId = newDoc.getId();
@@ -1823,7 +1832,7 @@ function fillDocPR(body, data) {
   addSectionHeader(body, '🏠 ADDRESS HISTORY');
   body.appendParagraph('All addresses since 18th birthday or past 10 years. DO NOT LEAVE ANY GAPS. MENTION FULL ADDRESS WITH POSTAL CODES.').setBold(true).setSpacingAfter(6);
   addTableFromRows(body,
-    ['From (YYYY-MM-DD)', 'To (YYYY-MM-DD)', 'Street Number and Name', 'City or Town', 'Province/State/District', 'Postal/Zip Code', 'Country'],
+    [addrDateCols_(data)[0], addrDateCols_(data)[1], 'Street Number and Name', 'City or Town', 'Province/State/District', 'Postal/Zip Code', 'Country'],
     data.addressHistory || [],
     ['from', 'to', 'street', 'city', 'province', 'postal', 'country']
   );
@@ -1919,7 +1928,7 @@ function fillDocPR(body, data) {
       addSectionHeader(body, '🏠 Spouse — Address History');
       body.appendParagraph('DO NOT LEAVE ANY GAPS. MENTION FULL ADDRESS WITH POSTAL CODES.').setBold(true).setSpacingAfter(6);
       addTableFromRows(body,
-        ['From (YYYY-MM-DD)', 'To (YYYY-MM-DD)', 'Street', 'City or Town', 'Province/State', 'Postal/Zip Code', 'Country'],
+        [addrDateCols_(data)[0], addrDateCols_(data)[1], 'Street', 'City or Town', 'Province/State', 'Postal/Zip Code', 'Country'],
         data.spouseAddrHistory,
         ['from', 'to', 'street', 'city', 'province', 'postal', 'country']
       );

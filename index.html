@@ -100,7 +100,8 @@ textarea{resize:vertical;min-height:80px}
       <option value="eoi">EOI (Expression of Interest)</option>
       <option value="express_entry">Express Entry</option>
       <option value="pnp">Manitoba PNP (MPNP)</option>
-      <option value="pr">PR (Permanent Residence)</option>
+      <option value="pr_express_entry">PR – Express Entry</option>
+      <option value="pr">PR (all other PR types)</option>
     </select>
     <input type="email" class="admin-input" id="adminEmail" placeholder="Client's email address e.g. john@gmail.com"/>
     <button class="admin-btn" onclick="generateClientLink()">Generate Client Link →</button>
@@ -1200,7 +1201,7 @@ const APP_TYPE_LABELS = {
 // Unknown or missing type keeps the generic staff-facing subtitle.
 function updateHeaderSubtitle() {
   var el = document.getElementById('headerSubtitle');
-  var label = APP_TYPE_LABELS[applicationType];
+  var label = prProgram === 'express_entry' ? 'PR – Express Entry' : APP_TYPE_LABELS[applicationType];
   if (el && label) el.textContent = label;
 }
 
@@ -1218,6 +1219,26 @@ const SECTION_TAB_MAP = {
 };
 let visibleSections = ['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
 let cur = 0, docId = '', applicationType = '', autoSaveTimer = null, isSaving = false;
+// 'express_entry' when staff picked "PR – Express Entry" (link has program=ee), else ''.
+let prProgram = '';
+
+// Address History asks exact From/To dates (YYYY-MM-DD) for PR - Express Entry only.
+// Every other type asks month and year (YYYY-MM).
+function applyDateFormats() {
+  var exact = prProgram === 'express_entry';
+  function set(el, label, ph) {
+    if (!el) return;
+    var lab = el.closest('.field') && el.closest('.field').querySelector('label');
+    if (lab) lab.textContent = label;
+    el.placeholder = ph;
+  }
+  document.querySelectorAll('.addr-from, .saddr-from').forEach(function(el){
+    set(el, exact ? 'From (YYYY-MM-DD)' : 'From (YYYY-MM)', exact ? 'e.g. 2018-01-15' : 'e.g. 2018-01');
+  });
+  document.querySelectorAll('.addr-to, .saddr-to').forEach(function(el){
+    set(el, exact ? 'To (YYYY-MM-DD)' : 'To (YYYY-MM)', exact ? 'e.g. 2020-06-30' : 'e.g. 2020-06');
+  });
+}
 
 function hasSpouseSelected() {
   const m = document.querySelector('input[name="marital"]:checked');
@@ -1315,6 +1336,7 @@ function computeVisibleSections() {
 
   visibleSections = visible;
   updateHeaderSubtitle();
+  applyDateFormats();
 
   // Show/hide PR-specific fields in existing sections.
   // MPNP reuses the whole PR field set (eye colour, height, other names,
@@ -1412,6 +1434,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const clientEmail = p.get('email');
   if (clientEmail) {
     applicationType = p.get('type') || '';
+    prProgram = (applicationType === 'pr' && p.get('program') === 'ee') ? 'express_entry' : '';
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('formWrapper').style.display = 'block';
     document.getElementById('email').value = decodeURIComponent(clientEmail);
@@ -1533,7 +1556,9 @@ function generateClientLink() {
   const type = document.getElementById('adminAppType').value;
   if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
   let link = window.location.origin + window.location.pathname + '?email=' + encodeURIComponent(email);
-  if (type) link += '&type=' + encodeURIComponent(type);
+  // PR - Express Entry is the PR form with exact dates (program=ee); every other PR type is plain PR.
+  if (type === 'pr_express_entry') link += '&type=pr&program=ee';
+  else if (type) link += '&type=' + encodeURIComponent(type);
   document.getElementById('generatedLinkText').textContent = link;
   document.getElementById('generatedLinkBox').style.display = 'block';
 }
@@ -2011,6 +2036,7 @@ function collectData() {
   return {
     action:'save', email:document.getElementById('email').value, docId,
     applicationType: applicationType || undefined,
+    prProgram: prProgram || undefined,
     // Personal
     givenName:document.getElementById('givenName').value,
     lastName:document.getElementById('lastName').value,
@@ -2598,6 +2624,7 @@ function addAddrHist(){
     <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="addr-postal" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="field"><label>Country or Territory</label><input type="text" class="addr-country"></div></div>`;
   document.getElementById('addrHistBlocks').appendChild(d);
+  applyDateFormats();
 }
 
 function addTravelHist(){
@@ -2693,6 +2720,7 @@ function addSpAddrHist(){
     <div class="row2"><div class="field"><label>Postal Code / Zip Code</label><input type="text" class="saddr-postal" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div>
     <div class="field"><label>Country or Territory</label><input type="text" class="saddr-country"></div></div>`;
   document.getElementById('spAddrHistBlocks').appendChild(d);
+  applyDateFormats();
 }
 
 function addSpTravelHist(){
